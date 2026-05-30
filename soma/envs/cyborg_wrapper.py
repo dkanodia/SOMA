@@ -130,3 +130,89 @@ class CybORGWrapper(gym.Env):
 
     def close(self):
         pass
+
+
+# ---------------------------------------------------------------------------
+# CybORG → 30-dim adapter
+# ---------------------------------------------------------------------------
+
+# CybORG BlueTableWrapper host order (13 hosts × 4 features = 52 dim)
+# Features per host: [activity_scan, activity_exploit, compromised_unknown, compromised_priv]
+_CYBORG_HOST_ORDER = [
+    "Defender", "Enterprise0", "Enterprise1", "Enterprise2",
+    "Op_Host0", "Op_Host1", "Op_Host2", "Op_Server0",
+    "User0", "User1", "User2", "User3", "User4",
+]
+_CYBORG_FEATURES_PER_HOST = 4
+
+# Fixed network_pos per host (positional prior in the network topology)
+_NETWORK_POS = {
+    "User0":       0.10, "User1":       0.10, "User2":       0.10,
+    "Enterprise0": 0.50, "Enterprise1": 0.50,
+    "Op_Server0":  0.90,
+}
+
+
+def cyborg_obs_to_30dim(cyborg_obs: np.ndarray) -> np.ndarray:
+    """
+    Convert CybORG's 52-dim BlueTableWrapper observation to the 30-dim
+    format used by SOMA's immune layers (6 hosts × 5 features).
+
+    CybORG features (per host): [activity_scan, activity_exploit,
+                                   compromised_unknown, compromised_priv]
+    SOMA features (per host):   [activity, compromised, sessions,
+                                   processes, network_pos]
+
+    The mapping: activity = 0.5*scan + 1.0*exploit
+                 compromised = 0.33*unknown + 1.0*priv
+                 sessions = activity (proxy)
+                 processes = compromised (proxy)
+                 network_pos = fixed topology value
+    """
+    obs_30 = np.zeros(len(HOST_NAMES) * FEATURES_PER_HOST, dtype=np.float32)
+    cyborg_obs = np.array(cyborg_obs, dtype=np.float32)
+
+    for soma_idx, host in enumerate(HOST_NAMES):
+        if host not in _CYBORG_HOST_ORDER:
+            continue
+        cyborg_idx  = _CYBORG_HOST_ORDER.index(host)
+        feat_start  = cyborg_idx * _CYBORG_FEATURES_PER_HOST
+        scan        = float(cyborg_obs[feat_start + 0])
+        exploit     = float(cyborg_obs[feat_start + 1])
+        unknown     = float(cyborg_obs[feat_start + 2])
+        priv        = float(cyborg_obs[feat_start + 3])
+
+        activity    = min(1.0, 0.5 * scan + 1.0 * exploit)
+        compromised = min(1.0, 0.33 * unknown + 1.0 * priv)
+
+        out_start = soma_idx * FEATURES_PER_HOST
+        obs_30[out_start + 0] = activity
+        obs_30[out_start + 1] = compromised
+        obs_30[out_start + 2] = activity           # sessions proxy
+        obs_30[out_start + 3] = compromised        # processes proxy
+        obs_30[out_start + 4] = _NETWORK_POS.get(host, 0.5)
+
+    return obs_30
+
+
+def generate_cyborg_clean_episodes(n_steps: int = 1200, seed: int = 999) -> np.ndarray:
+    """
+    Collect clean (no red agent) CybORG observations and convert to 30-dim.
+    Returns ndarray shape (n_steps, 30).
+    Falls back to synthetic if CybORG is not installed.
+    """
+    try:
+        env = CybORGWrapper(include_red=False)
+        obs_list = []
+        obs, _ = env.reset()
+        for _ in range(n_steps):
+            obs_30 = cyborg_obs_to_30dim(obs)
+            obs_list.append(obs_30)
+            obs, _, done, _, _ = env.step(0)   # Monitor
+            if done:
+                obs, _ = env.reset()
+        return np.array(obs_list, dtype=np.float32)
+    except Exception as e:
+        print(f"[CybORG] Falling back to synthetic clean data ({e})")
+        from soma.envs.synthetic_network_gen import generate_clean_episodes
+        return generate_clean_episodes(n_steps=n_steps, seed=seed)

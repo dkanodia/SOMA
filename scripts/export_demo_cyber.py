@@ -365,19 +365,28 @@ def main():
                         default="results/cyber/demo_episode.json")
     parser.add_argument("--no-evasion", action="store_true",
                         help="Skip evasion matrix computation (faster)")
+    parser.add_argument("--use-cyborg", action="store_true",
+                        help="Use real CybORG observations for model training (requires CybORG install)")
     args = parser.parse_args()
 
-    from soma.envs.synthetic_network_gen import generate_clean_episodes
     from soma.layers.innate        import InnateImmunityLayer
     from soma.layers.memory        import HostDriftLayer
     from soma.layers.tolerance     import ImmuneToleranceLayer
     from soma.layers.learned_attacks import LearnedAttackRecognizer
 
-    print("[Demo] Generating clean baseline data...")
-    X_clean = generate_clean_episodes(n_steps=1200, seed=999)
-
-    model_path = Path("models/innate/baseline.joblib")
-    vae_path   = Path("models/innate/vae.joblib")
+    if args.use_cyborg:
+        print("[Demo] Collecting CybORG clean baseline data...")
+        from soma.envs.cyborg_wrapper import generate_cyborg_clean_episodes
+        X_clean = generate_cyborg_clean_episodes(n_steps=1200, seed=999)
+        model_path = Path("models/innate/cyborg_baseline.joblib")
+        vae_path   = Path("models/innate/cyborg_vae.joblib")
+        print(f"[Demo] CybORG clean data: {X_clean.shape}")
+    else:
+        print("[Demo] Generating synthetic clean baseline data...")
+        from soma.envs.synthetic_network_gen import generate_clean_episodes
+        X_clean = generate_clean_episodes(n_steps=1200, seed=999)
+        model_path = Path("models/innate/baseline.joblib")
+        vae_path   = Path("models/innate/vae.joblib")
 
     if model_path.exists():
         print("[Demo] Loading saved innate model...")

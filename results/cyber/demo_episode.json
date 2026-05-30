@@ -3164,8 +3164,8 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1"
+        "User1",
+        "User0"
       ],
       "anomaly_score": 0.44634302951131155,
       "innate_fired": false,
@@ -3438,8 +3438,8 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1"
+        "User1",
+        "User0"
       ],
       "anomaly_score": 0.4915655842002077,
       "innate_fired": false,
@@ -3712,8 +3712,8 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1"
+        "User1",
+        "User0"
       ],
       "anomaly_score": 0.47407404711904383,
       "innate_fired": false,
@@ -3991,8 +3991,8 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1"
+        "User1",
+        "User0"
       ],
       "anomaly_score": 0.4844874565143322,
       "innate_fired": false,
@@ -4259,9 +4259,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
+        "Enterprise0",
         "User1",
-        "Enterprise0"
+        "User0"
       ],
       "anomaly_score": 0.46438138376186033,
       "innate_fired": false,
@@ -4547,9 +4547,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
+        "Enterprise0",
         "User1",
-        "Enterprise0"
+        "User0"
       ],
       "anomaly_score": 0.43860712134003954,
       "innate_fired": false,
@@ -4841,9 +4841,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
+        "Enterprise0",
         "User1",
-        "Enterprise0"
+        "User0"
       ],
       "anomaly_score": 0.4694694431058674,
       "innate_fired": false,
@@ -5135,9 +5135,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
+        "Enterprise0",
         "User1",
-        "Enterprise0"
+        "User0"
       ],
       "anomaly_score": 0.44863268725205585,
       "innate_fired": false,
@@ -5423,9 +5423,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.47664498848480163,
@@ -5726,9 +5726,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.46805696436242494,
@@ -6034,9 +6034,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.45673827292766284,
@@ -6336,9 +6336,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.49787605594624734,
@@ -6638,9 +6638,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.5211341773539977,
@@ -6940,9 +6940,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.46480679019608423,
@@ -7248,9 +7248,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.5052630371995332,
@@ -7550,9 +7550,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.5087575761598687,
@@ -7852,9 +7852,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.45321485451584664,
@@ -8160,9 +8160,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.5134402223921185,
@@ -8468,9 +8468,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.5024760780905776,
@@ -8770,9 +8770,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.4956290489952201,
@@ -9072,9 +9072,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.5082383342205653,
@@ -9374,9 +9374,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.5239834889627621,
@@ -9679,9 +9679,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.4465223274840478,
@@ -9984,9 +9984,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.4867566144635119,
@@ -10286,9 +10286,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.4717925533341458,
@@ -10588,9 +10588,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.48107191472308525,
@@ -10890,9 +10890,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.48761230996432503,
@@ -11192,9 +11192,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.4777739465711602,
@@ -11494,9 +11494,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.5141784996377846,
@@ -11796,9 +11796,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.5472414765944541,
@@ -12098,9 +12098,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.5246083676826702,
@@ -12400,9 +12400,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.49886412817306447,
@@ -12702,9 +12702,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.5468983625760833,
@@ -13004,9 +13004,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.4775387580302277,
@@ -13312,9 +13312,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.50946797159837,
@@ -13620,9 +13620,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.4902584495230291,
@@ -13922,9 +13922,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.4972473808626535,
@@ -14224,9 +14224,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.503926796935619,
@@ -14526,9 +14526,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.4952374723845584,
@@ -14828,9 +14828,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.4859906271459777,
@@ -15133,9 +15133,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.5546179173764942,
@@ -15435,9 +15435,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.5223795056768191,
@@ -15740,9 +15740,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.5532759646773734,
@@ -16045,9 +16045,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.5539930746931057,
@@ -16350,9 +16350,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.5009614478200799,
@@ -16655,9 +16655,9 @@
       },
       "is_attack": true,
       "compromised_hosts": [
-        "User0",
-        "User1",
         "Enterprise0",
+        "User1",
+        "User0",
         "Op_Server0"
       ],
       "anomaly_score": 0.5088876899651577,
