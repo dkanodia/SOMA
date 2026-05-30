@@ -1,0 +1,217 @@
+flowchart TD
+
+    TELEM["📡 Network Telemetry
+    Process · Auth · Flow · File Events"]
+
+    %% ─────────────────────────────────────────
+    subgraph L1["🧬  LAYER 1 — Innate Immunity  |  FPR budget: 1%"]
+        ISO["Isolation Forest  ← primary
+        n_estimators=100  ·  contamination=0.01
+        threshold = 99th pct of clean validation scores"]
+        VAE["VAE  ← benchmark only
+        reconstruction error anomaly score
+        known failure mode: typicality gap"]
+        BENCH["Empirical decision
+        train both · evaluate at fixed 1% FPR
+        keep whichever wins TPR  ·  state result in pitch"]
+        DTS["Dual-Timescale EMA
+        fast α=0.1  ·  slow α=0.001
+        high-pass filter — stated as such, not principled theory"]
+        ISO --> BENCH
+        VAE --> BENCH
+        BENCH --> DTS
+    end
+
+    %% ─────────────────────────────────────────
+    subgraph L2["🛡️  LAYER 2 — Adaptive Immunity  |  FPR budget: 1%"]
+        PPO["PPO Defender Agent
+        Stable Baselines3  ·  200k steps on CAGE 2
+        frozen policy at deployment — not online adaptive"]
+        ACT["Blue Actions
+        Analyze · Isolate · Restore · Monitor"]
+        RWD["Reward Signal
+        +8 early detect  ·  −10 compromise
+        −4 false positive  ·  −2 repeated Analyze same host
+        repeated-Analyze penalty prevents reward hacking"]
+        EVAL["Behavioral Evaluation  ← correct success criterion
+        detection rate per B_lineAgent attack chain step
+        lateral movement ≥ 0.5  ·  impact stage ≥ 0.8
+        cumulative reward is training evidence only"]
+        PPO --> ACT
+        RWD --> PPO
+        PPO --> EVAL
+    end
+
+    %% ─────────────────────────────────────────
+    subgraph SG["⚡  SIGNALING GAME  — Standalone Theoretical Demonstration
+    runs on SignalingGameEnv  ·  independent of CybORG"]
+
+        SGE["SignalingGameEnv
+        θ ∈ {Real, Honeypot}  prior p = P(Real)
+        s ∈ {AppearReal, AppearHoneypot}
+        receiver = rational Bayesian  ← stated assumption"]
+
+        PBE["PBE Solver  (closed-form 2×2)
+        μ* = (L + κ) / (V + L + κ)
+        q* = P(AppearHoneypot | Real)   hide real assets
+        r* = P(AppearReal | Honeypot)   bait with honeypots
+        cross-check against Carroll & Grosu 2011 Prop 2"]
+
+        KAPPA["κ sweep  — theoretical only
+        3 values: κ ∈ {0,  V/2,  V}
+        computed analytically in PBE solver
+        NOT estimated from behavioral data
+        κ is unidentified from observations alone"]
+
+        APPROX["Attention model = utility-cost approximation
+        NOT formal rational inattention
+        Formal RI: mutual information constraint  Sims 2003
+        Matějka & McKay AER 2015
+        stated as approximation in pitch"]
+
+        RLPOL["Deception RL Policy  (PPO on SignalingGameEnv)
+        100k steps × 3 κ values  ≈ 90 min compute
+        stochastic evaluation to measure mixing rates"]
+
+        CONV["★  CONVERGENCE PLOT  — hero visual
+        learned r (cyan) vs PBE r* (purple)
+        across 3 κ values side by side
+        RL recovers equilibrium without knowledge of game theory
+        not tautological: PPO convergence to PBE is empirical result"]
+
+        LIMIT["⚠  Stated limitation
+        PBE assumes rational adversary
+        B_lineAgent ignores signals entirely — different game
+        result is benchmark not operational prediction
+        self-play not proposed: no convergence guarantee
+        in non-zero-sum asymmetric-info games"]
+
+        SGE --> PBE
+        KAPPA --> PBE
+        APPROX --> KAPPA
+        PBE --> RLPOL
+        RLPOL --> CONV
+        CONV --> LIMIT
+    end
+
+    %% ─────────────────────────────────────────
+    subgraph BRIDGE["🔗  Heuristic Bridge to CybORG  ← explicitly labeled as heuristic"]
+        HTRIG["Honeypot Trigger
+        if suspicion_score > 0.7 → activate deceptive presentation
+        threshold is manual — no principled basis
+        signaling game policy NOT applied here:
+        B_lineAgent does not respond to signals"]
+        AMBER["Amber node activated in simulation
+        red agent drawn toward decoy
+        real asset stays clean"]
+        HTRIG --> AMBER
+    end
+
+    %% ─────────────────────────────────────────
+    subgraph L4["🔬  LAYER 4 — Long-Dwell Drift Detection  |  FPR budget: 0.1%"]
+        CENT["Rolling Centroid Tracker
+        100-episode window per host
+        mean feature vector in PCA space"]
+        CALIB["FPR Calibration  ← required before alarming
+        threshold = 99.9th pct of clean drift scores
+        validated on held-out clean episodes
+        assert measured FPR ≤ 0.001"]
+        PCA2D["PCA Trajectory
+        early-window centroid vs late-window centroid
+        2D separation = drift magnitude"]
+        ALARM["Drift Alarm
+        long-dwell APT  ·  insider threat
+        acute layer misses this: adapts to recent baseline
+        note: needs 100+ episodes before valid — state in pitch"]
+        CENT --> CALIB
+        CALIB --> PCA2D
+        PCA2D --> ALARM
+    end
+
+    %% ─────────────────────────────────────────
+    subgraph SHARE["🌍  Threat Signature Sharing
+    replaces federated gradient averaging"]
+        HUMAN["Human Analyst Review
+        incident verified before any sharing
+        removes automated exfiltration risk"]
+        TSIG["Abstracted Threat Signature
+        no raw telemetry leaves deployment
+        no gradient updates — non-IID problem avoided
+        STIX/TAXII compatible format"]
+        INTEL["Threat Intelligence Distribution
+        pull-based: deployments opt in per signature
+        legally reviewable per signature
+        DFARS 252.204-7012 compatible by design"]
+        HUMAN --> TSIG --> INTEL
+    end
+
+    %% ─────────────────────────────────────────
+    subgraph CLAIMS["✅  What Is Claimed in the Pitch
+    every claim is backed by a measurement"]
+        C1["RL recovers PBE mixing rates
+        across κ ∈ {0, V/2, V}
+        convergence plot is the evidence"]
+        C2["PPO detection rates by attack chain step
+        lateral movement ≥ 0.5
+        impact stage ≥ 0.8"]
+        C3["Anomaly detector: [TPR] at 1% FPR
+        on CAGE 2 simulation data
+        benchmarked against isolation forest and VAE"]
+        C4["Drift alarm catches injected 2% per step drift
+        at 0.1% FPR on calibrated clean data"]
+        NOCLAIM["❌  NOT claimed
+        transfer to real networks at any validated rate
+        operational readiness
+        real adversary behavioral characterization
+        formal rational inattention
+        self-play convergence"]
+    end
+
+    %% ─────────────────────────────────────────
+    %% Primary data flow
+    TELEM --> L1
+    TELEM --> L4
+
+    %% Layer pipeline
+    BENCH  -->|"anomaly score
+    1% FPR calibrated"| L2
+    ACT    -->|"suspicion score
+    per host"| BRIDGE
+    ALARM  -->|"long-dwell alert"| PPO
+
+    %% Incident → sharing
+    AMBER  -->|"incident resolved"| HUMAN
+    ALARM  -->|"incident resolved"| HUMAN
+    INTEL  -->|"opt-in threat signatures
+    no model weights"| L1
+    INTEL  -->|"opt-in threat signatures
+    no model weights"| PPO
+
+    %% Demo outputs (dotted — not data flow)
+    CONV   -.->|"hero visual"| C1
+    EVAL   -.-> C2
+    BENCH  -.-> C3
+    ALARM  -.-> C4
+
+    %% ─────────────────────────────────────────
+    classDef l1     fill:#0b3d52,stroke:#22d3ee,color:#e2e8f0
+    classDef l2     fill:#152b15,stroke:#4ade80,color:#e2e8f0
+    classDef sg     fill:#2c1854,stroke:#a855f7,color:#e2e8f0,font-weight:bold
+    classDef limit  fill:#3a1212,stroke:#f87171,color:#fca5a5
+    classDef bridge fill:#2a1c07,stroke:#f59e0b,color:#fde68a
+    classDef l4     fill:#3a1515,stroke:#f87171,color:#e2e8f0
+    classDef share  fill:#122212,stroke:#86efac,color:#e2e8f0
+    classDef claims fill:#12121e,stroke:#64748b,color:#94a3b8
+    classDef noclaim fill:#2a1212,stroke:#ef4444,color:#fca5a5
+    classDef input  fill:#0f1724,stroke:#475569,color:#cbd5e1
+
+    class ISO,VAE,BENCH,DTS l1
+    class PPO,ACT,RWD,EVAL l2
+    class SGE,PBE,KAPPA,APPROX,RLPOL,CONV sg
+    class LIMIT limit
+    class HTRIG,AMBER bridge
+    class CENT,CALIB,PCA2D,ALARM l4
+    class HUMAN,TSIG,INTEL share
+    class C1,C2,C3,C4 claims
+    class NOCLAIM noclaim
+    class TELEM input

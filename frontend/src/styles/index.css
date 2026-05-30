@@ -1,0 +1,60 @@
+/* SOMA Design System
+   Dark war-room aesthetic: deep navy background, cyan/amber/purple accents
+   Monospace data panels, sharp grid layout
+*/
+
+:root {
+  --bg:           #0a0e1a;
+  --surface:      #111827;
+  --border:       #1e293b;
+  --healthy:      #22d3ee;   /* cyan  — healthy nodes, RL policy line */
+  --compromised:  #ef4444;   /* red   — compromised nodes */
+  --honeypot:     #f59e0b;   /* amber — heuristic honeypot trigger */
+  --pbe-line:     #a855f7;   /* purple — PBE equilibrium benchmark */
+  --text:         #e2e8f0;
+  --text-muted:   #64748b;
+  --font-mono:    "JetBrains Mono", "Fira Code", monospace;
+  --font-display: "Space Mono", monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color:      var(--text);
+  font-family: var(--font-mono);
+}
+
+.app-root   { display: flex; flex-direction: column; height: 100vh; }
+.app-header {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 0.75rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+.app-title    { font-family: var(--font-display); font-size: 1.25rem; color: var(--healthy); }
+.app-subtitle { font-size: 0.75rem; color: var(--text-muted); }
+.connection-status { margin-left: auto; font-size: 0.75rem; }
+.connected    { color: var(--healthy); }
+.disconnected { color: var(--compromised); }
+
+.app-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  grid-template-rows:    1fr 1fr;
+  gap: 1px;
+  flex: 1;
+  background: var(--border);
+}
+
+.panel { background: var(--surface); overflow: hidden; }
+.panel--hero    { grid-column: 2; grid-row: 1; }   /* convergence — hero */
+.panel--network { grid-column: 2; grid-row: 2; }
+.panel--anomaly { grid-column: 1; grid-row: 1; }
+.panel--learning{ grid-column: 1; grid-row: 2; }
+.panel--drift   { grid-column: 3; grid-row: 1 / span 2; }
+
+.panel-inner    { padding: 1rem; height: 100%; }
+.panel-title    { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;
+                  letter-spacing: 0.1em; margin-bottom: 0.75rem; }
+.panel-placeholder { font-size: 0.8rem; color: var(--text-muted); }
