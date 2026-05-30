@@ -37,7 +37,7 @@ export default function App() {
   const {
     state, meta, step, totalSteps, connected,
     playing, play, pause, stepForward, stepBack, setStep,
-  } = useWebSocket("ws://localhost:8765");
+  } = useWebSocket(process.env.REACT_APP_WS_URL || "ws://localhost:8765");
 
   const [activeTab, setActiveTab]     = useState("incidents");
   const [layerVisible, setLayerVisible] = useState(
