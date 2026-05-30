@@ -1,20 +1,22 @@
-/* SOMA Design System
-   Dark war-room aesthetic: deep navy background, cyan/amber/purple accents
-   Monospace data panels, sharp grid layout
+/* SOMA Cyber Immune Dashboard — Design System
+   Dark war-room aesthetic: deep navy bg, cyan/red/amber/purple accents
 */
 
 :root {
   --bg:           #0a0e1a;
   --surface:      #111827;
+  --surface2:     #0f172a;
   --border:       #1e293b;
-  --healthy:      #22d3ee;   /* cyan  — healthy nodes, RL policy line */
-  --compromised:  #ef4444;   /* red   — compromised nodes */
-  --honeypot:     #f59e0b;   /* amber — heuristic honeypot trigger */
-  --pbe-line:     #a855f7;   /* purple — PBE equilibrium benchmark */
+  --healthy:      #22d3ee;   /* cyan  — clean hosts, RL policy */
+  --compromised:  #ef4444;   /* red   — compromised / fired */
+  --warning:      #f59e0b;   /* amber — medium threat / tolerance breach */
+  --memory:       #a855f7;   /* purple — memory layer */
+  --learned:      #34d399;   /* green  — learned attacks layer */
   --text:         #e2e8f0;
   --text-muted:   #64748b;
   --font-mono:    "JetBrains Mono", "Fira Code", monospace;
   --font-display: "Space Mono", monospace;
+  --radius:       4px;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -23,38 +25,144 @@ body {
   background: var(--bg);
   color:      var(--text);
   font-family: var(--font-mono);
+  font-size: 13px;
 }
 
-.app-root   { display: flex; flex-direction: column; height: 100vh; }
+/* ─── App shell ────────────────────────────────────────────── */
+.app-root { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+
 .app-header {
-  display: flex; align-items: center; gap: 1rem;
-  padding: 0.75rem 1.5rem;
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.5rem 1rem;
   border-bottom: 1px solid var(--border);
   background: var(--surface);
+  flex-shrink: 0;
+  flex-wrap: wrap;
 }
-.app-title    { font-family: var(--font-display); font-size: 1.25rem; color: var(--healthy); }
-.app-subtitle { font-size: 0.75rem; color: var(--text-muted); }
-.connection-status { margin-left: auto; font-size: 0.75rem; }
-.connected    { color: var(--healthy); }
-.disconnected { color: var(--compromised); }
 
+.app-title {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--healthy);
+  letter-spacing: 0.15em;
+}
+.app-subtitle { font-size: 0.7rem; color: var(--text-muted); }
+
+/* ─── Playback controls ─────────────────────────────────────── */
+.controls {
+  display: flex; align-items: center; gap: 0.4rem;
+  margin-left: 0.5rem;
+}
+.ctrl-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--healthy);
+  border-radius: var(--radius);
+  padding: 2px 8px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+.ctrl-btn:hover { background: var(--border); }
+
+.scrubber {
+  width: 140px;
+  accent-color: var(--healthy);
+  cursor: pointer;
+}
+.step-counter { font-size: 0.7rem; color: var(--text-muted); white-space: nowrap; }
+
+/* ─── Phase badge ───────────────────────────────────────────── */
+.phase-badge {
+  font-size: 0.65rem;
+  padding: 2px 8px;
+  border-radius: var(--radius);
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.phase-clean  { background: rgba(34,211,238,0.15); color: var(--healthy); }
+.phase-attack { background: rgba(239,68,68,0.2);   color: var(--compromised); }
+
+.connection-status { margin-left: auto; font-size: 0.7rem; }
+.connected    { color: var(--healthy); }
+.disconnected { color: var(--warning); }
+
+/* ─── Grid layout ───────────────────────────────────────────── */
 .app-grid {
   display: grid;
-  grid-template-columns: 1fr 2fr 1fr;
-  grid-template-rows:    1fr 1fr;
+  grid-template-columns: 220px 1fr 220px;
+  grid-template-rows: 260px 180px 220px;
   gap: 1px;
   flex: 1;
   background: var(--border);
+  overflow: hidden;
+  min-height: 0;
 }
 
-.panel { background: var(--surface); overflow: hidden; }
-.panel--hero    { grid-column: 2; grid-row: 1; }   /* convergence — hero */
-.panel--network { grid-column: 2; grid-row: 2; }
-.panel--anomaly { grid-column: 1; grid-row: 1; }
-.panel--learning{ grid-column: 1; grid-row: 2; }
-.panel--drift   { grid-column: 3; grid-row: 1 / span 2; }
+.panel {
+  background: var(--surface);
+  overflow: hidden;
+  min-height: 0;
+}
 
-.panel-inner    { padding: 1rem; height: 100%; }
-.panel-title    { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;
-                  letter-spacing: 0.1em; margin-bottom: 0.75rem; }
-.panel-placeholder { font-size: 0.8rem; color: var(--text-muted); }
+.panel--radar    { grid-column: 1; grid-row: 1; }
+.panel--network  { grid-column: 2; grid-row: 1; }
+.panel--evasion  { grid-column: 3; grid-row: 1; }
+.panel--timeline { grid-column: 1 / span 3; grid-row: 2; }
+.panel--gallery  { grid-column: 1; grid-row: 3; }
+.panel--incident { grid-column: 2 / span 2; grid-row: 3; }
+
+/* ─── Panel internals ───────────────────────────────────────── */
+.panel-inner { padding: 0.6rem 0.75rem; height: 100%; display: flex; flex-direction: column; }
+
+.panel-title {
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.4rem;
+  flex-shrink: 0;
+}
+
+.panel-content { flex: 1; min-height: 0; overflow: hidden; }
+
+.panel-placeholder { font-size: 0.75rem; color: var(--text-muted); }
+
+/* ─── Recharts overrides ────────────────────────────────────── */
+.recharts-cartesian-axis-tick-value { fill: var(--text-muted) !important; font-size: 10px; }
+.recharts-legend-item-text { color: var(--text-muted) !important; font-size: 10px; }
+.recharts-tooltip-wrapper { font-size: 11px; }
+
+/* ─── Incident cards ────────────────────────────────────────── */
+.incident-list { overflow-y: auto; max-height: 100%; }
+.incident-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.4rem 0.6rem;
+  margin-bottom: 0.35rem;
+}
+.incident-card.HIGH   { border-left: 3px solid var(--compromised); }
+.incident-card.MEDIUM { border-left: 3px solid var(--warning); }
+.incident-card.LOW    { border-left: 3px solid var(--healthy); }
+
+.incident-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.2rem; }
+.inc-host    { font-weight: bold; color: var(--text); font-size: 0.8rem; }
+.inc-score   { color: var(--compromised); font-size: 0.75rem; }
+.inc-conf    { font-size: 0.6rem; padding: 1px 5px; border-radius: 2px; font-weight: bold; }
+.inc-conf.HIGH   { background: rgba(239,68,68,0.2);   color: var(--compromised); }
+.inc-conf.MEDIUM { background: rgba(245,158,11,0.2);  color: var(--warning); }
+.inc-conf.LOW    { background: rgba(34,211,238,0.15); color: var(--healthy); }
+.inc-layers  { font-size: 0.65rem; color: var(--text-muted); }
+.inc-reason  { font-size: 0.65rem; color: var(--text-muted); margin-top: 0.15rem; }
+
+.no-incidents { font-size: 0.75rem; color: var(--healthy); padding: 0.5rem 0; }
+
+/* ─── Kill chain ────────────────────────────────────────────── */
+.kc-edge { font-size: 0.65rem; color: var(--warning); padding: 2px 0; }
+
+/* ─── Scrollbar ─────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--surface); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
