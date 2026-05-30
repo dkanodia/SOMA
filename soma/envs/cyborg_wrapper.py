@@ -33,6 +33,26 @@ from typing import Optional
 OBS_DIM    = 52
 N_ACTIONS  = 54
 
+# Host names in CAGE 2 Scenario1b (subset monitored by Blue agent)
+HOST_NAMES = [
+    "User0", "User1", "User2",
+    "Enterprise0", "Enterprise1",
+    "Op_Server0",
+]
+FEATURES_PER_HOST = 5
+N_HOSTS           = len(HOST_NAMES)
+
+# Logical action labels (maps to EnumActionWrapper's Discrete(54) indices)
+BLUE_ACTIONS = [
+    "Monitor",
+    "Analyze_User0",    "Analyze_User1",    "Analyze_User2",
+    "Analyze_Enterprise0", "Analyze_Enterprise1", "Analyze_Op_Server0",
+    "Remove_User0",     "Remove_User1",     "Remove_User2",
+    "Remove_Enterprise0", "Remove_Enterprise1", "Remove_Op_Server0",
+    "Restore_User0",    "Restore_User1",    "Restore_User2",
+    "Restore_Enterprise0", "Restore_Enterprise1", "Restore_Op_Server0",
+]
+
 
 class CybORGWrapper(gym.Env):
     """
