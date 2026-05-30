@@ -66,26 +66,20 @@ class CybORGWrapper(gym.Env):
     - The agent trained here is frozen at deployment — NOT online adaptive.
     - FPR budget: 1% of clean-episode steps flagged as anomalous.
       Calibrated in soma/eval/fpr_calibration.py.
+    - include_red=False runs without a red agent (clean data collection).
     """
 
     metadata = {"render_modes": []}
 
-    def __init__(self, scenario_path: Optional[str] = None):
+    def __init__(self, scenario_path: Optional[str] = None, include_red: bool = True):
         super().__init__()
 
-        # TODO: resolve CybORG import and scenario path
-        # from CybORG import CybORG
-        # from CybORG.Agents import B_lineAgent
-        # if scenario_path is None:
-        #     import inspect
-        #     cyborg_file = str(inspect.getfile(CybORG))
-        #     scenario_path = cyborg_file[:-7] + "/Shared/Scenarios/Scenario1b.yaml"
-        # self._env = CybORG(scenario_path, "sim", agents={"Red": B_lineAgent()})
-
-        self._env          = None   # set in reset() after CybORG import
-        self._prev_raw_obs = None
-        self._step_count   = 0
-        self._recently_analyzed: set = set()  # hosts analyzed in last 5 steps
+        self._scenario_path    = scenario_path
+        self._include_red      = include_red
+        self._env              = None   # lazy-initialized on first reset()
+        self._prev_raw_obs     = None
+        self._step_count       = 0
+        self._recently_analyzed: set = set()
 
         obs_dim = N_HOSTS * FEATURES_PER_HOST
         self.observation_space = spaces.Box(
@@ -94,12 +88,26 @@ class CybORGWrapper(gym.Env):
         self.action_space = spaces.Discrete(len(BLUE_ACTIONS))
 
     # ------------------------------------------------------------------
+    def _init_cyborg(self):
+        from CybORG import CybORG
+        from CybORG.Agents import B_lineAgent
+        import inspect
+
+        if self._scenario_path is None:
+            cyborg_file = str(inspect.getfile(CybORG))
+            self._scenario_path = cyborg_file[:-7] + "/Shared/Scenarios/Scenario1b.yaml"
+
+        agents = {"Red": B_lineAgent()} if self._include_red else {}
+        self._env = CybORG(self._scenario_path, "sim", agents=agents)
+
+    # ------------------------------------------------------------------
     def reset(self, *, seed=None, options=None):
         super().reset(seed=seed)
-        # TODO: raw_obs = self._env.reset()
-        raw_obs          = {}   # placeholder
+        if self._env is None:
+            self._init_cyborg()
+        raw_obs = self._env.reset(agent="Blue")
         self._prev_raw_obs = raw_obs
-        self._step_count = 0
+        self._step_count   = 0
         self._recently_analyzed.clear()
         return self._flatten(raw_obs), {}
 
@@ -108,15 +116,19 @@ class CybORGWrapper(gym.Env):
         action_str = BLUE_ACTIONS[action]
         host       = self._action_host(action_str)
 
-        # TODO: result = self._env.step(action=action_str, agent="Blue")
-        result     = ({}, 0.0, False, {})  # placeholder
-        raw_obs, _, done, info = result
+        raw_obs, _, done, info = self._env.step(action=action_str, agent="Blue")
 
         reward = self._compute_reward(raw_obs, self._prev_raw_obs, action_str, host)
 
         self._update_recently_analyzed(host, action_str)
         self._prev_raw_obs = raw_obs
         self._step_count  += 1
+
+        # Expose red agent step so detection_metrics.py can label attack phases.
+        # B_lineAgent is deterministic — step index maps 1:1 to its attack chain.
+        if info is None:
+            info = {}
+        info["red_agent_step"] = self._step_count
 
         return self._flatten(raw_obs), reward, done, False, info
 
