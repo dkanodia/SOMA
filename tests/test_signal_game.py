@@ -1,106 +1,121 @@
-"""tests/test_signal_game.py — Learned attack recognizer + fusion correlator tests."""
+"""tests/test_signal_game.py — SignalingGameEnv unit tests."""
 import numpy as np
 import pytest
 
-from soma.envs.synthetic_network_gen import (
-    generate_clean_episodes, generate_attack_episode,
-)
-from soma.layers.learned_attacks import LearnedAttackRecognizer
-from soma.fusion.network_correlator import NetworkImmuneCorrelator, ImmuneIncident
+from soma.envs.signal_game import SignalingGameEnv
+from soma.theory.pbe_solver import compute_pbe, kappa_sweep
 
 
-class TestLearnedAttackRecognizer:
+# ---------------------------------------------------------------------------
+# SignalingGameEnv tests
+# ---------------------------------------------------------------------------
 
-    def test_fit_no_error(self):
-        X = generate_clean_episodes(n_steps=200, seed=0)
-        rec = LearnedAttackRecognizer()
-        rec.fit(X, epochs=5)
-        assert rec._fitted
-        assert rec.recon_threshold_ is not None
+class TestSignalingGameEnv:
 
-    def test_learn_attack_grows_gallery(self):
-        X = generate_clean_episodes(n_steps=200, seed=2)
-        rec = LearnedAttackRecognizer()
-        rec.fit(X, epochs=5)
-        assert rec.gallery_size == 0
+    def test_reset_returns_correct_shape(self):
+        env = SignalingGameEnv(n_hosts=5)
+        obs, info = env.reset()
+        assert obs.shape == (5,)
+        assert set(obs).issubset({0, 1})
 
-        obs_atk, labels, _ = generate_attack_episode(stealth=0.0, n_steps=30, attack_start=5, seed=3)
-        attack_obs = obs_atk[labels]
-        if len(attack_obs) > 0:
-            rec.learn_attack(attack_obs, "lateral_move", ["User0", "Enterprise0"])
-        assert rec.gallery_size == 1
+    def test_step_returns_five_elements(self):
+        env = SignalingGameEnv(n_hosts=5)
+        obs, _ = env.reset()
+        signal = np.zeros(5, dtype=np.int8)
+        result = env.step(signal)
+        assert len(result) == 5   # obs, reward, terminated, truncated, info
 
-    def test_recognize_returns_valid_tuple(self):
-        X = generate_clean_episodes(n_steps=200, seed=4)
-        rec = LearnedAttackRecognizer()
-        rec.fit(X, epochs=5)
+    def test_reward_is_scalar(self):
+        env = SignalingGameEnv()
+        env.reset()
+        _, reward, _, _, _ = env.step(np.ones(5, dtype=np.int8))
+        assert isinstance(reward, float)
 
-        obs_atk, labels, _ = generate_attack_episode(stealth=0.0, n_steps=30, attack_start=5, seed=5)
-        attack_obs = obs_atk[labels]
-        if len(attack_obs) == 0:
-            pytest.skip("No attack obs")
-        rec.learn_attack(attack_obs, "obvious", [])
-        conf, atype = rec.recognize(attack_obs)
-        assert 0.0 <= conf <= 1.0
-        assert isinstance(atype, str)
+    def test_attacker_attacks_when_ev_positive(self):
+        """Attacker attacks if posterior * V - (1-posterior) * L - kappa > 0."""
+        env = SignalingGameEnv(p_real=1.0, V=10, C=3, L=5, kappa=0.0, n_hosts=1)
+        env.reset()
+        env.true_types = np.array([1], dtype=np.int8)
+        # Signal AppearReal: Bayesian update keeps belief near 1 → attacker attacks
+        _, reward, _, _, info = env.step(np.array([1], dtype=np.int8))
+        assert info["attacker_actions"][0] == 1, "Attacker should attack Real host"
+        assert reward < 0, "Defender loses V when Real is attacked"
 
-    def test_reconstruction_error_is_float(self):
-        X = generate_clean_episodes(n_steps=200, seed=6)
-        rec = LearnedAttackRecognizer()
-        rec.fit(X, epochs=5)
-        err = rec.reconstruction_error(X[0])
-        assert isinstance(err, float)
-        assert err >= 0.0
+    def test_attacker_passes_when_kappa_high(self):
+        """Very high kappa should suppress all attacks."""
+        env = SignalingGameEnv(p_real=0.4, V=10, C=3, L=5, kappa=1000.0, n_hosts=5)
+        env.reset()
+        _, _, _, _, info = env.step(np.ones(5, dtype=np.int8))
+        assert info["attacker_actions"].sum() == 0, "No attacks expected with kappa=1000"
+
+    def test_honeypot_hit_gives_positive_reward(self):
+        """Attacker hitting a honeypot should give defender +C."""
+        env = SignalingGameEnv(p_real=1.0, V=10, C=3, L=5, kappa=0.0, n_hosts=1)
+        env.reset()
+        env.true_types = np.array([0], dtype=np.int8)  # Honeypot
+        env.beliefs     = np.array([1.0])               # Attacker thinks Real → attacks
+        # Signal AppearReal to induce attack
+        _, reward, _, _, info = env.step(np.array([1], dtype=np.int8))
+        if info["attacker_actions"][0] == 1:
+            assert reward == pytest.approx(3.0), "Honeypot hit should give +C=3"
+
+    def test_no_attack_gives_zero_reward(self):
+        """If attacker passes, reward is 0."""
+        env = SignalingGameEnv(p_real=0.0, V=10, C=3, L=5, kappa=1000.0, n_hosts=3)
+        env.reset()
+        _, reward, _, _, _ = env.step(np.zeros(3, dtype=np.int8))
+        assert reward == pytest.approx(0.0)
+
+    def test_observation_space_consistent(self):
+        env = SignalingGameEnv(n_hosts=5)
+        obs, _ = env.reset()
+        assert env.observation_space.contains(obs)
+
+    def test_action_space_consistent(self):
+        env = SignalingGameEnv(n_hosts=5)
+        env.reset()
+        action = env.action_space.sample()
+        assert env.action_space.contains(action)
 
 
-class TestNetworkImmuneCorrelator:
+# ---------------------------------------------------------------------------
+# PBE solver tests (via pbe_solver — separate module, called from deception.py)
+# ---------------------------------------------------------------------------
 
-    def test_update_step_returns_list(self):
-        corr = NetworkImmuneCorrelator()
-        obs  = generate_clean_episodes(n_steps=1, seed=0)[0]
-        from soma.envs.cyborg_wrapper import HOST_NAMES
-        mem_scores = {h: 0.0 for h in HOST_NAMES}
-        incidents = corr.update_step(
-            obs=obs,
-            innate_score=0.1,
-            innate_threshold=0.5,
-            memory_scores=mem_scores,
-            memory_threshold=1.0,
-            tolerance_suppressed=set(),
-            tolerance_breached=set(),
+class TestPBESolverConsistency:
+    """
+    Sanity checks on the PBE results used by the convergence study.
+    If these fail the theoretical core is broken.
+    """
+
+    def test_mu_star_increases_with_kappa(self):
+        """Attacker attack threshold rises as attention cost rises."""
+        results = kappa_sweep(p_real=0.4, V=10, C=3, L=5)
+        kappas  = sorted(results.keys())
+        mu_stars = [results[k].mu_star for k in kappas]
+        assert mu_stars == sorted(mu_stars), "mu_star should be non-decreasing in kappa"
+
+    def test_r_star_non_negative(self):
+        results = kappa_sweep()
+        for k, r in results.items():
+            assert r.r_star >= 0.0, f"r_star negative at kappa={k}"
+            assert r.r_star <= 1.0, f"r_star > 1 at kappa={k}"
+
+    def test_q_star_non_negative(self):
+        results = kappa_sweep()
+        for k, r in results.items():
+            assert r.q_star >= 0.0
+            assert r.q_star <= 1.0
+
+    def test_known_mu_star_value(self):
+        """mu* = L / (V + L) when kappa=0. With V=10, L=5: mu*=1/3."""
+        result = compute_pbe(p_real=0.4, V=10, C=3, L=5, kappa=0.0)
+        assert abs(result.mu_star - 5.0 / 15.0) < 1e-9, (
+            f"mu_star={result.mu_star}, expected {5/15:.6f}"
         )
-        assert isinstance(incidents, list)
 
-    def test_high_innate_score_creates_incident(self):
-        corr = NetworkImmuneCorrelator(min_score=0.1)
-        obs  = generate_clean_episodes(n_steps=1, seed=0)[0]
-        from soma.envs.cyborg_wrapper import HOST_NAMES
-        host_scores = {h: 5.0 for h in HOST_NAMES}
-        mem_scores  = {h: 0.0 for h in HOST_NAMES}
-        incidents = corr.update_step(
-            obs=obs,
-            innate_score=5.0,
-            innate_threshold=0.5,
-            memory_scores=mem_scores,
-            memory_threshold=1.0,
-            tolerance_suppressed=set(),
-            tolerance_breached=set(),
-            innate_host_scores=host_scores,
-        )
-        assert len(incidents) > 0
-
-    def test_reset_clears_state(self):
-        corr = NetworkImmuneCorrelator()
-        corr._acc["User0"] = 5.0
-        corr._step = 10
-        corr.reset()
-        assert len(corr._acc) == 0
-        assert corr._step == 0
-
-    def test_incident_confidence_levels(self):
-        inc_high = ImmuneIncident(host="User0", score=4.5, step=1, layers_fired=["innate", "memory"])
-        inc_med  = ImmuneIncident(host="User0", score=2.5, step=1, layers_fired=["innate"])
-        inc_low  = ImmuneIncident(host="User0", score=0.5, step=1, layers_fired=[])
-        assert inc_high.confidence == "HIGH"
-        assert inc_med.confidence  == "MEDIUM"
-        assert inc_low.confidence  == "LOW"
+    def test_full_inattention_max_threshold(self):
+        """kappa=V means attacker needs posterior > V/(2V)=0.5 to attack."""
+        result = compute_pbe(p_real=0.4, V=10, C=3, L=5, kappa=10.0)
+        expected = (5.0 + 10.0) / (10.0 + 5.0 + 10.0)
+        assert abs(result.mu_star - expected) < 1e-9

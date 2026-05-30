@@ -18,7 +18,7 @@ from pathlib import Path
 
 from soma.envs.cyborg_wrapper import CybORGWrapper
 from soma.layers.adaptive import build_agent, train, evaluate_action_distribution
-from soma.layers.innate import InnateIsolationForest
+from soma.layers.innate import InnateImmunityLayer
 from soma.eval.detection_metrics import evaluate_detection_rates
 
 TOTAL_STEPS    = 200_000
@@ -45,26 +45,13 @@ def main():
     evaluate_action_distribution(agent, env_fn)
 
     print("\nRunning behavioral evaluation (100 episodes)...")
-    winner_type_path = INNATE_DIR / "layer1_winner_type.txt"
-    if not winner_type_path.exists():
+    innate_path = INNATE_DIR / "isolation_forest.joblib"
+    if not innate_path.exists():
         raise FileNotFoundError(
-            "models/innate/layer1_winner_type.txt not found — run train_innate.py first"
+            f"{innate_path} not found — run train_innate.py first"
         )
-    winner_type = winner_type_path.read_text().strip()
-
-    if winner_type == "isolation_forest":
-        iso = InnateIsolationForest.load(INNATE_DIR / "layer1_winner.joblib")
-        layer1_fn = iso.is_anomalous
-    else:
-        import json
-        import torch
-        from soma.layers.innate import InnateVAE
-        vae = InnateVAE()
-        vae.load_state_dict(torch.load(INNATE_DIR / "layer1_winner.pt"))
-        vae.threshold_ = json.loads(
-            (INNATE_DIR / "layer1_winner_threshold.json").read_text()
-        )["threshold"]
-        layer1_fn = vae.is_anomalous
+    innate    = InnateImmunityLayer.load(innate_path)
+    layer1_fn = innate.is_anomalous
 
     def predict_fn(obs):
         action, _ = agent.predict(obs, deterministic=True)
