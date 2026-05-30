@@ -7,6 +7,12 @@ Requires CybORG to be installed separately:
   git clone https://github.com/cage-challenge/cage-challenge-2
   cd cage-challenge-2 && pip install -e .
 
+Delegates observation vectorisation and action enumeration to CybORG's own
+ChallengeWrapper (BlueTableWrapper → EnumActionWrapper → OpenAIGymWrapper),
+which gives a 52-dim int64 observation and Discrete(54) action space.
+Our wrapper adds a gymnasium-compatible reset() / step() signature and
+exposes red_agent_step in info so detection_metrics.py can label phases.
+
 What B_lineAgent does (its fixed, deterministic attack chain):
   Steps  1-3:  Initial access via known exploit
   Steps  4-8:  Lateral movement to adjacent hosts
@@ -23,49 +29,27 @@ import gymnasium as gym
 from gymnasium import spaces
 from typing import Optional
 
-
-# Host names in CAGE 2 Scenario1b — update if scenario changes
-HOST_NAMES = [
-    "User0", "User1", "User2",
-    "Enterprise0", "Enterprise1",
-    "Op_Server0",
-]
-
-# Blue agent actions available in CAGE 2
-BLUE_ACTIONS = [
-    "Monitor",
-    "Analyze_User0",    "Analyze_User1",    "Analyze_User2",
-    "Analyze_Enterprise0", "Analyze_Enterprise1", "Analyze_Op_Server0",
-    "Remove_User0",     "Remove_User1",     "Remove_User2",
-    "Remove_Enterprise0", "Remove_Enterprise1", "Remove_Op_Server0",
-    "Restore_User0",    "Restore_User1",    "Restore_User2",
-    "Restore_Enterprise0", "Restore_Enterprise1", "Restore_Op_Server0",
-]
-
-FEATURES_PER_HOST = 5
-N_HOSTS           = len(HOST_NAMES)
+# ChallengeWrapper observation / action dimensions for CAGE 2 Scenario1b
+OBS_DIM    = 52
+N_ACTIONS  = 54
 
 
 class CybORGWrapper(gym.Env):
     """
-    Wraps CAGE 2 CybORG for use with Stable Baselines3.
+    Gymnasium wrapper around CybORG CAGE 2 ChallengeWrapper.
 
     Observation
     -----------
-    Flat float32 vector of shape (N_HOSTS * FEATURES_PER_HOST,):
-      [activity, compromised, session_count, process_count, network_position]
-      per host, concatenated in HOST_NAMES order.
+    int64 vector of shape (52,) — produced by CybORG's BlueTableWrapper.
 
     Action
     ------
-    Discrete index into BLUE_ACTIONS.
+    Discrete(54) — produced by CybORG's EnumActionWrapper.
 
     Notes
     -----
     - B_lineAgent is used as the red agent (scripted, deterministic).
     - The agent trained here is frozen at deployment — NOT online adaptive.
-    - FPR budget: 1% of clean-episode steps flagged as anomalous.
-      Calibrated in soma/eval/fpr_calibration.py.
     - include_red=False runs without a red agent (clean data collection).
     """
 
@@ -73,133 +57,56 @@ class CybORGWrapper(gym.Env):
 
     def __init__(self, scenario_path: Optional[str] = None, include_red: bool = True):
         super().__init__()
+        self._scenario_path = scenario_path
+        self._include_red   = include_red
+        self._env           = None   # lazy-initialized on first reset()
+        self._step_count    = 0
 
-        self._scenario_path    = scenario_path
-        self._include_red      = include_red
-        self._env              = None   # lazy-initialized on first reset()
-        self._prev_raw_obs     = None
-        self._step_count       = 0
-        self._recently_analyzed: set = set()
-
-        obs_dim = N_HOSTS * FEATURES_PER_HOST
         self.observation_space = spaces.Box(
-            low=0.0, high=1.0, shape=(obs_dim,), dtype=np.float32
+            low=0, high=255, shape=(OBS_DIM,), dtype=np.int64
         )
-        self.action_space = spaces.Discrete(len(BLUE_ACTIONS))
+        self.action_space = spaces.Discrete(N_ACTIONS)
 
     # ------------------------------------------------------------------
     def _init_cyborg(self):
         from CybORG import CybORG
         from CybORG.Agents import B_lineAgent
+        from CybORG.Agents.Wrappers import ChallengeWrapper
         import inspect
+        from pathlib import Path as _Path
 
         if self._scenario_path is None:
-            cyborg_file = str(inspect.getfile(CybORG))
-            self._scenario_path = cyborg_file[:-7] + "/Shared/Scenarios/Scenario1b.yaml"
+            cyborg_file = _Path(inspect.getfile(CybORG))
+            self._scenario_path = str(
+                cyborg_file.parent / "Shared" / "Scenarios" / "Scenario1b.yaml"
+            )
 
-        agents = {"Red": B_lineAgent()} if self._include_red else {}
-        self._env = CybORG(self._scenario_path, "sim", agents=agents)
+        agents = {"Red": B_lineAgent} if self._include_red else {}
+        cyborg = CybORG(self._scenario_path, "sim", agents=agents)
+        self._env = ChallengeWrapper(agent_name="Blue", env=cyborg)
 
     # ------------------------------------------------------------------
     def reset(self, *, seed=None, options=None):
         super().reset(seed=seed)
         if self._env is None:
             self._init_cyborg()
-        raw_obs = self._env.reset(agent="Blue")
-        self._prev_raw_obs = raw_obs
-        self._step_count   = 0
-        self._recently_analyzed.clear()
-        return self._flatten(raw_obs), {}
+        obs = self._env.reset()
+        self._step_count = 0
+        return np.array(obs, dtype=np.int64), {}
 
     # ------------------------------------------------------------------
     def step(self, action: int):
-        action_str = BLUE_ACTIONS[action]
-        host       = self._action_host(action_str)
-
-        raw_obs, _, done, info = self._env.step(action=action_str, agent="Blue")
-
-        reward = self._compute_reward(raw_obs, self._prev_raw_obs, action_str, host)
-
-        self._update_recently_analyzed(host, action_str)
-        self._prev_raw_obs = raw_obs
-        self._step_count  += 1
-
-        # Expose red agent step so detection_metrics.py can label attack phases.
-        # B_lineAgent is deterministic — step index maps 1:1 to its attack chain.
+        obs, reward, done, info = self._env.step(action=int(action))
+        self._step_count += 1
         if info is None:
             info = {}
+        # Expose deterministic red agent phase index for detection labelling.
         info["red_agent_step"] = self._step_count
-
-        return self._flatten(raw_obs), reward, done, False, info
-
-    # ------------------------------------------------------------------
-    def _flatten(self, raw_obs: dict) -> np.ndarray:
-        """Convert raw CybORG observation dict to flat float32 vector."""
-        vecs = []
-        for host in HOST_NAMES:
-            h = raw_obs.get(host, {})
-            vecs.extend([
-                float(h.get("Activity",    0)),
-                float(h.get("Compromised", 0)),
-                float(len(h.get("Sessions",  []))),
-                float(len(h.get("Processes", []))),
-                float(h.get("Interface", {}).get("IP_Address", 0)) % 256 / 255.0,
-            ])
-        return np.array(vecs, dtype=np.float32)
+        return np.array(obs, dtype=np.int64), float(reward), bool(done), False, info
 
     # ------------------------------------------------------------------
-    def _compute_reward(self, curr, prev, action_str, host) -> float:
-        """
-        Reward function with explicit repeated-Analyze penalty to prevent
-        reward hacking (agent spamming Analyze on noisy-activity hosts).
-        """
-        if prev is None:
-            return 0.0
-
-        reward = 0.0
-        for h in HOST_NAMES:
-            c_comp = float(curr.get(h, {}).get("Compromised", 0))
-            p_comp = float(prev.get(h, {}).get("Compromised", 0))
-            p_act  = float(prev.get(h, {}).get("Activity",    0))
-
-            # Detected lateral movement before compromise
-            if c_comp == 0 and p_act > 0:
-                reward += 8.0
-
-            # New compromise — missed detection
-            if c_comp == 1 and p_comp == 0:
-                reward -= 10.0
-
-            # False positive: acted on a clean host
-            if host == h and action_str.startswith(("Remove_", "Restore_")):
-                if c_comp == 0:
-                    reward -= 4.0
-
-            # Repeated Analyze on recently-analyzed clean host → reward hacking guard
-            if host == h and action_str.startswith("Analyze_"):
-                if h in self._recently_analyzed and c_comp == 0:
-                    reward -= 2.0
-
-        reward -= 0.5   # per-step efficiency penalty
-        return reward
-
-    # ------------------------------------------------------------------
-    def _action_host(self, action_str: str) -> Optional[str]:
-        for h in HOST_NAMES:
-            if action_str.endswith(h):
-                return h
-        return None
-
-    def _update_recently_analyzed(self, host, action_str):
-        if host and action_str.startswith("Analyze_"):
-            self._recently_analyzed.add(host)
-        # Expire after 5 steps — crude sliding window
-        if self._step_count % 5 == 0:
-            self._recently_analyzed.clear()
-
     def render(self):
         pass
 
     def close(self):
-        if self._env:
-            pass   # CybORG has no explicit close
+        pass
