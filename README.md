@@ -10,7 +10,7 @@ Four detection layers operate across different timescales:
 
 | Layer | Method | Timescale | FPR Budget |
 |---|---|---|---|
-| Innate | Isolation Forest (benchmarked vs VAE) | Per-step | 1% |
+| Innate | Isolation Forest on DoD procurement features (USASpending API) | Per-shipment | 1% |
 | Adaptive | PPO defender on CAGE 2 | Per-episode | 1% |
 | Deception | Signaling game + RL (standalone) | Theoretical | n/a |
 | Long-Dwell | PCA centroid drift detection | 100-episode rolling | 0.1% |
@@ -46,6 +46,11 @@ pip install -e .
 
 # 3. Verify environment
 python scripts/verify_env.py
+
+# 3a. (Layer 1 only) Fetch DoD contract data — takes ~10 minutes
+python scripts/train_innate.py --records 2000
+# Or skip the API fetch if data/layer1_features.csv already exists:
+python scripts/train_innate.py --skip-fetch
 
 # 4. Train all layers (runs in sequence, ~3.5 hours total on GPU)
 python scripts/train_innate.py

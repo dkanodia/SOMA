@@ -1,0 +1,9 @@
+isolation_forest_fpr: 0.02564102564102564
+isolation_forest_tpr: 0.0
+iqr_baseline_fpr: 0.10256410256410256
+iqr_baseline_tpr: 0.2631578947368421
+threshold: 0.6314605224116122
+n_train: 179
+n_val: 39
+n_test: 39
+n_anomalous_labeled: 19

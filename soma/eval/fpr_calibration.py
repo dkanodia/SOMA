@@ -67,6 +67,29 @@ def calibrate_layer2(
     return threshold
 
 
+def calibrate_supply_chain_layer1(
+    detector,
+    X_val_clean: np.ndarray,
+    fpr_target: float = 0.01,
+) -> float:
+    """
+    Calibrate Layer 1 supply chain detector threshold.
+    Wraps detector.calibrate_threshold() for consistency with the
+    existing calibration pipeline used by Layers 2 and 4.
+
+    Parameters
+    ----------
+    detector : InnateSupplyChainDetector
+    X_val_clean : ndarray  Clean validation feature matrix
+    fpr_target : float
+
+    Returns
+    -------
+    float: calibrated threshold
+    """
+    return detector.calibrate_threshold(X_val_clean)
+
+
 def validate_all_fpr(results: dict) -> bool:
     """
     Final check: assert all layers meet their FPR budgets.

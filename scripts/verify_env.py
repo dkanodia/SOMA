@@ -44,8 +44,41 @@ def verify_torch():
         return False
 
 
+def verify_supply_chain():
+    """Verify USASpending API is reachable and supply chain ingest imports work."""
+    try:
+        import requests
+        resp = requests.post(
+            "https://api.usaspending.gov/api/v2/search/spending_by_award/",
+            json={
+                "filters": {
+                    "agencies": [{"type": "funding", "tier": "toptier",
+                                  "name": "Department of Defense"}],
+                    "award_type_codes": ["A"],
+                    "time_period": [{"start_date": "2023-01-01",
+                                     "end_date": "2023-03-01"}],
+                },
+                "fields": ["Award ID", "Award Amount", "Number of Offers Received"],
+                "limit": 1,
+            },
+            timeout=15,
+        )
+        resp.raise_for_status()
+        n = len(resp.json().get("results", []))
+        print(f"USASpending API OK — returned {n} record(s)")
+
+        from soma.envs.supply_chain_ingest import build_feature_vector, PARTS_PSC_CODES
+        from soma.layers.innate import InnateSupplyChainDetector, FEATURE_COLS
+        print(f"Supply chain imports OK — {len(FEATURE_COLS)} features, "
+              f"{len(PARTS_PSC_CODES)} PSC codes")
+        return True
+    except Exception as e:
+        print(f"Supply chain check FAILED: {e}")
+        return False
+
+
 if __name__ == "__main__":
-    results = [verify_torch(), verify_sb3(), verify_cyborg()]
+    results = [verify_torch(), verify_sb3(), verify_cyborg(), verify_supply_chain()]
     if all(results):
         print("\nAll checks passed. Ready to train.")
     else:

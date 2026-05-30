@@ -1,177 +1,85 @@
 """
 scripts/train_innate.py
 ========================
-Train Layer 1 anomaly detectors and choose the best one.
+End-to-end Layer 1 training. Run this first, before train_adaptive.py.
 
-Steps
------
-1. Collect clean episodes from CybORG (no red agent)
-2. Train Isolation Forest and VAE on train split
-3. Calibrate both at 1% FPR on val split
-4. Evaluate TPR at fixed 1% FPR on test split (with red agent)
-5. Save whichever wins — state result in results/fpr_calibration/layer1_benchmark.txt
+Usage:
+    python scripts/train_innate.py
+    python scripts/train_innate.py --records 5000
+    python scripts/train_innate.py --attack-csv data/supplychaincloud.csv
+    python scripts/train_innate.py --skip-fetch   # reuse existing data CSV
 
-Expected runtime: < 30 minutes
+Expected runtime: ~10 minutes (mostly API fetching)
+Output:
+    data/layer1_features.csv               raw feature matrix (11 features)
+    models/innate/isolation_forest.joblib  trained Isolation Forest
+    models/innate/layer1_benchmark.txt     TPR / FPR results
 """
 
-import json
-import numpy as np
-import torch
-import torch.nn as nn
+import argparse
+import sys
 from pathlib import Path
-from tqdm import tqdm
 
-from soma.envs.cyborg_wrapper import CybORGWrapper
-from soma.layers.innate import InnateIsolationForest, InnateVAE
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
-
-CLEAN_EPISODES  = 200
-RED_EPISODES    = 50
-STEPS_PER_EP    = 100
-SPLIT           = (0.7, 0.15, 0.15)   # train / val / test
-FPR_TARGET      = 0.01
-RESULTS_DIR     = Path("results/fpr_calibration")
-MODELS_DIR      = Path("models/innate")
-
-
-def collect_clean_data(n_episodes: int) -> np.ndarray:
-    """Run CybORG with no red agent; collect flat observation vectors."""
-    env = CybORGWrapper(include_red=False)
-    all_obs = []
-    for _ in tqdm(range(n_episodes), desc="Clean episodes"):
-        obs, _ = env.reset()
-        all_obs.append(obs)
-        for _ in range(STEPS_PER_EP - 1):
-            obs, _, done, _, _ = env.step(0)  # action 0 = Monitor
-            all_obs.append(obs)
-            if done:
-                break
-    return np.array(all_obs, dtype=np.float32)
-
-
-def collect_red_data(n_episodes: int):
-    """Run CybORG with B_lineAgent; return (obs_array, step_labels)."""
-    env = CybORGWrapper(include_red=True)
-    all_obs, all_labels = [], []
-    for _ in tqdm(range(n_episodes), desc="Red-agent episodes"):
-        obs, _ = env.reset()
-        all_obs.append(obs)
-        all_labels.append(0)
-        for _ in range(199):
-            obs, _, done, _, info = env.step(0)  # Monitor — blue doesn't interfere
-            all_obs.append(obs)
-            all_labels.append(info.get("red_agent_step", 0))
-            if done:
-                break
-    return np.array(all_obs, dtype=np.float32), np.array(all_labels, dtype=np.int32)
-
-
-def train_vae(vae: InnateVAE, X_tr: np.ndarray, epochs: int = 50) -> InnateVAE:
-    """Train VAE with ELBO loss (reconstruction + KL divergence)."""
-    vae.train()
-    optimizer = torch.optim.Adam(vae.parameters(), lr=1e-3)
-    dataset   = torch.tensor(X_tr, dtype=torch.float32)
-    batch_sz  = 64
-
-    for epoch in range(epochs):
-        idx    = torch.randperm(len(dataset))
-        losses = []
-        for start in range(0, len(dataset), batch_sz):
-            batch = dataset[idx[start:start + batch_sz]]
-            recon, mu, logvar = vae(batch)
-            recon_loss = nn.functional.mse_loss(recon, batch)
-            kl_loss    = -0.5 * torch.mean(1 + logvar - mu.pow(2) - logvar.exp())
-            loss       = recon_loss + kl_loss
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
-            losses.append(loss.item())
-        if (epoch + 1) % 10 == 0:
-            print(f"  VAE epoch {epoch + 1}/{epochs}  loss={np.mean(losses):.4f}")
-
-    vae.eval()
-    return vae
-
-
-def eval_tpr(is_anomalous_fn, obs: np.ndarray, step_labels: np.ndarray) -> float:
-    """TPR at lateral movement phase (steps 4–8) using calibrated threshold."""
-    mask = (step_labels >= 4) & (step_labels <= 8)
-    lateral_obs = obs[mask]
-    if len(lateral_obs) == 0:
-        print("  WARNING: no lateral movement steps found in red data")
-        return 0.0
-    detected = sum(1 for x in lateral_obs if is_anomalous_fn(x))
-    return detected / len(lateral_obs)
+from soma.envs.supply_chain_ingest import build_layer1_dataset
+from soma.layers.innate import train_layer1
 
 
 def main():
-    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    MODELS_DIR.mkdir(parents=True, exist_ok=True)
+    parser = argparse.ArgumentParser(description="Train SOMA Layer 1 innate detector")
+    parser.add_argument("--records",    type=int,   default=2000)
+    parser.add_argument("--attack-csv", type=str,   default=None)
+    parser.add_argument("--skip-fetch", action="store_true")
+    parser.add_argument("--fpr-target", type=float, default=0.01)
+    args = parser.parse_args()
 
-    # --- Data collection ---
-    print("Collecting clean episode data...")
-    X = collect_clean_data(CLEAN_EPISODES)
-    print(f"Clean data shape: {X.shape}")
+    features_csv = "data/layer1_features.csv"
 
-    n     = len(X)
-    n_tr  = int(n * SPLIT[0])
-    n_val = int(n * SPLIT[1])
-    X_tr, X_val, X_te = X[:n_tr], X[n_tr:n_tr + n_val], X[n_tr + n_val:]
-    print(f"Train: {len(X_tr)}  Val: {len(X_val)}  Test: {len(X_te)}")
-
-    # --- Isolation Forest ---
-    print("\nTraining Isolation Forest...")
-    iso = InnateIsolationForest()
-    iso.fit(X_tr)
-    iso.calibrate_threshold(X_val)
-    iso.save(MODELS_DIR / "isolation_forest.joblib")
-    print(f"  IF threshold: {iso.threshold_:.4f}")
-
-    # --- VAE ---
-    print("\nTraining VAE benchmark...")
-    vae = InnateVAE()
-    train_vae(vae, X_tr)
-    vae.calibrate_threshold(X_val, fpr_target=FPR_TARGET)
-    torch.save(vae.state_dict(), MODELS_DIR / "vae.pt")
-    (MODELS_DIR / "vae_threshold.json").write_text(
-        json.dumps({"threshold": vae.threshold_})
-    )
-    print(f"  VAE threshold: {vae.threshold_:.4f}")
-
-    # --- Red-agent evaluation ---
-    print("\nCollecting red-agent data for TPR evaluation...")
-    X_red, red_labels = collect_red_data(RED_EPISODES)
-
-    print("\nEvaluating TPR at lateral movement phase...")
-    iso_tpr = eval_tpr(iso.is_anomalous, X_red, red_labels)
-    vae_tpr = eval_tpr(vae.is_anomalous, X_red, red_labels)
-    print(f"  IF  TPR = {iso_tpr:.3f}")
-    print(f"  VAE TPR = {vae_tpr:.3f}")
-
-    # --- Decision ---
-    winner = "isolation_forest" if iso_tpr >= vae_tpr else "vae"
-    print(f"\nBenchmark result: IF TPR={iso_tpr:.3f}  VAE TPR={vae_tpr:.3f}")
-    print(f"Selected: {winner}")
-
-    benchmark_text = (
-        f"IF TPR={iso_tpr:.3f}  VAE TPR={vae_tpr:.3f}  Selected={winner}\n"
-    )
-    (RESULTS_DIR / "layer1_benchmark.txt").write_text(benchmark_text)
-
-    # Copy winner to canonical path for downstream use
-    if winner == "isolation_forest":
-        import shutil
-        shutil.copy(MODELS_DIR / "isolation_forest.joblib",
-                    MODELS_DIR / "layer1_winner.joblib")
-        (MODELS_DIR / "layer1_winner_type.txt").write_text("isolation_forest\n")
+    if not args.skip_fetch or not Path(features_csv).exists():
+        print("\n── Step 1: Data Ingestion ─────────────────────────────")
+        df = build_layer1_dataset(
+            n_records=args.records,
+            attack_csv=args.attack_csv,
+            save_path=features_csv,
+        )
+        if df.empty:
+            print("ERROR: Failed to build dataset. Exiting.")
+            sys.exit(1)
     else:
-        import shutil
-        shutil.copy(MODELS_DIR / "vae.pt", MODELS_DIR / "layer1_winner.pt")
-        shutil.copy(MODELS_DIR / "vae_threshold.json",
-                    MODELS_DIR / "layer1_winner_threshold.json")
-        (MODELS_DIR / "layer1_winner_type.txt").write_text("vae\n")
+        print(f"\n── Step 1: Skipping fetch, using {features_csv} ──────")
 
-    print(f"\nDone. Check results/fpr_calibration/layer1_benchmark.txt")
+    print("\n── Step 2: Model Training ────────────────────────────────")
+    detector, results = train_layer1(
+        features_csv=features_csv,
+        model_save_path="models/innate/isolation_forest.joblib",
+        fpr_target=args.fpr_target,
+    )
+
+    print("\n── Step 3: Smoke Test ────────────────────────────────────")
+    import numpy as np
+
+    # Normal: full competition, 5 bids, 45-day delivery, established vendor
+    normal_tx = np.array([1.0, 5.0, 0.0, 45.0, 0.0, 365.0, 6.5, 0.0, 1.0, 0.0, 0.0])
+    # Suspicious: sole-source, 1 bid, 3-day delivery, new vendor, cheap price
+    suspicious_tx = np.array([0.3, 1.0, 1.0, 3.0, 1.0, 30.0, 4.2, 2.0, 0.0, 1.0, 1.0])
+
+    n_score = detector.anomaly_score(normal_tx)
+    s_score = detector.anomaly_score(suspicious_tx)
+
+    print(f"  Normal score:     {n_score:.4f} → "
+          f"{'ANOMALOUS ⚠' if detector.is_anomalous(normal_tx) else 'CLEAN ✓'}")
+    print(f"  Suspicious score: {s_score:.4f} → "
+          f"{'ANOMALOUS ⚠' if detector.is_anomalous(suspicious_tx) else 'CLEAN ✓'}")
+
+    print("\n  Top anomaly drivers (suspicious transaction):")
+    for feat, contrib in list(detector.feature_contribution(suspicious_tx).items())[:5]:
+        bar = "█" * max(0, int(contrib * 20))
+        print(f"    {feat:32s}  {contrib:+.4f}  {bar}")
+
+    print(f"\n✓ Layer 1 complete. Threshold={detector.threshold_:.4f} "
+          f"(FPR target {args.fpr_target:.1%})")
+    print("  Next: python scripts/train_adaptive.py")
 
 
 if __name__ == "__main__":
