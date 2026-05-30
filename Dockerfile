@@ -10,6 +10,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY frontend/public/demo_episode.json data/demo_episode.json
 COPY backend/ws_server.py .
 
-EXPOSE 8765
+# Render assigns PORT dynamically; ws_server.py reads it from env
+EXPOSE ${PORT:-8765}
 
 CMD ["python", "ws_server.py"]
