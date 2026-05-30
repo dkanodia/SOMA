@@ -1,0 +1,26 @@
+{
+  "obvious": {
+    "Innate (early)": 1.0,
+    "Tolerance (spread)": 0.7477477477477478,
+    "Memory (sustained)": 1.0,
+    "Antibody (any)": 0.631578947368421,
+    "Fusion (all)": 0.992822966507177,
+    "_n_innate": 111,
+    "_n_tolerance": 111,
+    "_n_memory": 242,
+    "_n_antibody": 418,
+    "_n_fusion": 418
+  },
+  "sophisticated": {
+    "Innate (early)": 0.009009009009009009,
+    "Tolerance (spread)": 0.08108108108108109,
+    "Memory (sustained)": 1.0,
+    "Antibody (any)": 0.284688995215311,
+    "Fusion (all)": 0.9784688995215312,
+    "_n_innate": 111,
+    "_n_tolerance": 111,
+    "_n_memory": 242,
+    "_n_antibody": 418,
+    "_n_fusion": 418
+  }
+}

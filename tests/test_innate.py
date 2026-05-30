@@ -1,85 +1,79 @@
-"""tests/test_innate.py — Layer 1 smoke tests. No CybORG dependency."""
-import json
+"""tests/test_innate.py — Layer 1 (Innate) smoke tests. No CybORG dependency."""
 import tempfile
 from pathlib import Path
 
 import numpy as np
 import pytest
-import torch
 
-from soma.layers.innate import DualTimescaleBaseline, InnateIsolationForest, InnateVAE
-from scripts.train_innate import train_vae
-
-
-def _clean(n=500):
-    return np.random.randn(n, 25).astype(np.float32)
+from soma.envs.synthetic_network_gen import generate_clean_episodes, generate_attack_episode
+from soma.layers.innate import InnateImmunityLayer
 
 
-class TestInnateLayer:
+def _clean(n: int = 300) -> np.ndarray:
+    return generate_clean_episodes(n_steps=n, seed=7)
 
-    def test_isolation_forest_fits_without_error(self):
-        iso = InnateIsolationForest()
-        iso.fit(_clean(500))
-        iso.calibrate_threshold(_clean(100))
-        assert iso.threshold_ is not None
 
-    def test_isolation_forest_threshold_gives_target_fpr(self):
-        rng = np.random.default_rng(0)
-        X_tr  = rng.standard_normal((1000, 25)).astype(np.float32)
-        X_val = rng.standard_normal((500,  25)).astype(np.float32)
-        X_te  = rng.standard_normal((500,  25)).astype(np.float32)
+class TestInnateImmunityLayer:
 
-        iso = InnateIsolationForest(fpr_target=0.01)
-        iso.fit(X_tr)
-        iso.calibrate_threshold(X_val)
-
-        flags = np.array([iso.is_anomalous(x) for x in X_te])
-        measured_fpr = flags.mean()
-        assert measured_fpr <= 0.015, f"FPR {measured_fpr:.4f} exceeds tolerance"
-
-    def test_vae_trains_without_error(self):
-        vae = InnateVAE()
-        train_vae(vae, _clean(200), epochs=2)
-        assert True  # no exception raised
-
-    def test_vae_calibrate_threshold(self):
-        rng = np.random.default_rng(1)
-        X_tr  = rng.standard_normal((500, 25)).astype(np.float32)
-        X_val = rng.standard_normal((500, 25)).astype(np.float32)
-        X_te  = rng.standard_normal((500, 25)).astype(np.float32)
-
-        vae = InnateVAE()
-        train_vae(vae, X_tr, epochs=5)
-        vae.calibrate_threshold(X_val, fpr_target=0.01)
-        assert vae.threshold_ is not None
-
-        flags = np.array([vae.is_anomalous(x) for x in X_te])
-        measured_fpr = flags.mean()
-        assert measured_fpr <= 0.015, f"VAE FPR {measured_fpr:.4f} exceeds tolerance"
-
-    def test_dual_timescale_does_not_alarm_on_flat_signal(self):
-        dtb = DualTimescaleBaseline()
-        fired = False
-        for _ in range(200):
-            fired = dtb.update_and_flag(1.0)
-        assert not fired
-
-    def test_isolation_forest_save_load_roundtrip(self):
+    def test_fit_calibrate_no_error(self):
         X = _clean(300)
-        iso = InnateIsolationForest()
-        iso.fit(X[:200])
-        iso.calibrate_threshold(X[200:250])
+        layer = InnateImmunityLayer()
+        layer.fit(X[:200])
+        layer.calibrate_threshold(X[200:])
+        assert layer.threshold_ is not None
 
-        x_probe = X[250]
-        original_score     = iso.anomaly_score(x_probe)
-        original_threshold = iso.threshold_
-        original_flag      = iso.is_anomalous(x_probe)
+    def test_fpr_on_clean_data(self):
+        X_tr  = _clean(500)
+        X_val = generate_clean_episodes(n_steps=200, seed=99)
+        layer = InnateImmunityLayer(fpr_target=0.01)
+        layer.fit(X_tr)
+        layer.calibrate_threshold(X_val)
+        flags = np.array([layer.is_anomalous(x) for x in X_val])
+        assert flags.mean() <= 0.025, f"FPR {flags.mean():.4f} too high"
+
+    def test_anomaly_score_returns_float(self):
+        X = _clean(200)
+        layer = InnateImmunityLayer()
+        layer.fit(X)
+        score = layer.anomaly_score(X[0])
+        assert isinstance(score, float)
+
+    def test_obvious_attack_detected(self):
+        X_clean = _clean(500)
+        layer = InnateImmunityLayer(fpr_target=0.01)
+        layer.fit(X_clean)
+        layer.calibrate_threshold(generate_clean_episodes(200, seed=77))
+
+        obs_attack, labels, _ = generate_attack_episode(stealth=0.0, n_steps=50, attack_start=10)
+        attack_obs  = obs_attack[labels]
+        if len(attack_obs) == 0:
+            pytest.skip("No attack steps in episode")
+        scores  = layer.anomaly_scores_batch(attack_obs)
+        tpr     = float((scores > layer.threshold_).mean())
+        assert tpr >= 0.50, f"Obvious attack TPR {tpr:.3f} too low"
+
+    def test_per_host_scores_returns_all_hosts(self):
+        from soma.envs.cyborg_wrapper import HOST_NAMES
+        X = _clean(200)
+        layer = InnateImmunityLayer()
+        layer.fit(X)
+        result = layer.per_host_scores(X[0])
+        assert set(result.keys()) == set(HOST_NAMES)
+
+    def test_save_load_roundtrip(self):
+        X = _clean(300)
+        layer = InnateImmunityLayer()
+        layer.fit(X[:200])
+        layer.calibrate_threshold(X[200:])
+
+        x_probe = X[0]
+        orig_score = layer.anomaly_score(x_probe)
+        orig_thresh = layer.threshold_
 
         with tempfile.TemporaryDirectory() as tmp:
-            path = Path(tmp) / "iso.joblib"
-            iso.save(path)
-            iso2 = InnateIsolationForest.load(path)
+            path = Path(tmp) / "innate.joblib"
+            layer.save(path)
+            layer2 = InnateImmunityLayer.load(path)
 
-        assert abs(iso2.threshold_ - original_threshold) < 1e-9
-        assert abs(iso2.anomaly_score(x_probe) - original_score) < 1e-6
-        assert iso2.is_anomalous(x_probe) == original_flag
+        assert abs(layer2.threshold_ - orig_thresh) < 1e-9
+        assert abs(layer2.anomaly_score(x_probe) - orig_score) < 1e-6

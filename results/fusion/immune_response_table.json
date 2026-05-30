@@ -1,0 +1,30 @@
+{
+  "layer_table": {
+    "innate": {
+      "tpr": 0.45544554455445546,
+      "fpr": 0.009523809523809525
+    },
+    "adaptive": {
+      "tpr": 0.4752475247524752,
+      "fpr": 0.004761904761904762
+    },
+    "tolerance": {
+      "tpr": 0.18811881188118812,
+      "fpr": 0.1761904761904762
+    },
+    "memory": {
+      "tpr": 0.6435643564356436,
+      "fpr": 0.0
+    },
+    "antibody": {
+      "tpr": 0.6666666666666666,
+      "fpr": 0.0
+    }
+  },
+  "fused_tpr": 0.8976897689768977,
+  "fused_fpr": 0.35,
+  "best_single_layer_tpr": 0.6666666666666666,
+  "best_single_layer_fpr": 0.0,
+  "ref_layer": "antibody",
+  "fpr_reduction_factor": 0.0
+}
