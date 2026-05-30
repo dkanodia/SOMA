@@ -93,11 +93,17 @@ def run_episode_steps(innate, ppo, detector, n_steps: int = 200):
     Generator — yields one payload dict per step.
     Caller decides whether to send over WebSocket or collect for JSON.
     """
-    from soma.envs.cyborg_wrapper import CybORGWrapper, HOST_NAMES
-    from soma.layers.deception   import heuristic_honeypot_trigger
+    import math
+    from soma.envs.cyborg_wrapper          import CybORGWrapper, HOST_NAMES
+    from soma.layers.deception             import heuristic_honeypot_trigger
+    from soma.fusion.network_correlator    import NetworkImmuneCorrelator
+    from soma.fusion.response_orchestrator import ResponseOrchestrator
 
     env    = CybORGWrapper(include_red=True)
     obs, _ = env.reset()
+
+    correlator   = NetworkImmuneCorrelator()
+    orchestrator = ResponseOrchestrator()
 
     for step in range(n_steps):
         action, _                  = ppo.predict(obs, deterministic=True)
@@ -126,6 +132,35 @@ def run_episode_steps(innate, ppo, detector, n_steps: int = 200):
                 drift_alarms[h] = False   # not yet calibrated — normal for first episode
             traj = detector.centroid_trajectory(h)
             centroid_pos[h] = traj[-1].tolist() if traj else None
+
+        # Fusion — correlate all layer signals into ranked Incidents
+        memory_scores = {
+            h: math.sqrt(centroid_pos[h][0] ** 2 + centroid_pos[h][1] ** 2)
+            if centroid_pos[h] else 0.0
+            for h in HOST_NAMES
+        }
+        incidents = correlator.update_step(
+            obs=obs,
+            innate_score=max(anomaly_scores.values()) if anomaly_scores else 0.0,
+            innate_threshold=float(innate.threshold_),
+            memory_scores=memory_scores,
+            memory_threshold=1.0,
+            tolerance_suppressed=[],
+            tolerance_breached=[],
+            learned_attack_conf=0.0,
+            learned_attack_type="unknown",
+            innate_host_scores=anomaly_scores,
+        )
+        top = correlator.top_threat()
+
+        # Response orchestrator — rule-based recommendation (additive to PPO)
+        layer_flags = {
+            "innate":   bool(innate_fired),
+            "honeypot": any(honeypot_flags.values()),
+            "drift":    any(drift_alarms.values()),
+            "learned":  False,
+        }
+        decision = orchestrator.recommend(incidents, layer_flags)
 
         payload = {
             "step":            step,
@@ -156,6 +191,31 @@ def run_episode_steps(innate, ppo, detector, n_steps: int = 200):
                     "processes":   float(v[3]),
                 }
                 for h, v in obs_per_host.items()
+            },
+
+            # Fusion incidents
+            "incidents": [
+                {
+                    "host":         inc.host,
+                    "score":        inc.score,
+                    "layers_fired": inc.layers_fired,
+                    "confidence":   inc.confidence,
+                    "explanation":  inc.explanation,
+                    "attack_type":  inc.attack_type,
+                }
+                for inc in incidents
+            ],
+            "top_threat": {"host": top[0], "score": top[1]} if top else None,
+            "is_attack":  bool(innate_fired) or any(honeypot_flags.values()),
+
+            # Orchestrator recommendation
+            "orchestrator": {
+                "recommended_action": decision.recommended_action,
+                "action_name":        decision.action_name,
+                "host":               decision.host,
+                "confidence":         decision.confidence,
+                "reason":             decision.reason,
+                "incident_score":     decision.incident_score,
             },
         }
 
