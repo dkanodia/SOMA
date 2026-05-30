@@ -1,17 +1,17 @@
 {
   "obvious": {
-    "innate_tpr": 0.875609756097561,
+    "innate_tpr": 0.9219512195121953,
     "memory_tpr": 0.9268292682926831,
     "fused_tpr": 0.9268292682926831,
-    "innate_fpr": 0.02222222222222222,
+    "innate_fpr": 0.0,
     "fused_fpr": 0.0,
     "first_detect": 2.0
   },
   "sophisticated": {
-    "innate_tpr": 0.18536585365853658,
+    "innate_tpr": 0.3317073170731707,
     "memory_tpr": 0.9268292682926831,
     "fused_tpr": 0.9268292682926831,
-    "innate_fpr": 0.02222222222222222,
+    "innate_fpr": 0.0,
     "fused_fpr": 0.0,
     "first_detect": 2.0
   }

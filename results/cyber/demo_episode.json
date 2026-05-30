@@ -13,7 +13,7 @@
       "Enterprise1",
       "Op_Server0"
     ],
-    "innate_threshold": 0.5043374839644554,
+    "innate_threshold": 0.4906819705880465,
     "memory_threshold": 1.6392835080623627
   },
   "steps": [
@@ -98,7 +98,7 @@
       },
       "is_attack": false,
       "compromised_hosts": [],
-      "anomaly_score": 0.4112498057322765,
+      "anomaly_score": 0.4109303868724611,
       "innate_fired": false,
       "host_innate_scores": {
         "User0": 0.0,
@@ -118,8 +118,8 @@
       },
       "memory_fired": false,
       "tolerance_suppressed": [
-        "Enterprise1",
         "User1",
+        "Enterprise1",
         "Enterprise0"
       ],
       "tolerance_breached": [],
@@ -212,7 +212,7 @@
       },
       "is_attack": false,
       "compromised_hosts": [],
-      "anomaly_score": 0.391242598737161,
+      "anomaly_score": 0.3946025776025346,
       "innate_fired": false,
       "host_innate_scores": {
         "User0": 0.0,
@@ -232,10 +232,10 @@
       },
       "memory_fired": false,
       "tolerance_suppressed": [
-        "Enterprise1",
         "User1",
-        "Enterprise0",
-        "Op_Server0"
+        "Op_Server0",
+        "Enterprise1",
+        "Enterprise0"
       ],
       "tolerance_breached": [],
       "learned_attack_conf": 0.0,
@@ -327,7 +327,7 @@
       },
       "is_attack": false,
       "compromised_hosts": [],
-      "anomaly_score": 0.4238662878651766,
+      "anomaly_score": 0.4329096792418619,
       "innate_fired": false,
       "host_innate_scores": {
         "User0": 0.0,
@@ -348,12 +348,12 @@
       "memory_fired": false,
       "tolerance_suppressed": [
         "User0",
-        "User2",
-        "Op_Server0"
+        "Op_Server0",
+        "User2"
       ],
       "tolerance_breached": [],
-      "learned_attack_conf": 0.2819621215195699,
-      "learned_attack_type": "sophisticated",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [],
       "top_threat": {
         "host": "User0",
@@ -441,7 +441,7 @@
       },
       "is_attack": false,
       "compromised_hosts": [],
-      "anomaly_score": 0.4523144661117032,
+      "anomaly_score": 0.44957123963158807,
       "innate_fired": false,
       "host_innate_scores": {
         "User0": 0.0,
@@ -462,12 +462,12 @@
       "memory_fired": false,
       "tolerance_suppressed": [
         "User1",
-        "User2",
-        "Op_Server0"
+        "Op_Server0",
+        "User2"
       ],
       "tolerance_breached": [],
-      "learned_attack_conf": 0.2347941419302646,
-      "learned_attack_type": "sophisticated",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [],
       "top_threat": {
         "host": "User0",
@@ -555,7 +555,7 @@
       },
       "is_attack": false,
       "compromised_hosts": [],
-      "anomaly_score": 0.43764707023135174,
+      "anomaly_score": 0.4207966725979721,
       "innate_fired": false,
       "host_innate_scores": {
         "User0": 0.0,
@@ -575,16 +575,16 @@
       },
       "memory_fired": false,
       "tolerance_suppressed": [
-        "Enterprise1",
         "User1",
-        "Enterprise0",
-        "Op_Server0"
+        "Op_Server0",
+        "Enterprise1",
+        "Enterprise0"
       ],
       "tolerance_breached": [
         "User2"
       ],
-      "learned_attack_conf": 0.3945502919059162,
-      "learned_attack_type": "sophisticated",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [],
       "top_threat": {
         "host": "User0",
@@ -672,7 +672,7 @@
       },
       "is_attack": false,
       "compromised_hosts": [],
-      "anomaly_score": 0.44491479821206664,
+      "anomaly_score": 0.42799657232078764,
       "innate_fired": false,
       "host_innate_scores": {
         "User0": 0.0,
@@ -692,41 +692,16 @@
       },
       "memory_fired": false,
       "tolerance_suppressed": [
+        "Op_Server0",
         "Enterprise1",
-        "Enterprise0",
-        "Op_Server0"
+        "Enterprise0"
       ],
       "tolerance_breached": [
         "User2"
       ],
-      "learned_attack_conf": 0.5928985682341976,
-      "learned_attack_type": "sophisticated",
-      "incidents": [
-        {
-          "host": "User0",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host User0: [none] firing. Accumulated score 0.00. Matches known attack: 'sophisticated'.",
-          "confidence": "LOW",
-          "attack_type": "sophisticated"
-        },
-        {
-          "host": "User1",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host User1: [none] firing. Accumulated score 0.00. Matches known attack: 'sophisticated'.",
-          "confidence": "LOW",
-          "attack_type": "sophisticated"
-        },
-        {
-          "host": "User2",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host User2: [none] firing. Accumulated score 0.00. Matches known attack: 'sophisticated'.",
-          "confidence": "LOW",
-          "attack_type": "sophisticated"
-        }
-      ],
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
+      "incidents": [],
       "top_threat": {
         "host": "User0",
         "score": 0.0
@@ -813,7 +788,7 @@
       },
       "is_attack": false,
       "compromised_hosts": [],
-      "anomaly_score": 0.41404014038108383,
+      "anomaly_score": 0.4098896907071327,
       "innate_fired": false,
       "host_innate_scores": {
         "User0": 0.0,
@@ -833,14 +808,14 @@
       },
       "memory_fired": false,
       "tolerance_suppressed": [
-        "User0",
         "User1",
-        "User2",
-        "Op_Server0"
+        "User0",
+        "Op_Server0",
+        "User2"
       ],
       "tolerance_breached": [],
-      "learned_attack_conf": 0.4470487761927716,
-      "learned_attack_type": "sophisticated",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [],
       "top_threat": {
         "host": "User0",
@@ -928,7 +903,7 @@
       },
       "is_attack": false,
       "compromised_hosts": [],
-      "anomaly_score": 0.47501395620350145,
+      "anomaly_score": 0.46623662897980916,
       "innate_fired": false,
       "host_innate_scores": {
         "User0": 0.0,
@@ -948,39 +923,14 @@
       },
       "memory_fired": false,
       "tolerance_suppressed": [
+        "Op_Server0",
         "Enterprise1",
-        "Enterprise0",
-        "Op_Server0"
+        "Enterprise0"
       ],
       "tolerance_breached": [],
-      "learned_attack_conf": 0.5150215450841051,
-      "learned_attack_type": "sophisticated",
-      "incidents": [
-        {
-          "host": "User0",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host User0: [none] firing. Accumulated score 0.00. Matches known attack: 'sophisticated'.",
-          "confidence": "LOW",
-          "attack_type": "sophisticated"
-        },
-        {
-          "host": "User1",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host User1: [none] firing. Accumulated score 0.00. Matches known attack: 'sophisticated'.",
-          "confidence": "LOW",
-          "attack_type": "sophisticated"
-        },
-        {
-          "host": "User2",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host User2: [none] firing. Accumulated score 0.00. Matches known attack: 'sophisticated'.",
-          "confidence": "LOW",
-          "attack_type": "sophisticated"
-        }
-      ],
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
+      "incidents": [],
       "top_threat": {
         "host": "User0",
         "score": 0.0
@@ -1067,7 +1017,7 @@
       },
       "is_attack": false,
       "compromised_hosts": [],
-      "anomaly_score": 0.450480038723136,
+      "anomaly_score": 0.4395419461407882,
       "innate_fired": false,
       "host_innate_scores": {
         "User0": 0.0,
@@ -1091,42 +1041,9 @@
         "Enterprise0"
       ],
       "tolerance_breached": [],
-      "learned_attack_conf": 0.6509494068394772,
-      "learned_attack_type": "sophisticated",
-      "incidents": [
-        {
-          "host": "User0",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host User0: [none] firing. Accumulated score 0.00. Matches known attack: 'sophisticated'.",
-          "confidence": "LOW",
-          "attack_type": "sophisticated"
-        },
-        {
-          "host": "User2",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host User2: [none] firing. Accumulated score 0.00. Matches known attack: 'sophisticated'.",
-          "confidence": "LOW",
-          "attack_type": "sophisticated"
-        },
-        {
-          "host": "Enterprise1",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host Enterprise1: [none] firing. Accumulated score 0.00. Matches known attack: 'sophisticated'.",
-          "confidence": "LOW",
-          "attack_type": "sophisticated"
-        },
-        {
-          "host": "Op_Server0",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host Op_Server0: [none] firing. Accumulated score 0.00. Matches known attack: 'sophisticated'.",
-          "confidence": "LOW",
-          "attack_type": "sophisticated"
-        }
-      ],
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
+      "incidents": [],
       "top_threat": {
         "host": "User0",
         "score": 0.0
@@ -1215,7 +1132,7 @@
       "compromised_hosts": [
         "User0"
       ],
-      "anomaly_score": 0.4684512416992976,
+      "anomaly_score": 0.4726895511514517,
       "innate_fired": false,
       "host_innate_scores": {
         "User0": 0.0,
@@ -1242,42 +1159,9 @@
         "User0",
         "User2"
       ],
-      "learned_attack_conf": 0.8941818563038495,
-      "learned_attack_type": "sophisticated",
-      "incidents": [
-        {
-          "host": "User0",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host User0: [none] firing. Accumulated score 0.00. Matches known attack: 'sophisticated'.",
-          "confidence": "LOW",
-          "attack_type": "sophisticated"
-        },
-        {
-          "host": "User2",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host User2: [none] firing. Accumulated score 0.00. Matches known attack: 'sophisticated'.",
-          "confidence": "LOW",
-          "attack_type": "sophisticated"
-        },
-        {
-          "host": "Enterprise0",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host Enterprise0: [none] firing. Accumulated score 0.00. Matches known attack: 'sophisticated'.",
-          "confidence": "LOW",
-          "attack_type": "sophisticated"
-        },
-        {
-          "host": "Enterprise1",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host Enterprise1: [none] firing. Accumulated score 0.00. Matches known attack: 'sophisticated'.",
-          "confidence": "LOW",
-          "attack_type": "sophisticated"
-        }
-      ],
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
+      "incidents": [],
       "top_threat": {
         "host": "User0",
         "score": 0.0
@@ -1366,7 +1250,7 @@
       "compromised_hosts": [
         "User0"
       ],
-      "anomaly_score": 0.4491027868461306,
+      "anomaly_score": 0.47006223159442934,
       "innate_fired": false,
       "host_innate_scores": {
         "User0": 0.0,
@@ -1386,41 +1270,16 @@
       },
       "memory_fired": false,
       "tolerance_suppressed": [
-        "Enterprise1",
         "User1",
-        "Op_Server0"
+        "Op_Server0",
+        "Enterprise1"
       ],
       "tolerance_breached": [
         "User0"
       ],
-      "learned_attack_conf": 0.9769563978595537,
-      "learned_attack_type": "sophisticated",
-      "incidents": [
-        {
-          "host": "User0",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host User0: [none] firing. Accumulated score 0.00. Matches known attack: 'sophisticated'.",
-          "confidence": "LOW",
-          "attack_type": "sophisticated"
-        },
-        {
-          "host": "User2",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host User2: [none] firing. Accumulated score 0.00. Matches known attack: 'sophisticated'.",
-          "confidence": "LOW",
-          "attack_type": "sophisticated"
-        },
-        {
-          "host": "Enterprise0",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host Enterprise0: [none] firing. Accumulated score 0.00. Matches known attack: 'sophisticated'.",
-          "confidence": "LOW",
-          "attack_type": "sophisticated"
-        }
-      ],
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
+      "incidents": [],
       "top_threat": {
         "host": "User0",
         "score": 0.0
@@ -1509,7 +1368,7 @@
       "compromised_hosts": [
         "User0"
       ],
-      "anomaly_score": 0.479821266085873,
+      "anomaly_score": 0.45991133025825137,
       "innate_fired": false,
       "host_innate_scores": {
         "User0": 0.0,
@@ -1536,42 +1395,9 @@
         "User0",
         "Enterprise0"
       ],
-      "learned_attack_conf": 0.9915684580802917,
-      "learned_attack_type": "sophisticated",
-      "incidents": [
-        {
-          "host": "User0",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host User0: [none] firing. Accumulated score 0.00. Matches known attack: 'sophisticated'.",
-          "confidence": "LOW",
-          "attack_type": "sophisticated"
-        },
-        {
-          "host": "User2",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host User2: [none] firing. Accumulated score 0.00. Matches known attack: 'sophisticated'.",
-          "confidence": "LOW",
-          "attack_type": "sophisticated"
-        },
-        {
-          "host": "Enterprise0",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host Enterprise0: [none] firing. Accumulated score 0.00. Matches known attack: 'sophisticated'.",
-          "confidence": "LOW",
-          "attack_type": "sophisticated"
-        },
-        {
-          "host": "Enterprise1",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host Enterprise1: [none] firing. Accumulated score 0.00. Matches known attack: 'sophisticated'.",
-          "confidence": "LOW",
-          "attack_type": "sophisticated"
-        }
-      ],
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
+      "incidents": [],
       "top_threat": {
         "host": "User0",
         "score": 0.0
@@ -1661,7 +1487,7 @@
         "User0",
         "Enterprise0"
       ],
-      "anomaly_score": 0.493721408653615,
+      "anomaly_score": 0.4814792938020961,
       "innate_fired": false,
       "host_innate_scores": {
         "User0": 0.0,
@@ -1688,54 +1514,43 @@
         "User0",
         "Enterprise0"
       ],
-      "learned_attack_conf": 0.9923681139945983,
-      "learned_attack_type": "sophisticated",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 25.738542203565018,
+          "score": 7.763248369771388,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 25.74. Matches known attack: 'sophisticated'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 7.76. ",
           "confidence": "HIGH",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 25.738542203565018,
+          "score": 7.763248369771388,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 25.74. Matches known attack: 'sophisticated'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 7.76. ",
           "confidence": "HIGH",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         },
         {
           "host": "User2",
-          "score": 18.384673002546442,
+          "score": 5.545177406979563,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User2: [Memory + Learned Attack] firing. Accumulated score 18.38. Matches known attack: 'sophisticated'.",
+          "explanation": "Host User2: [Memory] firing. Accumulated score 5.55. ",
           "confidence": "HIGH",
-          "attack_type": "sophisticated"
-        },
-        {
-          "host": "Enterprise1",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host Enterprise1: [none] firing. Accumulated score 0.00. Matches known attack: 'sophisticated'.",
-          "confidence": "LOW",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 25.738542203565018
+        "score": 7.763248369771388
       }
     },
     {
@@ -1822,7 +1637,7 @@
         "User0",
         "Enterprise0"
       ],
-      "anomaly_score": 0.49055804595164537,
+      "anomaly_score": 0.48234355381993044,
       "innate_fired": false,
       "host_innate_scores": {
         "User0": 0.0,
@@ -1848,62 +1663,43 @@
         "User0",
         "Enterprise0"
       ],
-      "learned_attack_conf": 0.9955796122550964,
-      "learned_attack_type": "sophisticated",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 46.32937596641703,
+          "score": 13.973847065588497,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 46.33. Matches known attack: 'sophisticated'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 13.97. ",
           "confidence": "HIGH",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 46.32937596641703,
+          "score": 13.973847065588497,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 46.33. Matches known attack: 'sophisticated'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 13.97. ",
           "confidence": "HIGH",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         },
         {
           "host": "User2",
-          "score": 33.0924114045836,
+          "score": 9.981319332563213,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User2: [Memory + Learned Attack] firing. Accumulated score 33.09. Matches known attack: 'sophisticated'.",
+          "explanation": "Host User2: [Memory] firing. Accumulated score 9.98. ",
           "confidence": "HIGH",
-          "attack_type": "sophisticated"
-        },
-        {
-          "host": "User1",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host User1: [none] firing. Accumulated score 0.00. Matches known attack: 'sophisticated'.",
-          "confidence": "LOW",
-          "attack_type": "sophisticated"
-        },
-        {
-          "host": "Op_Server0",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host Op_Server0: [none] firing. Accumulated score 0.00. Matches known attack: 'sophisticated'.",
-          "confidence": "LOW",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 46.32937596641703
+        "score": 13.973847065588497
       }
     },
     {
@@ -1990,7 +1786,7 @@
         "User0",
         "Enterprise0"
       ],
-      "anomaly_score": 0.5151267596350874,
+      "anomaly_score": 0.5210820394862647,
       "innate_fired": true,
       "host_innate_scores": {
         "User0": 0.0,
@@ -2010,58 +1806,48 @@
       },
       "memory_fired": true,
       "tolerance_suppressed": [
-        "Enterprise1",
-        "User1"
+        "User1",
+        "Enterprise1"
       ],
       "tolerance_breached": [
         "User0",
         "Enterprise0"
       ],
-      "learned_attack_conf": 0.9959422469139099,
-      "learned_attack_type": "sophisticated",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 62.802042976698644,
+          "score": 18.942326022242185,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 62.80. Matches known attack: 'sophisticated'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 18.94. ",
           "confidence": "HIGH",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 62.802042976698644,
+          "score": 18.942326022242185,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 62.80. Matches known attack: 'sophisticated'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 18.94. ",
           "confidence": "HIGH",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         },
         {
           "host": "User2",
-          "score": 26.47392912366688,
+          "score": 7.9850554660505715,
           "layers_fired": [],
-          "explanation": "Host User2: [none] firing. Accumulated score 26.47. Matches known attack: 'sophisticated'.",
+          "explanation": "Host User2: [none] firing. Accumulated score 7.99. ",
           "confidence": "HIGH",
-          "attack_type": "sophisticated"
-        },
-        {
-          "host": "Op_Server0",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host Op_Server0: [none] firing. Accumulated score 0.00. Matches known attack: 'sophisticated'.",
-          "confidence": "LOW",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 62.802042976698644
+        "score": 18.942326022242185
       }
     },
     {
@@ -2148,7 +1934,7 @@
         "User0",
         "Enterprise0"
       ],
-      "anomaly_score": 0.5057131957479962,
+      "anomaly_score": 0.4971714919621992,
       "innate_fired": true,
       "host_innate_scores": {
         "User0": 0.0,
@@ -2175,51 +1961,41 @@
         "User0",
         "Enterprise0"
       ],
-      "learned_attack_conf": 0.9964197874069214,
-      "learned_attack_type": "sophisticated",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 75.98017658492394,
+          "score": 22.91710918756514,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 75.98. Matches known attack: 'sophisticated'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 22.92. ",
           "confidence": "HIGH",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 75.98017658492394,
+          "score": 22.91710918756514,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 75.98. Matches known attack: 'sophisticated'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 22.92. ",
           "confidence": "HIGH",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         },
         {
           "host": "User2",
-          "score": 21.179143298933507,
+          "score": 6.388044372840458,
           "layers_fired": [],
-          "explanation": "Host User2: [none] firing. Accumulated score 21.18. Matches known attack: 'sophisticated'.",
+          "explanation": "Host User2: [none] firing. Accumulated score 6.39. ",
           "confidence": "HIGH",
-          "attack_type": "sophisticated"
-        },
-        {
-          "host": "Enterprise1",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host Enterprise1: [none] firing. Accumulated score 0.00. Matches known attack: 'sophisticated'.",
-          "confidence": "LOW",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 75.98017658492394
+        "score": 22.91710918756514
       }
     },
     {
@@ -2306,7 +2082,7 @@
         "User0",
         "Enterprise0"
       ],
-      "anomaly_score": 0.5199376666248571,
+      "anomaly_score": 0.5086043215199568,
       "innate_fired": true,
       "host_innate_scores": {
         "User0": 0.0,
@@ -2326,58 +2102,48 @@
       },
       "memory_fired": true,
       "tolerance_suppressed": [
-        "Enterprise1",
-        "User1"
+        "User1",
+        "Enterprise1"
       ],
       "tolerance_breached": [
         "User0",
         "Enterprise0"
       ],
-      "learned_attack_conf": 0.995796549320221,
-      "learned_attack_type": "sophisticated",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 86.52268347150417,
+          "score": 26.0969357198235,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 86.52. Matches known attack: 'sophisticated'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 26.10. ",
           "confidence": "HIGH",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 86.52268347150417,
+          "score": 26.0969357198235,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 86.52. Matches known attack: 'sophisticated'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 26.10. ",
           "confidence": "HIGH",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         },
         {
           "host": "User2",
-          "score": 16.943314639146806,
+          "score": 5.110435498272366,
           "layers_fired": [],
-          "explanation": "Host User2: [none] firing. Accumulated score 16.94. Matches known attack: 'sophisticated'.",
+          "explanation": "Host User2: [none] firing. Accumulated score 5.11. ",
           "confidence": "HIGH",
-          "attack_type": "sophisticated"
-        },
-        {
-          "host": "Op_Server0",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host Op_Server0: [none] firing. Accumulated score 0.00. Matches known attack: 'sophisticated'.",
-          "confidence": "LOW",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 86.52268347150417
+        "score": 26.0969357198235
       }
     },
     {
@@ -2465,7 +2231,7 @@
         "Enterprise0",
         "Enterprise1"
       ],
-      "anomaly_score": 0.530920659686875,
+      "anomaly_score": 0.5113892650123961,
       "innate_fired": true,
       "host_innate_scores": {
         "User0": 0.0,
@@ -2494,54 +2260,51 @@
         "User2",
         "Enterprise0"
       ],
-      "learned_attack_conf": 0.9931722044944763,
-      "learned_attack_type": "sophisticated",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 94.95668898076835,
+          "score": 28.640796945630186,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 94.96. Matches known attack: 'sophisticated'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 28.64. ",
           "confidence": "HIGH",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 94.95668898076835,
+          "score": 28.640796945630186,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 94.96. Matches known attack: 'sophisticated'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 28.64. ",
           "confidence": "HIGH",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise1",
-          "score": 25.738542203565018,
+          "score": 7.763248369771388,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise1: [Memory + Learned Attack] firing. Accumulated score 25.74. Matches known attack: 'sophisticated'.",
+          "explanation": "Host Enterprise1: [Memory] firing. Accumulated score 7.76. ",
           "confidence": "HIGH",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         },
         {
           "host": "User2",
-          "score": 13.554651711317446,
+          "score": 4.088348398617893,
           "layers_fired": [],
-          "explanation": "Host User2: [none] firing. Accumulated score 13.55. Matches known attack: 'sophisticated'.",
+          "explanation": "Host User2: [none] firing. Accumulated score 4.09. ",
           "confidence": "HIGH",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 94.95668898076835
+        "score": 28.640796945630186
       }
     },
     {
@@ -2629,7 +2392,7 @@
         "Enterprise0",
         "Enterprise1"
       ],
-      "anomaly_score": 0.5593299658716336,
+      "anomaly_score": 0.5524378086319841,
       "innate_fired": true,
       "host_innate_scores": {
         "User0": 0.0,
@@ -2656,62 +2419,51 @@
         "Enterprise1",
         "Enterprise0"
       ],
-      "learned_attack_conf": 0.9943561673164367,
-      "learned_attack_type": "sophisticated",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 101.7038933881797,
+          "score": 30.67588592627554,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 101.70. Matches known attack: 'sophisticated'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 30.68. ",
           "confidence": "HIGH",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 101.7038933881797,
+          "score": 30.67588592627554,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 101.70. Matches known attack: 'sophisticated'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 30.68. ",
           "confidence": "HIGH",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise1",
-          "score": 46.32937596641703,
+          "score": 13.973847065588497,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise1: [Memory + Learned Attack] firing. Accumulated score 46.33. Matches known attack: 'sophisticated'.",
+          "explanation": "Host Enterprise1: [Memory] firing. Accumulated score 13.97. ",
           "confidence": "HIGH",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         },
         {
           "host": "User2",
-          "score": 10.843721369053958,
+          "score": 3.270678718894315,
           "layers_fired": [],
-          "explanation": "Host User2: [none] firing. Accumulated score 10.84. Matches known attack: 'sophisticated'.",
-          "confidence": "HIGH",
-          "attack_type": "sophisticated"
-        },
-        {
-          "host": "User1",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host User1: [none] firing. Accumulated score 0.00. Matches known attack: 'sophisticated'.",
-          "confidence": "LOW",
-          "attack_type": "sophisticated"
+          "explanation": "Host User2: [none] firing. Accumulated score 3.27. ",
+          "confidence": "MEDIUM",
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 101.7038933881797
+        "score": 30.67588592627554
       }
     },
     {
@@ -2799,7 +2551,7 @@
         "Enterprise0",
         "Enterprise1"
       ],
-      "anomaly_score": 0.5706417987846475,
+      "anomaly_score": 0.5429195834148614,
       "innate_fired": true,
       "host_innate_scores": {
         "User0": 0.0,
@@ -2826,62 +2578,43 @@
         "Enterprise1",
         "Enterprise0"
       ],
-      "learned_attack_conf": 0.9976457715034485,
-      "learned_attack_type": "sophisticated",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 107.10165691410877,
+          "score": 32.30395711079182,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 107.10. Matches known attack: 'sophisticated'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 32.30. ",
           "confidence": "HIGH",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 107.10165691410877,
+          "score": 32.30395711079182,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 107.10. Matches known attack: 'sophisticated'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 32.30. ",
           "confidence": "HIGH",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise1",
-          "score": 62.802042976698644,
+          "score": 18.942326022242185,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise1: [Memory + Learned Attack] firing. Accumulated score 62.80. Matches known attack: 'sophisticated'.",
+          "explanation": "Host Enterprise1: [Memory] firing. Accumulated score 18.94. ",
           "confidence": "HIGH",
-          "attack_type": "sophisticated"
-        },
-        {
-          "host": "User1",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host User1: [none] firing. Accumulated score 0.00. Matches known attack: 'sophisticated'.",
-          "confidence": "LOW",
-          "attack_type": "sophisticated"
-        },
-        {
-          "host": "Op_Server0",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host Op_Server0: [none] firing. Accumulated score 0.00. Matches known attack: 'sophisticated'.",
-          "confidence": "LOW",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 107.10165691410877
+        "score": 32.30395711079182
       }
     },
     {
@@ -2969,14 +2702,14 @@
         "Enterprise0",
         "Enterprise1"
       ],
-      "anomaly_score": 0.5506212015749178,
+      "anomaly_score": 0.5182564709202274,
       "innate_fired": true,
       "host_innate_scores": {
         "User0": 0.0,
         "User1": 0.0,
         "User2": 0.0,
         "Enterprise0": 0.0,
-        "Enterprise1": 0.0009286100039124223,
+        "Enterprise1": 0.0,
         "Op_Server0": 0.0
       },
       "drift_scores": {
@@ -2998,54 +2731,51 @@
         "User2",
         "Enterprise0"
       ],
-      "learned_attack_conf": 0.9946182012557984,
-      "learned_attack_type": "sophisticated",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 111.41986773485205,
+          "score": 33.606414058404845,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 111.42. Matches known attack: 'sophisticated'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 33.61. ",
           "confidence": "HIGH",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 111.41986773485205,
+          "score": 33.606414058404845,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 111.42. Matches known attack: 'sophisticated'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 33.61. ",
           "confidence": "HIGH",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise1",
-          "score": 75.98017658492394,
+          "score": 22.91710918756514,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise1: [Memory + Learned Attack] firing. Accumulated score 75.98. Matches known attack: 'sophisticated'.",
+          "explanation": "Host Enterprise1: [Memory] firing. Accumulated score 22.92. ",
           "confidence": "HIGH",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         },
         {
           "host": "User2",
-          "score": 6.939981676194534,
+          "score": 2.093234380092362,
           "layers_fired": [],
-          "explanation": "Host User2: [none] firing. Accumulated score 6.94. Matches known attack: 'sophisticated'.",
-          "confidence": "HIGH",
-          "attack_type": "sophisticated"
+          "explanation": "Host User2: [none] firing. Accumulated score 2.09. ",
+          "confidence": "MEDIUM",
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 111.41986773485205
+        "score": 33.606414058404845
       }
     },
     {
@@ -3134,7 +2864,7 @@
         "Enterprise1",
         "Op_Server0"
       ],
-      "anomaly_score": 0.6144683955211034,
+      "anomaly_score": 0.6115362834298176,
       "innate_fired": true,
       "host_innate_scores": {
         "User0": 0.0,
@@ -3156,77 +2886,65 @@
       "tolerance_suppressed": [],
       "tolerance_breached": [
         "User0",
+        "Op_Server0",
         "Enterprise1",
-        "Enterprise0",
-        "Op_Server0"
+        "Enterprise0"
       ],
-      "learned_attack_conf": 0.9857256412506104,
-      "learned_attack_type": "sophisticated",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 114.87443639144666,
+          "score": 34.64837961649526,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 114.87. Matches known attack: 'sophisticated'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 34.65. ",
           "confidence": "HIGH",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 114.87443639144666,
+          "score": 34.64837961649526,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 114.87. Matches known attack: 'sophisticated'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 34.65. ",
           "confidence": "HIGH",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise1",
-          "score": 86.52268347150417,
+          "score": 26.0969357198235,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise1: [Memory + Learned Attack] firing. Accumulated score 86.52. Matches known attack: 'sophisticated'.",
+          "explanation": "Host Enterprise1: [Memory] firing. Accumulated score 26.10. ",
           "confidence": "HIGH",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         },
         {
           "host": "Op_Server0",
-          "score": 25.738542203565018,
+          "score": 7.763248369771388,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Op_Server0: [Memory + Learned Attack] firing. Accumulated score 25.74. Matches known attack: 'sophisticated'.",
+          "explanation": "Host Op_Server0: [Memory] firing. Accumulated score 7.76. ",
           "confidence": "HIGH",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         },
         {
           "host": "User2",
-          "score": 5.5519853409556275,
+          "score": 1.6745875040738896,
           "layers_fired": [],
-          "explanation": "Host User2: [none] firing. Accumulated score 5.55. Matches known attack: 'sophisticated'.",
-          "confidence": "HIGH",
-          "attack_type": "sophisticated"
-        },
-        {
-          "host": "User1",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host User1: [none] firing. Accumulated score 0.00. Matches known attack: 'sophisticated'.",
+          "explanation": "Host User2: [none] firing. Accumulated score 1.67. ",
           "confidence": "LOW",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 114.87443639144666
+        "score": 34.64837961649526
       }
     },
     {
@@ -3315,7 +3033,7 @@
         "Enterprise1",
         "Op_Server0"
       ],
-      "anomaly_score": 0.5963104469020668,
+      "anomaly_score": 0.5817820221254248,
       "innate_fired": true,
       "host_innate_scores": {
         "User0": 0.0,
@@ -3337,77 +3055,65 @@
       "tolerance_suppressed": [],
       "tolerance_breached": [
         "User0",
+        "Op_Server0",
         "Enterprise1",
-        "Enterprise0",
-        "Op_Server0"
+        "Enterprise0"
       ],
-      "learned_attack_conf": 0.9748423814773559,
-      "learned_attack_type": "sophisticated",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 117.63809131672235,
+          "score": 35.4819520629676,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 117.64. Matches known attack: 'sophisticated'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 35.48. ",
           "confidence": "HIGH",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 117.63809131672235,
+          "score": 35.4819520629676,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 117.64. Matches known attack: 'sophisticated'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 35.48. ",
           "confidence": "HIGH",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise1",
-          "score": 94.95668898076835,
+          "score": 28.640796945630186,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise1: [Memory + Learned Attack] firing. Accumulated score 94.96. Matches known attack: 'sophisticated'.",
+          "explanation": "Host Enterprise1: [Memory] firing. Accumulated score 28.64. ",
           "confidence": "HIGH",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         },
         {
           "host": "Op_Server0",
-          "score": 46.32937596641703,
+          "score": 13.973847065588497,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Op_Server0: [Memory + Learned Attack] firing. Accumulated score 46.33. Matches known attack: 'sophisticated'.",
+          "explanation": "Host Op_Server0: [Memory] firing. Accumulated score 13.97. ",
           "confidence": "HIGH",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         },
         {
           "host": "User2",
-          "score": 4.441588272764502,
+          "score": 1.3396700032591118,
           "layers_fired": [],
-          "explanation": "Host User2: [none] firing. Accumulated score 4.44. Matches known attack: 'sophisticated'.",
-          "confidence": "HIGH",
-          "attack_type": "sophisticated"
-        },
-        {
-          "host": "User1",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host User1: [none] firing. Accumulated score 0.00. Matches known attack: 'sophisticated'.",
+          "explanation": "Host User2: [none] firing. Accumulated score 1.34. ",
           "confidence": "LOW",
-          "attack_type": "sophisticated"
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 117.63809131672235
+        "score": 35.4819520629676
       }
     },
     {
@@ -3496,7 +3202,7 @@
         "Enterprise1",
         "Op_Server0"
       ],
-      "anomaly_score": 0.5709675111986798,
+      "anomaly_score": 0.5774983834139997,
       "innate_fired": true,
       "host_innate_scores": {
         "User0": 0.0,
@@ -3520,69 +3226,65 @@
       ],
       "tolerance_breached": [
         "User0",
+        "Op_Server0",
         "Enterprise1",
-        "Enterprise0",
-        "Op_Server0"
+        "Enterprise0"
       ],
-      "learned_attack_conf": 0.9808356523513794,
-      "learned_attack_type": "obvious",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 119.8490152569429,
+          "score": 36.14881002014547,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 119.85. Matches known attack: 'obvious'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 36.15. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 119.8490152569429,
+          "score": 36.14881002014547,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 119.85. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 36.15. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise1",
-          "score": 101.7038933881797,
+          "score": 30.67588592627554,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise1: [Memory + Learned Attack] firing. Accumulated score 101.70. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise1: [Memory] firing. Accumulated score 30.68. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Op_Server0",
-          "score": 62.802042976698644,
+          "score": 18.942326022242185,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Op_Server0: [Memory + Learned Attack] firing. Accumulated score 62.80. Matches known attack: 'obvious'.",
+          "explanation": "Host Op_Server0: [Memory] firing. Accumulated score 18.94. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "User2",
-          "score": 3.553270618211602,
+          "score": 1.0717360026072895,
           "layers_fired": [],
-          "explanation": "Host User2: [none] firing. Accumulated score 3.55. Matches known attack: 'obvious'.",
-          "confidence": "MEDIUM",
-          "attack_type": "obvious"
+          "explanation": "Host User2: [none] firing. Accumulated score 1.07. ",
+          "confidence": "LOW",
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 119.8490152569429
+        "score": 36.14881002014547
       }
     },
     {
@@ -3671,7 +3373,7 @@
         "Enterprise1",
         "Op_Server0"
       ],
-      "anomaly_score": 0.5898864305180731,
+      "anomaly_score": 0.6169784232668484,
       "innate_fired": true,
       "host_innate_scores": {
         "User0": 0.0,
@@ -3679,7 +3381,7 @@
         "User2": 0.0,
         "Enterprise0": 0.0,
         "Enterprise1": 0.0,
-        "Op_Server0": 0.0
+        "Op_Server0": 0.012828058312394197
       },
       "drift_scores": {
         "User0": 7.9225239753723145,
@@ -3695,69 +3397,65 @@
       ],
       "tolerance_breached": [
         "User0",
+        "Op_Server0",
         "Enterprise1",
-        "Enterprise0",
-        "Op_Server0"
+        "Enterprise0"
       ],
-      "learned_attack_conf": 0.9934632778167725,
-      "learned_attack_type": "obvious",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 121.61775440911934,
+          "score": 36.68229638588777,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 121.62. Matches known attack: 'obvious'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 36.68. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 121.61775440911934,
+          "score": 36.68229638588777,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 121.62. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 36.68. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise1",
-          "score": 107.10165691410877,
+          "score": 32.30395711079182,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise1: [Memory + Learned Attack] firing. Accumulated score 107.10. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise1: [Memory] firing. Accumulated score 32.30. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Op_Server0",
-          "score": 75.98017658492394,
+          "score": 22.91710918756514,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Op_Server0: [Memory + Learned Attack] firing. Accumulated score 75.98. Matches known attack: 'obvious'.",
+          "explanation": "Host Op_Server0: [Memory] firing. Accumulated score 22.92. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "User2",
-          "score": 2.8426164945692816,
+          "score": 0.8573888020858317,
           "layers_fired": [],
-          "explanation": "Host User2: [none] firing. Accumulated score 2.84. Matches known attack: 'obvious'.",
-          "confidence": "MEDIUM",
-          "attack_type": "obvious"
+          "explanation": "Host User2: [none] firing. Accumulated score 0.86. ",
+          "confidence": "LOW",
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 121.61775440911934
+        "score": 36.68229638588777
       }
     },
     {
@@ -3846,7 +3544,7 @@
         "Enterprise1",
         "Op_Server0"
       ],
-      "anomaly_score": 0.6031302109702871,
+      "anomaly_score": 0.6129900401657161,
       "innate_fired": true,
       "host_innate_scores": {
         "User0": 0.0,
@@ -3854,7 +3552,7 @@
         "User2": 0.0,
         "Enterprise0": 0.0,
         "Enterprise1": 0.0,
-        "Op_Server0": 0.0
+        "Op_Server0": 0.0027721350831199087
       },
       "drift_scores": {
         "User0": 8.345783233642578,
@@ -3871,61 +3569,57 @@
       ],
       "tolerance_breached": [
         "User0",
+        "Op_Server0",
         "Enterprise1",
-        "Enterprise0",
-        "Op_Server0"
+        "Enterprise0"
       ],
-      "learned_attack_conf": 0.9991014957427978,
-      "learned_attack_type": "obvious",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 123.0327457308605,
+          "score": 37.1090854784816,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 123.03. Matches known attack: 'obvious'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 37.11. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 123.0327457308605,
+          "score": 37.1090854784816,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 123.03. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 37.11. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise1",
-          "score": 111.41986773485205,
+          "score": 33.606414058404845,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise1: [Memory + Learned Attack] firing. Accumulated score 111.42. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise1: [Memory] firing. Accumulated score 33.61. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Op_Server0",
-          "score": 86.52268347150417,
+          "score": 26.0969357198235,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Op_Server0: [Memory + Learned Attack] firing. Accumulated score 86.52. Matches known attack: 'obvious'.",
+          "explanation": "Host Op_Server0: [Memory] firing. Accumulated score 26.10. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 123.0327457308605
+        "score": 37.1090854784816
       }
     },
     {
@@ -4014,15 +3708,15 @@
         "Enterprise1",
         "Op_Server0"
       ],
-      "anomaly_score": 0.6195260504974782,
+      "anomaly_score": 0.6122219254558144,
       "innate_fired": true,
       "host_innate_scores": {
         "User0": 0.0,
         "User1": 0.0,
         "User2": 0.0,
-        "Enterprise0": 0.004974669821851019,
+        "Enterprise0": 0.0,
         "Enterprise1": 0.0,
-        "Op_Server0": 0.0
+        "Op_Server0": 0.0006172779594123545
       },
       "drift_scores": {
         "User0": 8.736784934997559,
@@ -4038,69 +3732,65 @@
       ],
       "tolerance_breached": [
         "User0",
+        "Op_Server0",
         "Enterprise1",
-        "Enterprise0",
-        "Op_Server0"
+        "Enterprise0"
       ],
-      "learned_attack_conf": 0.999460768699646,
-      "learned_attack_type": "obvious",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 124.16473878825342,
+          "score": 37.45051675255667,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 124.16. Matches known attack: 'obvious'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 37.45. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 124.16473878825342,
+          "score": 37.45051675255667,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 124.16. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 37.45. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise1",
-          "score": 114.87443639144666,
+          "score": 34.64837961649526,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise1: [Memory + Learned Attack] firing. Accumulated score 114.87. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise1: [Memory] firing. Accumulated score 34.65. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Op_Server0",
-          "score": 94.95668898076835,
+          "score": 28.640796945630186,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Op_Server0: [Memory + Learned Attack] firing. Accumulated score 94.96. Matches known attack: 'obvious'.",
+          "explanation": "Host Op_Server0: [Memory] firing. Accumulated score 28.64. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "User2",
-          "score": 1.8192745565243404,
+          "score": 0.5487288333349323,
           "layers_fired": [],
-          "explanation": "Host User2: [none] firing. Accumulated score 1.82. Matches known attack: 'obvious'.",
+          "explanation": "Host User2: [none] firing. Accumulated score 0.55. ",
           "confidence": "LOW",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 124.16473878825342
+        "score": 37.45051675255667
       }
     },
     {
@@ -4189,7 +3879,7 @@
         "Enterprise1",
         "Op_Server0"
       ],
-      "anomaly_score": 0.5659538741352225,
+      "anomaly_score": 0.5776786271192079,
       "innate_fired": true,
       "host_innate_scores": {
         "User0": 0.0,
@@ -4213,69 +3903,57 @@
       ],
       "tolerance_breached": [
         "User0",
+        "Op_Server0",
         "Enterprise1",
-        "Enterprise0",
-        "Op_Server0"
+        "Enterprise0"
       ],
-      "learned_attack_conf": 0.9999064087867737,
-      "learned_attack_type": "obvious",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 125.07033323416776,
+          "score": 37.72366177181673,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 125.07. Matches known attack: 'obvious'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 37.72. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 125.07033323416776,
+          "score": 37.72366177181673,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 125.07. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 37.72. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise1",
-          "score": 117.63809131672235,
+          "score": 35.4819520629676,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise1: [Memory + Learned Attack] firing. Accumulated score 117.64. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise1: [Memory] firing. Accumulated score 35.48. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Op_Server0",
-          "score": 101.7038933881797,
+          "score": 30.67588592627554,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Op_Server0: [Memory + Learned Attack] firing. Accumulated score 101.70. Matches known attack: 'obvious'.",
+          "explanation": "Host Op_Server0: [Memory] firing. Accumulated score 30.68. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
-        },
-        {
-          "host": "User2",
-          "score": 1.4554196452194725,
-          "layers_fired": [],
-          "explanation": "Host User2: [none] firing. Accumulated score 1.46. Matches known attack: 'obvious'.",
-          "confidence": "LOW",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 125.07033323416776
+        "score": 37.72366177181673
       }
     },
     {
@@ -4364,7 +4042,7 @@
         "Enterprise1",
         "Op_Server0"
       ],
-      "anomaly_score": 0.6070625717400027,
+      "anomaly_score": 0.6089218009962478,
       "innate_fired": true,
       "host_innate_scores": {
         "User0": 0.0,
@@ -4372,7 +4050,7 @@
         "User2": 0.0,
         "Enterprise0": 0.0,
         "Enterprise1": 0.0,
-        "Op_Server0": 0.0
+        "Op_Server0": 0.010107597074299424
       },
       "drift_scores": {
         "User0": 9.300463676452637,
@@ -4388,69 +4066,57 @@
       ],
       "tolerance_breached": [
         "User0",
+        "Op_Server0",
         "Enterprise1",
-        "Enterprise0",
-        "Op_Server0"
+        "Enterprise0"
       ],
-      "learned_attack_conf": 0.9999105930328369,
-      "learned_attack_type": "obvious",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 125.79480879089924,
+          "score": 37.94217778722477,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 125.79. Matches known attack: 'obvious'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 37.94. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 125.79480879089924,
+          "score": 37.94217778722477,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 125.79. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 37.94. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise1",
-          "score": 119.8490152569429,
+          "score": 36.14881002014547,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise1: [Memory + Learned Attack] firing. Accumulated score 119.85. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise1: [Memory] firing. Accumulated score 36.15. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Op_Server0",
-          "score": 107.10165691410877,
+          "score": 32.30395711079182,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Op_Server0: [Memory + Learned Attack] firing. Accumulated score 107.10. Matches known attack: 'obvious'.",
+          "explanation": "Host Op_Server0: [Memory] firing. Accumulated score 32.30. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
-        },
-        {
-          "host": "User1",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host User1: [none] firing. Accumulated score 0.00. Matches known attack: 'obvious'.",
-          "confidence": "LOW",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 125.79480879089924
+        "score": 37.94217778722477
       }
     },
     {
@@ -4539,13 +4205,13 @@
         "Enterprise1",
         "Op_Server0"
       ],
-      "anomaly_score": 0.6126921448497946,
+      "anomaly_score": 0.5975457944550082,
       "innate_fired": true,
       "host_innate_scores": {
         "User0": 0.0,
         "User1": 0.0,
         "User2": 0.0,
-        "Enterprise0": 0.005593924784098037,
+        "Enterprise0": 0.0,
         "Enterprise1": 0.0,
         "Op_Server0": 0.0
       },
@@ -4563,69 +4229,57 @@
       ],
       "tolerance_breached": [
         "User0",
+        "Op_Server0",
         "Enterprise1",
-        "Enterprise0",
-        "Op_Server0"
+        "Enterprise0"
       ],
-      "learned_attack_conf": 0.9999216794967651,
-      "learned_attack_type": "obvious",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 126.37438923628442,
+          "score": 38.11699059955121,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 126.37. Matches known attack: 'obvious'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 38.12. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 126.37438923628442,
+          "score": 38.11699059955121,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 126.37. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 38.12. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise1",
-          "score": 121.61775440911934,
+          "score": 36.68229638588777,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise1: [Memory + Learned Attack] firing. Accumulated score 121.62. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise1: [Memory] firing. Accumulated score 36.68. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Op_Server0",
-          "score": 111.41986773485205,
+          "score": 33.606414058404845,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Op_Server0: [Memory + Learned Attack] firing. Accumulated score 111.42. Matches known attack: 'obvious'.",
+          "explanation": "Host Op_Server0: [Memory] firing. Accumulated score 33.61. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
-        },
-        {
-          "host": "User1",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host User1: [none] firing. Accumulated score 0.00. Matches known attack: 'obvious'.",
-          "confidence": "LOW",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 126.37438923628442
+        "score": 38.11699059955121
       }
     },
     {
@@ -4714,13 +4368,13 @@
         "Enterprise1",
         "Op_Server0"
       ],
-      "anomaly_score": 0.5901294111023984,
+      "anomaly_score": 0.5865842534087619,
       "innate_fired": true,
       "host_innate_scores": {
         "User0": 0.0,
         "User1": 0.0,
         "User2": 0.0,
-        "Enterprise0": 0.011082962480313152,
+        "Enterprise0": 0.0,
         "Enterprise1": 0.0,
         "Op_Server0": 0.0
       },
@@ -4738,69 +4392,57 @@
       ],
       "tolerance_breached": [
         "User0",
+        "Op_Server0",
         "Enterprise1",
-        "Enterprise0",
-        "Op_Server0"
+        "Enterprise0"
       ],
-      "learned_attack_conf": 0.9999210000038147,
-      "learned_attack_type": "obvious",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 126.83805359259256,
+          "score": 38.256840849412356,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 126.84. Matches known attack: 'obvious'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 38.26. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 126.83805359259256,
+          "score": 38.256840849412356,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 126.84. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 38.26. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise1",
-          "score": 123.0327457308605,
+          "score": 37.1090854784816,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise1: [Memory + Learned Attack] firing. Accumulated score 123.03. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise1: [Memory] firing. Accumulated score 37.11. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Op_Server0",
-          "score": 114.87443639144666,
+          "score": 34.64837961649526,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Op_Server0: [Memory + Learned Attack] firing. Accumulated score 114.87. Matches known attack: 'obvious'.",
+          "explanation": "Host Op_Server0: [Memory] firing. Accumulated score 34.65. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
-        },
-        {
-          "host": "User2",
-          "score": 0.7451748583523701,
-          "layers_fired": [],
-          "explanation": "Host User2: [none] firing. Accumulated score 0.75. Matches known attack: 'obvious'.",
-          "confidence": "LOW",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 126.83805359259256
+        "score": 38.256840849412356
       }
     },
     {
@@ -4889,7 +4531,7 @@
         "Enterprise1",
         "Op_Server0"
       ],
-      "anomaly_score": 0.577259245342473,
+      "anomaly_score": 0.6026405495792786,
       "innate_fired": true,
       "host_innate_scores": {
         "User0": 0.0,
@@ -4897,7 +4539,7 @@
         "User2": 0.0,
         "Enterprise0": 0.0,
         "Enterprise1": 0.0,
-        "Op_Server0": 0.0
+        "Op_Server0": 0.012710285809523048
       },
       "drift_scores": {
         "User0": 9.759615898132324,
@@ -4913,69 +4555,57 @@
       ],
       "tolerance_breached": [
         "User0",
+        "Op_Server0",
         "Enterprise1",
-        "Enterprise0",
-        "Op_Server0"
+        "Enterprise0"
       ],
-      "learned_attack_conf": 0.9999196767807007,
-      "learned_attack_type": "obvious",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 127.20898507763907,
+          "score": 38.36872104930127,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 127.21. Matches known attack: 'obvious'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 38.37. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 127.20898507763907,
+          "score": 38.36872104930127,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 127.21. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 38.37. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise1",
-          "score": 124.16473878825342,
+          "score": 37.45051675255667,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise1: [Memory + Learned Attack] firing. Accumulated score 124.16. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise1: [Memory] firing. Accumulated score 37.45. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Op_Server0",
-          "score": 117.63809131672235,
+          "score": 35.4819520629676,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Op_Server0: [Memory + Learned Attack] firing. Accumulated score 117.64. Matches known attack: 'obvious'.",
+          "explanation": "Host Op_Server0: [Memory] firing. Accumulated score 35.48. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
-        },
-        {
-          "host": "User1",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host User1: [none] firing. Accumulated score 0.00. Matches known attack: 'obvious'.",
-          "confidence": "LOW",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 127.20898507763907
+        "score": 38.36872104930127
       }
     },
     {
@@ -5064,7 +4694,7 @@
         "Enterprise1",
         "Op_Server0"
       ],
-      "anomaly_score": 0.5765910059049029,
+      "anomaly_score": 0.5778838079116666,
       "innate_fired": true,
       "host_innate_scores": {
         "User0": 0.0,
@@ -5089,61 +4719,57 @@
       ],
       "tolerance_breached": [
         "User0",
+        "Op_Server0",
         "Enterprise1",
-        "Enterprise0",
-        "Op_Server0"
+        "Enterprise0"
       ],
-      "learned_attack_conf": 0.9998835563659668,
-      "learned_attack_type": "obvious",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 127.50573026567628,
+          "score": 38.45822520921241,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 127.51. Matches known attack: 'obvious'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 38.46. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 127.50573026567628,
+          "score": 38.45822520921241,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 127.51. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 38.46. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise1",
-          "score": 125.07033323416776,
+          "score": 37.72366177181673,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise1: [Memory + Learned Attack] firing. Accumulated score 125.07. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise1: [Memory] firing. Accumulated score 37.72. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Op_Server0",
-          "score": 119.8490152569429,
+          "score": 36.14881002014547,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Op_Server0: [Memory + Learned Attack] firing. Accumulated score 119.85. Matches known attack: 'obvious'.",
+          "explanation": "Host Op_Server0: [Memory] firing. Accumulated score 36.15. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 127.50573026567628
+        "score": 38.45822520921241
       }
     },
     {
@@ -5232,7 +4858,7 @@
         "Enterprise1",
         "Op_Server0"
       ],
-      "anomaly_score": 0.5977065606364707,
+      "anomaly_score": 0.6026237390208378,
       "innate_fired": true,
       "host_innate_scores": {
         "User0": 0.0,
@@ -5256,69 +4882,57 @@
       ],
       "tolerance_breached": [
         "User0",
+        "Op_Server0",
         "Enterprise1",
-        "Enterprise0",
-        "Op_Server0"
+        "Enterprise0"
       ],
-      "learned_attack_conf": 0.9996217012405395,
-      "learned_attack_type": "obvious",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 127.74312641610605,
+          "score": 38.52982853714131,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 127.74. Matches known attack: 'obvious'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 38.53. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 127.74312641610605,
+          "score": 38.52982853714131,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 127.74. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 38.53. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise1",
-          "score": 125.79480879089924,
+          "score": 37.94217778722477,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise1: [Memory + Learned Attack] firing. Accumulated score 125.79. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise1: [Memory] firing. Accumulated score 37.94. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Op_Server0",
-          "score": 121.61775440911934,
+          "score": 36.68229638588777,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Op_Server0: [Memory + Learned Attack] firing. Accumulated score 121.62. Matches known attack: 'obvious'.",
+          "explanation": "Host Op_Server0: [Memory] firing. Accumulated score 36.68. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
-        },
-        {
-          "host": "User2",
-          "score": 0.38152952747641355,
-          "layers_fired": [],
-          "explanation": "Host User2: [none] firing. Accumulated score 0.38. Matches known attack: 'obvious'.",
-          "confidence": "LOW",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 127.74312641610605
+        "score": 38.52982853714131
       }
     },
     {
@@ -5407,7 +5021,7 @@
         "Enterprise1",
         "Op_Server0"
       ],
-      "anomaly_score": 0.5866522219096755,
+      "anomaly_score": 0.5942348328763343,
       "innate_fired": true,
       "host_innate_scores": {
         "User0": 0.0,
@@ -5415,7 +5029,7 @@
         "User2": 0.0,
         "Enterprise0": 0.0,
         "Enterprise1": 0.0,
-        "Op_Server0": 0.0
+        "Op_Server0": 0.00018100781573349156
       },
       "drift_scores": {
         "User0": 10.199054718017578,
@@ -5431,69 +5045,57 @@
       ],
       "tolerance_breached": [
         "User0",
+        "Op_Server0",
         "Enterprise1",
-        "Enterprise0",
-        "Op_Server0"
+        "Enterprise0"
       ],
-      "learned_attack_conf": 0.9998031258583069,
-      "learned_attack_type": "obvious",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 127.93304333644987,
+          "score": 38.58711119948444,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 127.93. Matches known attack: 'obvious'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 38.59. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 127.93304333644987,
+          "score": 38.58711119948444,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 127.93. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 38.59. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise1",
-          "score": 126.37438923628442,
+          "score": 38.11699059955121,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise1: [Memory + Learned Attack] firing. Accumulated score 126.37. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise1: [Memory] firing. Accumulated score 38.12. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Op_Server0",
-          "score": 123.0327457308605,
+          "score": 37.1090854784816,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Op_Server0: [Memory + Learned Attack] firing. Accumulated score 123.03. Matches known attack: 'obvious'.",
+          "explanation": "Host Op_Server0: [Memory] firing. Accumulated score 37.11. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
-        },
-        {
-          "host": "User2",
-          "score": 0.30522362198113084,
-          "layers_fired": [],
-          "explanation": "Host User2: [none] firing. Accumulated score 0.31. Matches known attack: 'obvious'.",
-          "confidence": "LOW",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 127.93304333644987
+        "score": 38.58711119948444
       }
     },
     {
@@ -5582,7 +5184,7 @@
         "Enterprise1",
         "Op_Server0"
       ],
-      "anomaly_score": 0.6039890234203875,
+      "anomaly_score": 0.6164396990493486,
       "innate_fired": true,
       "host_innate_scores": {
         "User0": 0.0,
@@ -5590,7 +5192,7 @@
         "User2": 0.0,
         "Enterprise0": 0.0,
         "Enterprise1": 0.0,
-        "Op_Server0": 0.0
+        "Op_Server0": 0.001508564078593455
       },
       "drift_scores": {
         "User0": 10.111970901489258,
@@ -5604,77 +5206,57 @@
       "tolerance_suppressed": [],
       "tolerance_breached": [
         "User0",
+        "Op_Server0",
         "Enterprise1",
-        "Enterprise0",
-        "Op_Server0"
+        "Enterprise0"
       ],
-      "learned_attack_conf": 0.9997943997383117,
-      "learned_attack_type": "obvious",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 128.08497687272492,
+          "score": 38.63293732935894,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 128.08. Matches known attack: 'obvious'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 38.63. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 128.08497687272492,
+          "score": 38.63293732935894,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 128.08. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 38.63. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise1",
-          "score": 126.83805359259256,
+          "score": 38.256840849412356,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise1: [Memory + Learned Attack] firing. Accumulated score 126.84. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise1: [Memory] firing. Accumulated score 38.26. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Op_Server0",
-          "score": 124.16473878825342,
+          "score": 37.45051675255667,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Op_Server0: [Memory + Learned Attack] firing. Accumulated score 124.16. Matches known attack: 'obvious'.",
+          "explanation": "Host Op_Server0: [Memory] firing. Accumulated score 37.45. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
-        },
-        {
-          "host": "User2",
-          "score": 0.24417889758490469,
-          "layers_fired": [],
-          "explanation": "Host User2: [none] firing. Accumulated score 0.24. Matches known attack: 'obvious'.",
-          "confidence": "LOW",
-          "attack_type": "obvious"
-        },
-        {
-          "host": "User1",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host User1: [none] firing. Accumulated score 0.00. Matches known attack: 'obvious'.",
-          "confidence": "LOW",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 128.08497687272492
+        "score": 38.63293732935894
       }
     },
     {
@@ -5763,7 +5345,7 @@
         "Enterprise1",
         "Op_Server0"
       ],
-      "anomaly_score": 0.5918033823322328,
+      "anomaly_score": 0.5932823901141814,
       "innate_fired": true,
       "host_innate_scores": {
         "User0": 0.0,
@@ -5771,7 +5353,7 @@
         "User2": 0.0,
         "Enterprise0": 0.0,
         "Enterprise1": 0.0,
-        "Op_Server0": 0.0
+        "Op_Server0": 0.0041409188521369655
       },
       "drift_scores": {
         "User0": 10.09604263305664,
@@ -5788,61 +5370,57 @@
       ],
       "tolerance_breached": [
         "User0",
+        "Op_Server0",
         "Enterprise1",
-        "Enterprise0",
-        "Op_Server0"
+        "Enterprise0"
       ],
-      "learned_attack_conf": 0.9996385455131531,
-      "learned_attack_type": "obvious",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 128.20652370174497,
+          "score": 38.66959823325854,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 128.21. Matches known attack: 'obvious'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 38.67. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 128.20652370174497,
+          "score": 38.66959823325854,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 128.21. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 38.67. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise1",
-          "score": 127.20898507763907,
+          "score": 38.36872104930127,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise1: [Memory + Learned Attack] firing. Accumulated score 127.21. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise1: [Memory] firing. Accumulated score 38.37. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Op_Server0",
-          "score": 125.07033323416776,
+          "score": 37.72366177181673,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Op_Server0: [Memory + Learned Attack] firing. Accumulated score 125.07. Matches known attack: 'obvious'.",
+          "explanation": "Host Op_Server0: [Memory] firing. Accumulated score 37.72. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 128.20652370174497
+        "score": 38.66959823325854
       }
     },
     {
@@ -5931,7 +5509,7 @@
         "Enterprise1",
         "Op_Server0"
       ],
-      "anomaly_score": 0.5621095882159962,
+      "anomaly_score": 0.5613790697751302,
       "innate_fired": true,
       "host_innate_scores": {
         "User0": 0.0,
@@ -5956,61 +5534,57 @@
       ],
       "tolerance_breached": [
         "User0",
+        "Op_Server0",
         "Enterprise1",
-        "Enterprise0",
-        "Op_Server0"
+        "Enterprise0"
       ],
-      "learned_attack_conf": 0.9997677206993103,
-      "learned_attack_type": "obvious",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 128.303761164961,
+          "score": 38.69892695637822,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 128.30. Matches known attack: 'obvious'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 38.70. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 128.303761164961,
+          "score": 38.69892695637822,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 128.30. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 38.70. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise1",
-          "score": 127.50573026567628,
+          "score": 38.45822520921241,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise1: [Memory + Learned Attack] firing. Accumulated score 127.51. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise1: [Memory] firing. Accumulated score 38.46. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Op_Server0",
-          "score": 125.79480879089924,
+          "score": 37.94217778722477,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Op_Server0: [Memory + Learned Attack] firing. Accumulated score 125.79. Matches known attack: 'obvious'.",
+          "explanation": "Host Op_Server0: [Memory] firing. Accumulated score 37.94. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 128.303761164961
+        "score": 38.69892695637822
       }
     },
     {
@@ -6099,7 +5673,7 @@
         "Enterprise1",
         "Op_Server0"
       ],
-      "anomaly_score": 0.6120285254859951,
+      "anomaly_score": 0.6137610043926549,
       "innate_fired": true,
       "host_innate_scores": {
         "User0": 0.0,
@@ -6107,7 +5681,7 @@
         "User2": 0.0,
         "Enterprise0": 0.0,
         "Enterprise1": 0.0,
-        "Op_Server0": 0.0
+        "Op_Server0": 0.000869291458116761
       },
       "drift_scores": {
         "User0": 9.756929397583008,
@@ -6121,77 +5695,57 @@
       "tolerance_suppressed": [],
       "tolerance_breached": [
         "User0",
+        "Op_Server0",
         "Enterprise1",
-        "Enterprise0",
-        "Op_Server0"
+        "Enterprise0"
       ],
-      "learned_attack_conf": 0.9993176460266113,
-      "learned_attack_type": "obvious",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 128.3815511355338,
+          "score": 38.722389934873966,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 128.38. Matches known attack: 'obvious'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 38.72. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 128.3815511355338,
+          "score": 38.722389934873966,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 128.38. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 38.72. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise1",
-          "score": 127.74312641610605,
+          "score": 38.52982853714131,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise1: [Memory + Learned Attack] firing. Accumulated score 127.74. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise1: [Memory] firing. Accumulated score 38.53. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Op_Server0",
-          "score": 126.37438923628442,
+          "score": 38.11699059955121,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Op_Server0: [Memory + Learned Attack] firing. Accumulated score 126.37. Matches known attack: 'obvious'.",
+          "explanation": "Host Op_Server0: [Memory] firing. Accumulated score 38.12. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
-        },
-        {
-          "host": "User2",
-          "score": 0.12501959556347123,
-          "layers_fired": [],
-          "explanation": "Host User2: [none] firing. Accumulated score 0.13. Matches known attack: 'obvious'.",
-          "confidence": "LOW",
-          "attack_type": "obvious"
-        },
-        {
-          "host": "User1",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host User1: [none] firing. Accumulated score 0.00. Matches known attack: 'obvious'.",
-          "confidence": "LOW",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 128.3815511355338
+        "score": 38.722389934873966
       }
     },
     {
@@ -6280,7 +5834,7 @@
         "Enterprise1",
         "Op_Server0"
       ],
-      "anomaly_score": 0.5950856832673065,
+      "anomaly_score": 0.6204195791005493,
       "innate_fired": true,
       "host_innate_scores": {
         "User0": 0.0,
@@ -6302,77 +5856,57 @@
       "tolerance_suppressed": [],
       "tolerance_breached": [
         "User0",
+        "Op_Server0",
         "Enterprise1",
-        "Enterprise0",
-        "Op_Server0"
+        "Enterprise0"
       ],
-      "learned_attack_conf": 0.9993528008460999,
-      "learned_attack_type": "obvious",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 128.44378311199208,
+          "score": 38.74116031767056,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 128.44. Matches known attack: 'obvious'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 38.74. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 128.44378311199208,
+          "score": 38.74116031767056,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 128.44. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 38.74. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise1",
-          "score": 127.93304333644987,
+          "score": 38.58711119948444,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise1: [Memory + Learned Attack] firing. Accumulated score 127.93. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise1: [Memory] firing. Accumulated score 38.59. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Op_Server0",
-          "score": 126.83805359259256,
+          "score": 38.256840849412356,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Op_Server0: [Memory + Learned Attack] firing. Accumulated score 126.84. Matches known attack: 'obvious'.",
+          "explanation": "Host Op_Server0: [Memory] firing. Accumulated score 38.26. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
-        },
-        {
-          "host": "User2",
-          "score": 0.10001567645077698,
-          "layers_fired": [],
-          "explanation": "Host User2: [none] firing. Accumulated score 0.10. Matches known attack: 'obvious'.",
-          "confidence": "LOW",
-          "attack_type": "obvious"
-        },
-        {
-          "host": "User1",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host User1: [none] firing. Accumulated score 0.00. Matches known attack: 'obvious'.",
-          "confidence": "LOW",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 128.44378311199208
+        "score": 38.74116031767056
       }
     },
     {
@@ -6461,7 +5995,7 @@
         "Enterprise1",
         "Op_Server0"
       ],
-      "anomaly_score": 0.6058966207184261,
+      "anomaly_score": 0.6262598457008515,
       "innate_fired": true,
       "host_innate_scores": {
         "User0": 0.0,
@@ -6469,7 +6003,7 @@
         "User2": 0.0,
         "Enterprise0": 0.0,
         "Enterprise1": 0.0,
-        "Op_Server0": 0.0
+        "Op_Server0": 0.007790636654353866
       },
       "drift_scores": {
         "User0": 9.498406410217285,
@@ -6484,71 +6018,59 @@
         "User1"
       ],
       "tolerance_breached": [
-        "User0",
-        "Enterprise1",
-        "Enterprise0",
+        "Op_Server0",
         "User2",
-        "Op_Server0"
+        "User0",
+        "Enterprise0",
+        "Enterprise1"
       ],
-      "learned_attack_conf": 0.9990860104560852,
-      "learned_attack_type": "obvious",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 128.4935686931587,
+          "score": 38.75617662390784,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 128.49. Matches known attack: 'obvious'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 38.76. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 128.4935686931587,
+          "score": 38.75617662390784,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 128.49. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 38.76. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise1",
-          "score": 128.08497687272492,
+          "score": 38.63293732935894,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise1: [Memory + Learned Attack] firing. Accumulated score 128.08. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise1: [Memory] firing. Accumulated score 38.63. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Op_Server0",
-          "score": 127.20898507763907,
+          "score": 38.36872104930127,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Op_Server0: [Memory + Learned Attack] firing. Accumulated score 127.21. Matches known attack: 'obvious'.",
+          "explanation": "Host Op_Server0: [Memory] firing. Accumulated score 38.37. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
-        },
-        {
-          "host": "User2",
-          "score": 0.08001254116062159,
-          "layers_fired": [],
-          "explanation": "Host User2: [none] firing. Accumulated score 0.08. Matches known attack: 'obvious'.",
-          "confidence": "LOW",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 128.4935686931587
+        "score": 38.75617662390784
       }
     },
     {
@@ -6637,7 +6159,7 @@
         "Enterprise1",
         "Op_Server0"
       ],
-      "anomaly_score": 0.5901693638164347,
+      "anomaly_score": 0.6117428037386928,
       "innate_fired": true,
       "host_innate_scores": {
         "User0": 0.0,
@@ -6645,7 +6167,7 @@
         "User2": 0.0,
         "Enterprise0": 0.0,
         "Enterprise1": 0.0,
-        "Op_Server0": 0.0
+        "Op_Server0": 0.010383690904752108
       },
       "drift_scores": {
         "User0": 9.556899070739746,
@@ -6661,69 +6183,57 @@
       ],
       "tolerance_breached": [
         "User0",
+        "Op_Server0",
         "Enterprise1",
-        "Enterprise0",
-        "Op_Server0"
+        "Enterprise0"
       ],
-      "learned_attack_conf": 0.9986495256423951,
-      "learned_attack_type": "obvious",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 128.533397158092,
+          "score": 38.76818966889766,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 128.53. Matches known attack: 'obvious'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 38.77. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 128.533397158092,
+          "score": 38.76818966889766,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 128.53. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 38.77. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise1",
-          "score": 128.20652370174497,
+          "score": 38.66959823325854,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise1: [Memory + Learned Attack] firing. Accumulated score 128.21. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise1: [Memory] firing. Accumulated score 38.67. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Op_Server0",
-          "score": 127.50573026567628,
+          "score": 38.45822520921241,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Op_Server0: [Memory + Learned Attack] firing. Accumulated score 127.51. Matches known attack: 'obvious'.",
+          "explanation": "Host Op_Server0: [Memory] firing. Accumulated score 38.46. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
-        },
-        {
-          "host": "User2",
-          "score": 0.06401003292849727,
-          "layers_fired": [],
-          "explanation": "Host User2: [none] firing. Accumulated score 0.06. Matches known attack: 'obvious'.",
-          "confidence": "LOW",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 128.533397158092
+        "score": 38.76818966889766
       }
     },
     {
@@ -6812,7 +6322,7 @@
         "Enterprise1",
         "Op_Server0"
       ],
-      "anomaly_score": 0.5551041609127562,
+      "anomaly_score": 0.5666244697597127,
       "innate_fired": true,
       "host_innate_scores": {
         "User0": 0.0,
@@ -6834,77 +6344,57 @@
       "tolerance_suppressed": [],
       "tolerance_breached": [
         "User0",
+        "Op_Server0",
         "Enterprise1",
-        "Enterprise0",
-        "Op_Server0"
+        "Enterprise0"
       ],
-      "learned_attack_conf": 0.9991940140724183,
-      "learned_attack_type": "obvious",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 128.56525993003862,
+          "score": 38.77780010488952,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 128.57. Matches known attack: 'obvious'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 38.78. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 128.56525993003862,
+          "score": 38.77780010488952,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 128.57. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 38.78. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise1",
-          "score": 128.303761164961,
+          "score": 38.69892695637822,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise1: [Memory + Learned Attack] firing. Accumulated score 128.30. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise1: [Memory] firing. Accumulated score 38.70. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Op_Server0",
-          "score": 127.74312641610605,
+          "score": 38.52982853714131,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Op_Server0: [Memory + Learned Attack] firing. Accumulated score 127.74. Matches known attack: 'obvious'.",
+          "explanation": "Host Op_Server0: [Memory] firing. Accumulated score 38.53. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
-        },
-        {
-          "host": "User2",
-          "score": 0.05120802634279782,
-          "layers_fired": [],
-          "explanation": "Host User2: [none] firing. Accumulated score 0.05. Matches known attack: 'obvious'.",
-          "confidence": "LOW",
-          "attack_type": "obvious"
-        },
-        {
-          "host": "User1",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host User1: [none] firing. Accumulated score 0.00. Matches known attack: 'obvious'.",
-          "confidence": "LOW",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 128.56525993003862
+        "score": 38.77780010488952
       }
     },
     {
@@ -6993,13 +6483,13 @@
         "Enterprise1",
         "Op_Server0"
       ],
-      "anomaly_score": 0.6004142622130028,
+      "anomaly_score": 0.5944816691616871,
       "innate_fired": true,
       "host_innate_scores": {
         "User0": 0.0,
         "User1": 0.0,
         "User2": 0.0,
-        "Enterprise0": 0.0009769979171413423,
+        "Enterprise0": 0.0,
         "Enterprise1": 0.0,
         "Op_Server0": 0.0
       },
@@ -7017,69 +6507,57 @@
       ],
       "tolerance_breached": [
         "User0",
+        "Op_Server0",
         "Enterprise1",
-        "Enterprise0",
-        "Op_Server0"
+        "Enterprise0"
       ],
-      "learned_attack_conf": 0.9993367791175842,
-      "learned_attack_type": "obvious",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 128.59075014759594,
+          "score": 38.78548845368301,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 128.59. Matches known attack: 'obvious'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 38.79. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 128.59075014759594,
+          "score": 38.78548845368301,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 128.59. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 38.79. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise1",
-          "score": 128.3815511355338,
+          "score": 38.722389934873966,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise1: [Memory + Learned Attack] firing. Accumulated score 128.38. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise1: [Memory] firing. Accumulated score 38.72. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Op_Server0",
-          "score": 127.93304333644987,
+          "score": 38.58711119948444,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Op_Server0: [Memory + Learned Attack] firing. Accumulated score 127.93. Matches known attack: 'obvious'.",
+          "explanation": "Host Op_Server0: [Memory] firing. Accumulated score 38.59. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
-        },
-        {
-          "host": "User2",
-          "score": 0.04096642107423826,
-          "layers_fired": [],
-          "explanation": "Host User2: [none] firing. Accumulated score 0.04. Matches known attack: 'obvious'.",
-          "confidence": "LOW",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 128.59075014759594
+        "score": 38.78548845368301
       }
     },
     {
@@ -7168,15 +6646,15 @@
         "Enterprise1",
         "Op_Server0"
       ],
-      "anomaly_score": 0.5972313673965937,
+      "anomaly_score": 0.5960867600237794,
       "innate_fired": true,
       "host_innate_scores": {
         "User0": 0.0,
         "User1": 0.0,
         "User2": 0.0,
-        "Enterprise0": 0.001377945881716136,
+        "Enterprise0": 0.0,
         "Enterprise1": 0.0,
-        "Op_Server0": 0.0
+        "Op_Server0": 0.004471824238462485
       },
       "drift_scores": {
         "User0": 9.101909637451172,
@@ -7192,69 +6670,57 @@
       ],
       "tolerance_breached": [
         "User0",
+        "Op_Server0",
         "Enterprise1",
-        "Enterprise0",
-        "Op_Server0"
+        "Enterprise0"
       ],
-      "learned_attack_conf": 0.9992214798927307,
-      "learned_attack_type": "obvious",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 128.61114232164178,
+          "score": 38.7916391327178,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 128.61. Matches known attack: 'obvious'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 38.79. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 128.61114232164178,
+          "score": 38.7916391327178,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 128.61. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 38.79. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise1",
-          "score": 128.44378311199208,
+          "score": 38.74116031767056,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise1: [Memory + Learned Attack] firing. Accumulated score 128.44. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise1: [Memory] firing. Accumulated score 38.74. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Op_Server0",
-          "score": 128.08497687272492,
+          "score": 38.63293732935894,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Op_Server0: [Memory + Learned Attack] firing. Accumulated score 128.08. Matches known attack: 'obvious'.",
+          "explanation": "Host Op_Server0: [Memory] firing. Accumulated score 38.63. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
-        },
-        {
-          "host": "User2",
-          "score": 0.03277313685939061,
-          "layers_fired": [],
-          "explanation": "Host User2: [none] firing. Accumulated score 0.03. Matches known attack: 'obvious'.",
-          "confidence": "LOW",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 128.61114232164178
+        "score": 38.7916391327178
       }
     },
     {
@@ -7343,15 +6809,15 @@
         "Enterprise1",
         "Op_Server0"
       ],
-      "anomaly_score": 0.6147251428348867,
+      "anomaly_score": 0.6177107351442662,
       "innate_fired": true,
       "host_innate_scores": {
         "User0": 0.0,
         "User1": 0.0,
         "User2": 0.0,
-        "Enterprise0": 0.004179801263928917,
+        "Enterprise0": 0.0,
         "Enterprise1": 0.0,
-        "Op_Server0": 0.0
+        "Op_Server0": 0.002986630361469955
       },
       "drift_scores": {
         "User0": 9.099068641662598,
@@ -7368,61 +6834,57 @@
       ],
       "tolerance_breached": [
         "User0",
+        "Op_Server0",
         "Enterprise1",
-        "Enterprise0",
-        "Op_Server0"
+        "Enterprise0"
       ],
-      "learned_attack_conf": 0.9996310710906983,
-      "learned_attack_type": "obvious",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 128.62745606087844,
+          "score": 38.79655967594563,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 128.63. Matches known attack: 'obvious'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 38.80. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 128.62745606087844,
+          "score": 38.79655967594563,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 128.63. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 38.80. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise1",
-          "score": 128.4935686931587,
+          "score": 38.75617662390784,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise1: [Memory + Learned Attack] firing. Accumulated score 128.49. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise1: [Memory] firing. Accumulated score 38.76. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Op_Server0",
-          "score": 128.20652370174497,
+          "score": 38.66959823325854,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Op_Server0: [Memory + Learned Attack] firing. Accumulated score 128.21. Matches known attack: 'obvious'.",
+          "explanation": "Host Op_Server0: [Memory] firing. Accumulated score 38.67. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 128.62745606087844
+        "score": 38.79655967594563
       }
     },
     {
@@ -7511,13 +6973,13 @@
         "Enterprise1",
         "Op_Server0"
       ],
-      "anomaly_score": 0.5821515250135036,
+      "anomaly_score": 0.5891603588978397,
       "innate_fired": true,
       "host_innate_scores": {
         "User0": 0.0,
         "User1": 0.0,
         "User2": 0.0,
-        "Enterprise0": 0.0005503159117202783,
+        "Enterprise0": 0.0,
         "Enterprise1": 0.0,
         "Op_Server0": 0.0
       },
@@ -7535,69 +6997,57 @@
       ],
       "tolerance_breached": [
         "User0",
+        "Op_Server0",
         "Enterprise1",
-        "Enterprise0",
-        "Op_Server0"
+        "Enterprise0"
       ],
-      "learned_attack_conf": 0.9992573857307434,
-      "learned_attack_type": "obvious",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 128.64050705226776,
+          "score": 38.800496110527895,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 128.64. Matches known attack: 'obvious'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 38.80. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 128.64050705226776,
+          "score": 38.800496110527895,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 128.64. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 38.80. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise1",
-          "score": 128.533397158092,
+          "score": 38.76818966889766,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise1: [Memory + Learned Attack] firing. Accumulated score 128.53. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise1: [Memory] firing. Accumulated score 38.77. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Op_Server0",
-          "score": 128.303761164961,
+          "score": 38.69892695637822,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Op_Server0: [Memory + Learned Attack] firing. Accumulated score 128.30. Matches known attack: 'obvious'.",
+          "explanation": "Host Op_Server0: [Memory] firing. Accumulated score 38.70. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
-        },
-        {
-          "host": "User2",
-          "score": 0.020974807590009994,
-          "layers_fired": [],
-          "explanation": "Host User2: [none] firing. Accumulated score 0.02. Matches known attack: 'obvious'.",
-          "confidence": "LOW",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 128.64050705226776
+        "score": 38.800496110527895
       }
     },
     {
@@ -7686,13 +7136,13 @@
         "Enterprise1",
         "Op_Server0"
       ],
-      "anomaly_score": 0.6012840261333517,
+      "anomaly_score": 0.5980912686672684,
       "innate_fired": true,
       "host_innate_scores": {
         "User0": 0.0,
         "User1": 0.0,
         "User2": 0.0,
-        "Enterprise0": 0.0013873865777213057,
+        "Enterprise0": 0.0,
         "Enterprise1": 0.0,
         "Op_Server0": 0.0
       },
@@ -7711,61 +7161,57 @@
       ],
       "tolerance_breached": [
         "User0",
+        "Op_Server0",
         "Enterprise1",
-        "Enterprise0",
-        "Op_Server0"
+        "Enterprise0"
       ],
-      "learned_attack_conf": 0.9988606333732605,
-      "learned_attack_type": "obvious",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 128.65094784537922,
+          "score": 38.803645258193704,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 128.65. Matches known attack: 'obvious'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 38.80. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 128.65094784537922,
+          "score": 38.803645258193704,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 128.65. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 38.80. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise1",
-          "score": 128.56525993003862,
+          "score": 38.77780010488952,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise1: [Memory + Learned Attack] firing. Accumulated score 128.57. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise1: [Memory] firing. Accumulated score 38.78. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Op_Server0",
-          "score": 128.3815511355338,
+          "score": 38.722389934873966,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Op_Server0: [Memory + Learned Attack] firing. Accumulated score 128.38. Matches known attack: 'obvious'.",
+          "explanation": "Host Op_Server0: [Memory] firing. Accumulated score 38.72. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 128.65094784537922
+        "score": 38.803645258193704
       }
     },
     {
@@ -7854,14 +7300,14 @@
         "Enterprise1",
         "Op_Server0"
       ],
-      "anomaly_score": 0.6011064594091698,
+      "anomaly_score": 0.5759276240975857,
       "innate_fired": true,
       "host_innate_scores": {
         "User0": 0.0,
         "User1": 0.0,
         "User2": 0.0,
-        "Enterprise0": 0.008051816816122992,
-        "Enterprise1": 0.009265642961450715,
+        "Enterprise0": 0.0,
+        "Enterprise1": 0.0,
         "Op_Server0": 0.0
       },
       "drift_scores": {
@@ -7876,77 +7322,57 @@
       "tolerance_suppressed": [],
       "tolerance_breached": [
         "User0",
+        "Op_Server0",
         "Enterprise1",
-        "Enterprise0",
-        "Op_Server0"
+        "Enterprise0"
       ],
-      "learned_attack_conf": 0.9988403558731079,
-      "learned_attack_type": "obvious",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 128.65930047986842,
+          "score": 38.80616457632635,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 128.66. Matches known attack: 'obvious'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 38.81. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 128.65930047986842,
+          "score": 38.80616457632635,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 128.66. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 38.81. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise1",
-          "score": 128.59075014759594,
+          "score": 38.78548845368301,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise1: [Memory + Learned Attack] firing. Accumulated score 128.59. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise1: [Memory] firing. Accumulated score 38.79. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Op_Server0",
-          "score": 128.44378311199208,
+          "score": 38.74116031767056,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Op_Server0: [Memory + Learned Attack] firing. Accumulated score 128.44. Matches known attack: 'obvious'.",
+          "explanation": "Host Op_Server0: [Memory] firing. Accumulated score 38.74. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
-        },
-        {
-          "host": "User2",
-          "score": 0.013423876857606397,
-          "layers_fired": [],
-          "explanation": "Host User2: [none] firing. Accumulated score 0.01. Matches known attack: 'obvious'.",
-          "confidence": "LOW",
-          "attack_type": "obvious"
-        },
-        {
-          "host": "User1",
-          "score": 0.0,
-          "layers_fired": [],
-          "explanation": "Host User1: [none] firing. Accumulated score 0.00. Matches known attack: 'obvious'.",
-          "confidence": "LOW",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 128.65930047986842
+        "score": 38.80616457632635
       }
     },
     {
@@ -8035,13 +7461,13 @@
         "Enterprise1",
         "Op_Server0"
       ],
-      "anomaly_score": 0.6051894796740827,
+      "anomaly_score": 0.5873152432253339,
       "innate_fired": true,
       "host_innate_scores": {
         "User0": 0.0,
         "User1": 0.0,
         "User2": 0.0,
-        "Enterprise0": 0.0024040156722437978,
+        "Enterprise0": 0.0,
         "Enterprise1": 0.0,
         "Op_Server0": 0.0
       },
@@ -8059,69 +7485,57 @@
       ],
       "tolerance_breached": [
         "User0",
+        "Op_Server0",
         "Enterprise1",
-        "Enterprise0",
-        "Op_Server0"
+        "Enterprise0"
       ],
-      "learned_attack_conf": 0.9990033984184266,
-      "learned_attack_type": "obvious",
+      "learned_attack_conf": 0.0,
+      "learned_attack_type": "unknown",
       "incidents": [
         {
           "host": "User0",
-          "score": 128.66598258745978,
+          "score": 38.808180030832474,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host User0: [Memory + Learned Attack] firing. Accumulated score 128.67. Matches known attack: 'obvious'.",
+          "explanation": "Host User0: [Memory] firing. Accumulated score 38.81. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise0",
-          "score": 128.66598258745978,
+          "score": 38.808180030832474,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise0: [Memory + Learned Attack] firing. Accumulated score 128.67. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise0: [Memory] firing. Accumulated score 38.81. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Enterprise1",
-          "score": 128.61114232164178,
+          "score": 38.7916391327178,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Enterprise1: [Memory + Learned Attack] firing. Accumulated score 128.61. Matches known attack: 'obvious'.",
+          "explanation": "Host Enterprise1: [Memory] firing. Accumulated score 38.79. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         },
         {
           "host": "Op_Server0",
-          "score": 128.4935686931587,
+          "score": 38.75617662390784,
           "layers_fired": [
-            "memory",
-            "learned_attack"
+            "memory"
           ],
-          "explanation": "Host Op_Server0: [Memory + Learned Attack] firing. Accumulated score 128.49. Matches known attack: 'obvious'.",
+          "explanation": "Host Op_Server0: [Memory] firing. Accumulated score 38.76. ",
           "confidence": "HIGH",
-          "attack_type": "obvious"
-        },
-        {
-          "host": "User2",
-          "score": 0.010739101486085117,
-          "layers_fired": [],
-          "explanation": "Host User2: [none] firing. Accumulated score 0.01. Matches known attack: 'obvious'.",
-          "confidence": "LOW",
-          "attack_type": "obvious"
+          "attack_type": "unknown"
         }
       ],
       "top_threat": {
         "host": "User0",
-        "score": 128.66598258745978
+        "score": 38.808180030832474
       }
     }
   ]
