@@ -1,67 +1,112 @@
 /**
- * App.jsx — Root layout for SOMA demo UI
+ * App.jsx — SOMA Cyber Immune Dashboard
  *
- * Four panels arranged around a central network graph:
- *   Top-left:    AnomalyPanel    (Layer 1 reconstruction error time series)
- *   Top-right:   ConvergencePanel (Layer 3 RL vs PBE — HERO VISUAL, largest panel)
- *   Bottom-left: LearningPanel   (Layer 2 PPO reward curve)
- *   Bottom-right: DriftPanel     (Layer 4 centroid trajectory scatter)
- *   Center:      NetworkGraph    (D3 force-directed, live episode state)
+ * Layout (3 columns, 2 rows):
  *
- * WebSocket connects to ws://localhost:8765 (scripts/demo.py).
- * Falls back to static JSON replay if socket unavailable.
- *
- * Color system (CSS vars defined in styles/index.css):
- *   --healthy:    #22d3ee  (cyan)
- *   --compromised:#ef4444  (red)
- *   --honeypot:   #f59e0b  (amber  — heuristic trigger, labeled)
- *   --pbe-line:   #a855f7  (purple — PBE equilibrium benchmark)
- *   --rl-line:    #22d3ee  (cyan   — learned RL policy)
+ *   ┌─────────────────────────────────────────────────────┐
+ *   │  HEADER: title | step scrubber | play controls      │
+ *   ├──────────────┬──────────────────────┬───────────────┤
+ *   │ LayerRadar   │  NetworkGraph        │ EvasionPanel  │
+ *   │ (radar)      │  (D3 CAGE2 topo)     │ (bar chart)   │
+ *   ├──────────────┴──────────────────────┴───────────────┤
+ *   │  TimelinePanel  (full width — threat per host)      │
+ *   ├──────────────┬──────────────────────────────────────┤
+ *   │ GalleryPanel │  IncidentPanel                       │
+ *   │ (VAE scatter)│  (current step incidents)            │
+ *   └──────────────┴──────────────────────────────────────┘
  */
 
-import React, { useState } from "react";
-import NetworkGraph     from "./components/NetworkGraph";
-import AnomalyPanel     from "./components/AnomalyPanel";
-import ConvergencePanel from "./components/ConvergencePanel";
-import LearningPanel    from "./components/LearningPanel";
-import DriftPanel       from "./components/DriftPanel";
-import useWebSocket     from "./hooks/useWebSocket";
+import React from "react";
+import NetworkGraph    from "./components/NetworkGraph";
+import TimelinePanel   from "./components/TimelinePanel";
+import LayerRadarPanel from "./components/LayerRadarPanel";
+import EvasionPanel    from "./components/EvasionPanel";
+import GalleryPanel    from "./components/GalleryPanel";
+import IncidentPanel   from "./components/IncidentPanel";
+import useWebSocket    from "./hooks/useWebSocket";
 import "./styles/index.css";
 
 export default function App() {
-  const { state, connected } = useWebSocket("ws://localhost:8765");
+  const {
+    state, meta, step, totalSteps, connected,
+    playing, play, pause, stepForward, stepBack, setStep,
+  } = useWebSocket("ws://localhost:8765");
+
+  const phase    = state?.phase ?? "—";
+  const isAttack = state?.is_attack ?? false;
 
   return (
     <div className="app-root">
+      {/* ── Header ───────────────────────────────────────────── */}
       <header className="app-header">
         <span className="app-title">SOMA</span>
-        <span className="app-subtitle">Signaling-Optimal Memory Architecture</span>
+        <span className="app-subtitle">Cyber Immune Stack</span>
+
+        {/* Step scrubber */}
+        <div className="controls">
+          <button className="ctrl-btn" onClick={stepBack}   title="Step back">◀</button>
+          <button className="ctrl-btn" onClick={playing ? pause : play} title={playing ? "Pause" : "Play"}>
+            {playing ? "⏸" : "▶"}
+          </button>
+          <button className="ctrl-btn" onClick={stepForward} title="Step forward">▶▶</button>
+          <input
+            type="range"
+            className="scrubber"
+            min={0}
+            max={Math.max(totalSteps - 1, 0)}
+            value={step}
+            onChange={(e) => setStep(parseInt(e.target.value))}
+          />
+          <span className="step-counter">
+            Step {step}/{Math.max(totalSteps - 1, 0)}
+          </span>
+        </div>
+
+        {/* Phase badge */}
+        <span className={`phase-badge ${isAttack ? "phase-attack" : "phase-clean"}`}>
+          {phase}
+        </span>
+
         <span className={`connection-status ${connected ? "connected" : "disconnected"}`}>
           {connected ? "● LIVE" : "● STATIC"}
         </span>
       </header>
 
+      {/* ── Main Grid ────────────────────────────────────────── */}
       <main className="app-grid">
-        {/* Hero visual — largest panel */}
-        <div className="panel panel--hero">
-          <ConvergencePanel data={state?.convergence} />
+
+        {/* Row 1 */}
+        <div className="panel panel--radar">
+          <LayerRadarPanel state={state} meta={meta} />
         </div>
 
         <div className="panel panel--network">
-          <NetworkGraph hosts={state?.hosts} />
+          <NetworkGraph state={state} meta={meta} />
         </div>
 
-        <div className="panel panel--anomaly">
-          <AnomalyPanel scores={state?.anomaly_scores} />
+        <div className="panel panel--evasion">
+          <EvasionPanel meta={meta} />
         </div>
 
-        <div className="panel panel--learning">
-          <LearningPanel rewardHistory={state?.reward_history} />
+        {/* Row 2 — full-width timeline */}
+        <div className="panel panel--timeline">
+          <TimelinePanel
+            state={state}
+            meta={meta}
+            currentStep={step}
+            onStepClick={setStep}
+          />
         </div>
 
-        <div className="panel panel--drift">
-          <DriftPanel trajectories={state?.centroid_trajectories} />
+        {/* Row 3 */}
+        <div className="panel panel--gallery">
+          <GalleryPanel state={state} meta={meta} />
         </div>
+
+        <div className="panel panel--incident">
+          <IncidentPanel state={state} step={step} />
+        </div>
+
       </main>
     </div>
   );
