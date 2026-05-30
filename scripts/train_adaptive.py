@@ -16,31 +16,90 @@ Expected runtime: ~45 minutes on laptop GPU
 
 from pathlib import Path
 
+from soma.envs.cyborg_wrapper import CybORGWrapper
+from soma.layers.adaptive import build_agent, train, evaluate_action_distribution
+from soma.layers.innate import InnateIsolationForest
+from soma.eval.detection_metrics import evaluate_detection_rates
+
 TOTAL_STEPS    = 200_000
 CHECKPOINT_DIR = Path("models/adaptive")
+INNATE_DIR     = Path("models/innate")
+RESULTS_DIR    = Path("results/fpr_calibration")
 TB_LOG         = "./tb_logs"
 
 
 def main():
     CHECKPOINT_DIR.mkdir(parents=True, exist_ok=True)
+    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
     print("Building environment...")
-    # from soma.envs.cyborg_wrapper import CybORGWrapper
-    # from soma.layers.adaptive import build_agent, train
-    # env_fn = lambda: CybORGWrapper()
-    # agent  = build_agent(env_fn, tb_log=TB_LOG)
+    env_fn = lambda: CybORGWrapper(include_red=True)
 
     print(f"Training PPO for {TOTAL_STEPS:,} steps...")
-    # agent = train(agent, TOTAL_STEPS, str(CHECKPOINT_DIR))
-    # agent.save(str(CHECKPOINT_DIR / "soma_ppo_final"))
+    agent = build_agent(env_fn, tb_log=TB_LOG)
+    agent = train(agent, TOTAL_STEPS, str(CHECKPOINT_DIR))
+    agent.save(str(CHECKPOINT_DIR / "soma_ppo_final"))
+    print("Model saved to models/adaptive/soma_ppo_final.zip")
 
-    print("Running behavioral evaluation...")
-    # from soma.eval.detection_metrics import evaluate_detection_rates
-    # results = evaluate_detection_rates(...)
-    # assert results["lateral_movement"]["rate"] >= 0.50, "FAIL: lateral movement DR too low"
-    # assert results["impact"]["rate"]           >= 0.80, "FAIL: impact DR too low"
+    print("\nAction distribution sanity check...")
+    evaluate_action_distribution(agent, env_fn)
 
-    print("Done. Model saved to models/adaptive/soma_ppo_final.zip")
+    print("\nRunning behavioral evaluation (100 episodes)...")
+    winner_type_path = INNATE_DIR / "layer1_winner_type.txt"
+    if not winner_type_path.exists():
+        raise FileNotFoundError(
+            "models/innate/layer1_winner_type.txt not found — run train_innate.py first"
+        )
+    winner_type = winner_type_path.read_text().strip()
+
+    if winner_type == "isolation_forest":
+        iso = InnateIsolationForest.load(INNATE_DIR / "layer1_winner.joblib")
+        layer1_fn = iso.is_anomalous
+    else:
+        import json
+        import torch
+        from soma.layers.innate import InnateVAE
+        vae = InnateVAE()
+        vae.load_state_dict(torch.load(INNATE_DIR / "layer1_winner.pt"))
+        vae.threshold_ = json.loads(
+            (INNATE_DIR / "layer1_winner_threshold.json").read_text()
+        )["threshold"]
+        layer1_fn = vae.is_anomalous
+
+    def predict_fn(obs):
+        action, _ = agent.predict(obs, deterministic=True)
+        return int(action)
+
+    results = evaluate_detection_rates(
+        predict_fn=predict_fn,
+        env_fn=env_fn,
+        layer1_fn=layer1_fn,
+        n_episodes=100,
+    )
+
+    lm_rate     = results["lateral_movement"]["rate"]
+    impact_rate = results["impact"]["rate"]
+
+    summary = (
+        f"lateral_movement_dr={lm_rate:.3f}\n"
+        f"impact_dr={impact_rate:.3f}\n"
+        f"lateral_movement_pass={'yes' if lm_rate >= 0.50 else 'no'}\n"
+        f"impact_pass={'yes' if impact_rate >= 0.80 else 'no'}\n"
+    )
+    (RESULTS_DIR / "layer2_eval.txt").write_text(summary)
+    print(f"\nResults written to results/fpr_calibration/layer2_eval.txt")
+
+    if lm_rate < 0.30:
+        print(
+            "\n[FAIL] Lateral movement DR critically low. "
+            "Increase early-detection bonus from +8 to +12 in cyborg_wrapper.py "
+            "or add a -15 penalty for impact completion."
+        )
+        raise AssertionError(f"lateral_movement DR={lm_rate:.3f} < 0.30 — retune reward")
+
+    assert lm_rate  >= 0.50, f"[FAIL] lateral_movement DR={lm_rate:.3f} < 0.50"
+    assert impact_rate >= 0.80, f"[FAIL] impact DR={impact_rate:.3f} < 0.80"
+    print("\nAll Layer 2 checks passed.")
 
 
 if __name__ == "__main__":

@@ -105,5 +105,30 @@ def evaluate_action_distribution(agent: PPO, env_fn, n_episodes: int = 20) -> di
     Sanity check: inspect what actions the trained agent actually takes.
     If Analyze fraction > 0.70 and reward looks good, check for reward hacking.
     """
-    # TODO: run n_episodes, tally action_counts, return distribution dict
-    raise NotImplementedError
+    from soma.envs.cyborg_wrapper import BLUE_ACTIONS
+
+    category_counts: dict = {"Monitor": 0, "Analyze": 0, "Remove": 0, "Restore": 0}
+    total = 0
+
+    for _ in range(n_episodes):
+        env  = env_fn()
+        obs, _ = env.reset()
+        for _ in range(200):
+            action, _ = agent.predict(obs, deterministic=True)
+            obs, _, done, _, _ = env.step(int(action))
+            name = BLUE_ACTIONS[int(action)]
+            for cat in category_counts:
+                if name.startswith(cat):
+                    category_counts[cat] += 1
+                    break
+            total += 1
+            if done:
+                break
+
+    distribution = {cat: count / max(total, 1) for cat, count in category_counts.items()}
+    analyze_frac = distribution.get("Analyze", 0.0)
+    if analyze_frac > 0.70:
+        print(f"[WARN] Analyze fraction = {analyze_frac:.2f} > 0.70 — possible reward hacking")
+    for cat, frac in distribution.items():
+        print(f"  {cat}: {frac:.3f}")
+    return distribution
