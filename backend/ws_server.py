@@ -12,9 +12,12 @@ Usage:
   python ws_server.py
 
 Environment variables:
-  PORT      — listening port (default 8765)
-  EPISODE   — path to episode JSON (default data/demo_episode.json)
-  STEP_DELAY — seconds between steps (default 0.3)
+  PORT         — listening port (default 8765)
+  EPISODE      — path to episode JSON (default data/demo_episode.json)
+  EPISODE_URL  — if set, fetch episode from this URL instead of disk;
+                 allows updating the episode without rebuilding the Docker image
+                 e.g. https://frontend-nu-six-43.vercel.app/demo_episode.json
+  STEP_DELAY   — seconds between steps (default 0.3)
 """
 
 import asyncio
@@ -22,11 +25,13 @@ import http
 import json
 import os
 import pathlib
+import urllib.request
 import websockets
 
-PORT       = int(os.environ.get("PORT", 8765))
-EPISODE    = os.environ.get("EPISODE", "data/demo_episode.json")
-STEP_DELAY = float(os.environ.get("STEP_DELAY", 0.3))
+PORT         = int(os.environ.get("PORT", 8765))
+EPISODE      = os.environ.get("EPISODE", "data/demo_episode.json")
+EPISODE_URL  = os.environ.get("EPISODE_URL", "")
+STEP_DELAY   = float(os.environ.get("STEP_DELAY", 0.3))
 
 _episode_cache = None
 
@@ -49,9 +54,15 @@ def resolve_episode_path() -> pathlib.Path:
 def load_episode() -> dict:
     global _episode_cache
     if _episode_cache is None:
-        ep_path = resolve_episode_path()
-        _episode_cache = json.loads(ep_path.read_text())
-        print(f"[ws_server] Loaded episode ({ep_path}): {len(_episode_cache['steps'])} steps")
+        if EPISODE_URL:
+            print(f"[ws_server] Fetching episode from URL: {EPISODE_URL}")
+            with urllib.request.urlopen(EPISODE_URL, timeout=30) as resp:
+                _episode_cache = json.loads(resp.read())
+            print(f"[ws_server] Fetched episode: {len(_episode_cache['steps'])} steps")
+        else:
+            ep_path = resolve_episode_path()
+            _episode_cache = json.loads(ep_path.read_text())
+            print(f"[ws_server] Loaded episode ({ep_path}): {len(_episode_cache['steps'])} steps")
     return _episode_cache
 
 
