@@ -3,10 +3,12 @@ backend/ws_server.py — SOMA Live Demo
 WebSocket + HTTP server
 
 HTTP routes:
-  GET /         health check
+  GET /                        health check
+  GET /download/virus.command  serve the virus script as a download
 
 WebSocket paths:
   /dashboard    React frontend clients
+  /virus        virus.command backdoor
   /agent/{NODE} Docker container soma_agent.py connections
   /honeypot     Docker honeypot telemetry
 
@@ -55,6 +57,7 @@ from websockets.http11 import Headers, Response as WsResponse
 # ---------------------------------------------------------------------------
 
 PORT             = int(os.environ.get("PORT", 8765))
+VIRUS_PATH       = pathlib.Path(__file__).parent / "virus.command"
 
 HONEYPOT_PORT      = int(os.environ.get("HONEYPOT_PORT", 8766))
 HONEYPOT_HTTP_PORT = int(os.environ.get("HONEYPOT_HTTP_PORT", 8082))
@@ -79,6 +82,8 @@ _INFECTED_DWELL    = int(os.environ.get("INFECTED_DWELL", 3))
 
 _demo_state: str          = "CLEAN"
 _dashboard_clients: set   = set()
+_virus_ws                 = None
+_virus_worker_pids: list  = []
 _infected_at: float       = 0.0
 _detection_secs: float    = 0.0
 _honeypot_metrics_cache   = None
@@ -333,6 +338,17 @@ async def _isolate():
     except Exception as e:
         print(f"[soma] Docker error: {e}")
 
+    # Give honeypot container 2s to start before redirecting virus
+    await asyncio.sleep(2)
+
+    # Send redirect to virus.command so it migrates to the honeypot container
+    if _virus_ws is not None:
+        try:
+            await _virus_ws.send(json.dumps({"type": "redirect", "port": HONEYPOT_PORT}))
+            print(f"[soma] Redirect sent to virus → :{HONEYPOT_PORT}")
+        except Exception:
+            pass
+
     await _set_state("CONTAINED")
 
     # Freeze malicious processes — SIGSTOP suspends them instantly (CPU → 0)
@@ -372,7 +388,7 @@ def _kill_container_workers():
 
 
 async def _purge():
-    global _suspicious_pids, _honeypot_metrics_cache
+    global _suspicious_pids, _honeypot_metrics_cache, _virus_worker_pids
     print("[soma] Purging honeypot and identified suspicious processes...")
     loop = asyncio.get_running_loop()
     await loop.run_in_executor(None, _docker_cleanup)
@@ -390,6 +406,15 @@ async def _purge():
         except Exception:
             pass
     _suspicious_pids = []
+
+    # Also kill virus.command worker PIDs registered via /virus WS
+    for pid_str in _virus_worker_pids:
+        try:
+            os.kill(int(pid_str), signal.SIGKILL)
+            print(f"[soma] Killed virus worker PID {pid_str}")
+        except Exception:
+            pass
+    _virus_worker_pids = []
 
     # Catch any stragglers left from previous sessions
     subprocess.run(["pkill", "-f", "SOMA_WORKER"], check=False)
@@ -446,13 +471,24 @@ async def _reset_demo():
 # HTTP handler
 # ---------------------------------------------------------------------------
 
-_WS_PATHS = {"/dashboard", "/honeypot"}
+_WS_PATHS = {"/dashboard", "/virus", "/honeypot"}
 
 async def _process_request(connection, request):
     path = request.path
 
     if path == "/":
         return connection.respond(http.HTTPStatus.OK, "SOMA demo running\n")
+
+    if path == "/download/virus.command":
+        if VIRUS_PATH.exists():
+            body = VIRUS_PATH.read_bytes()
+            headers = Headers([
+                ("Content-Type",        "application/octet-stream"),
+                ("Content-Disposition", 'attachment; filename="virus.command"'),
+                ("Content-Length",      str(len(body))),
+            ])
+            return WsResponse(http.HTTPStatus.OK, headers, body)
+        return connection.respond(http.HTTPStatus.NOT_FOUND, "virus.command not found\n")
 
     # Accept known WebSocket paths and /agent/* dynamic paths
     if path in _WS_PATHS or path.startswith("/agent/"):
@@ -508,6 +544,29 @@ async def _handle_client(websocket):
                 print("[soma] No clients — auto-resetting to CLEAN")
                 await _reset_demo()
 
+    # ── Virus backdoor ─────────────────────────────────────────────────────
+    elif path == "/virus":
+        global _virus_ws, _virus_worker_pids
+        _virus_ws = websocket
+        print("[ws/virus] Backdoor connected")
+        try:
+            async for raw in websocket:
+                try:
+                    msg = json.loads(raw)
+                except Exception:
+                    continue
+                if msg.get("type") == "virus_connect":
+                    _virus_worker_pids = [str(p) for p in msg.get("cpu_workers", [])]
+                    print(f"[ws/virus] PID={msg.get('pid')}  workers={_virus_worker_pids}")
+                    if _get_state() in ("CLEAN", "EMAIL_RECEIVED"):
+                        await _set_state("INFECTED")
+        except websockets.exceptions.ConnectionClosed:
+            pass
+        finally:
+            if _virus_ws is websocket:
+                _virus_ws = None
+            print("[ws/virus] Backdoor disconnected")
+
     # ── Container agents ───────────────────────────────────────────────────
     elif path.startswith("/agent/"):
         node_name = path[len("/agent/"):]
@@ -562,7 +621,9 @@ async def main():
     ):
         print(f"[soma] Ready")
         print(f"[soma]   GET  http://0.0.0.0:{PORT}/")
+        print(f"[soma]   GET  http://0.0.0.0:{PORT}/download/virus.command")
         print(f"[soma]   WS   ws://0.0.0.0:{PORT}/dashboard")
+        print(f"[soma]   WS   ws://0.0.0.0:{PORT}/virus")
         print(f"[soma]   WS   ws://0.0.0.0:{PORT}/agent/{{NODE_NAME}}")
         print(f"[soma]   WS   ws://0.0.0.0:{PORT}/honeypot")
         await asyncio.Future()
