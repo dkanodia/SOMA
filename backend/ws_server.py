@@ -543,7 +543,7 @@ _WS_PATHS = {"/dashboard", "/virus", "/honeypot"}
 async def _process_request(connection, request):
     path = request.path
 
-    if path == "/":
+    if path in ("/", "/health"):
         return connection.respond(http.HTTPStatus.OK, "SOMA demo running\n")
 
     if path == "/download/virus.command":

@@ -6,9 +6,9 @@ WORKDIR /app
 COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy episode data and server
-COPY frontend/public/demo_episode.json data/demo_episode.json
+# Copy server + downloadable payload
 COPY backend/ws_server.py .
+COPY backend/virus.command ./virus.command
 
 # Render assigns PORT dynamically; ws_server.py reads it from env
 EXPOSE ${PORT:-8765}
