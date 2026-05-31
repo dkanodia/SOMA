@@ -385,14 +385,164 @@ These fill in gaps that exist but don't break the core demo:
 - [x] **Gallery pre-population** — `_populate_gallery()` seeds 4 CybORG-representative attack signatures (lateral_move_obvious, lateral_move_sophisticated, privilege_escalation, direct_impact) using actual CybORG 30-dim feature patterns.
 - [x] **Regenerated `demo_episode.json`** — 200 steps, all layers active: innate 200/200, decoys 198/200, kill-chain 196/200, HIGH incidents 199/200, learned_attacks 11/200.
 
-### Priority 4 — Remaining Tasks
+### Priority 4 — Maintenance / Polish
 
 - [ ] **Formal evaluation report** — write a results table with all layer TPR/FPR numbers, pre/post-fusion comparison, and the evasion matrix headline.
-- [ ] **Render free plan spin-up** — Render free tier sleeps after 15 min of inactivity; first WebSocket connection may stall 30–60s. Consider a cron ping or upgrade to paid.
-- [ ] **Test suite green** — run `pytest tests/` and verify all 5 test files pass post-wrapper-fix. Several tests need updates for the obs-dimension and API changes.
-- [ ] **Train LearnedAttackRecognizer on real CybORG attack episodes** — current gallery uses synthetic representative windows; running a CybORG episode with red agent and calling `learn_attack()` per phase would give more realistic embeddings.
-- [ ] **Adaptive deception → signal game bridge** — `AdaptiveDeceptionController` adapts threshold based on attack pressure; next step is using the PBE-derived optimal mixing rates (q*, r*) to set the MAX_ACTIVE budget dynamically per κ value.
-- [ ] **Learning curve from tb_logs** — `_load_learning_curve()` returns 0 points because no tensorboard log exists; either regenerate logs during training or load from SB3 checkpoints directly.
+- [ ] **Render free plan spin-up** — Render free tier sleeps after 15 min; first WebSocket connection stalls 30–60s. Fix: cron ping or upgrade.
+- [ ] **Test suite green** — run `pytest tests/`; several tests need updates for obs-dimension (52→30) and API changes.
+- [ ] **Train LearnedAttackRecognizer on real CybORG attack episodes** — current gallery uses representative synthetic windows; real episodes would raise learned_attacks layer from 11/200 to much higher.
+- [ ] **Adaptive deception → PBE bridge** — wire PBE q*/r* mixing rates into `AdaptiveDeceptionController.MAX_ACTIVE` so the budget is theoretically grounded.
+- [ ] **Learning curve** — `_load_learning_curve()` returns 0 pts (no tb_logs); extract from SB3 checkpoint metadata or training log.
+
+---
+
+## Extended Capability Roadmap
+
+These are the next-generation extensions that push SOMA from a detection system into a **fully active immune defense** — one that clones itself, actively deceives the attacker, adapts to non-scripted adversaries, and develops persistent memory.
+
+---
+
+### EXT-1 — Honeynet Cloning (System Mirror)
+**Biological analogy:** Dendritic cells present antigens in a controlled environment to train T-cells without risking the real tissue.
+
+Create a full network clone (`HoneynetClone`) that mirrors the real CAGE 2 topology. When an attacker is detected with ≥ MEDIUM confidence:
+1. **Fork the CybORG environment** — start a parallel `CybORGWrapper` with identical initial state as the real one.
+2. **Redirect attacker traffic** — the real environment receives Monitor/Restore actions only; the clone receives the attacker's actual actions, letting them think they're progressing.
+3. **Feed false telemetry** — inject plausible-but-fake observations back into the attacker's view (fabricated credentials, fake file names, decoy service banners).
+4. **Exfiltrate attacker TTPs** — record every action the attacker takes inside the clone; feed the sequence into `LearnedAttackRecognizer.learn_attack()` to immediately strengthen the gallery.
+
+**Files to create:** `soma/envs/honeynet_clone.py`, `soma/layers/traffic_redirector.py`
+**Demo impact:** show "clone activated" event in frontend when MEDIUM+ incident fires; clone timeline panel showing attacker's progress inside the mirror.
+
+---
+
+### EXT-2 — Active Counter-Deception (Lure & Trap)
+**Biological analogy:** Inflammatory cytokines attract pathogens toward macrophages, drawing them into a controlled destruction zone.
+
+Once the attacker is inside the clone, actively lure them deeper:
+1. **Fake credential injection** — plant visually authentic credentials (`soma/deception/lure_generator.py`) in the clone's file system: SSH keys pointing to dead-end hosts, database connection strings with fake schemas.
+2. **Escalating bait** — if attacker dwell time in clone > 10 steps, escalate the apparent value of resources (increment fake file sizes, add fake admin accounts) to keep them engaged.
+3. **Trap doors** — plant network calls inside the clone that the attacker will likely trigger; each trigger is a confirmed fingerprint event logged to the threat model.
+4. **Canary tokens** — embed unique identifiers in fake data; if any canary is seen in a subsequent episode, it proves the attacker exfiltrated and is returning.
+
+**Files to create:** `soma/deception/lure_generator.py`, `soma/deception/canary_tracker.py`
+**Metrics:** attacker dwell time in clone, canary trigger rate, lure effectiveness ratio.
+
+---
+
+### EXT-3 — Attacker Fingerprinting & Behavioral Profile
+**Biological analogy:** MHC peptide presentation — the immune system extracts a minimal unique signature from each pathogen for targeted recognition.
+
+Build a behavioral profile of the attacker across episodes:
+1. **Action sequence embedding** — encode the red agent's action sequence (inferred from obs deltas) into a fixed-length vector using the same `_TinyVAE` used for attack recognition.
+2. **Profile store** (`soma/layers/threat_model.py`) — persist fingerprints as a FAISS-style nearest-neighbor index across episodes; match new episodes against known fingerprints.
+3. **TTPs extraction** — classify attack sequence into MITRE ATT&CK-like phase labels: `T1078 Valid Accounts`, `T1021 Remote Services`, `T1486 Data Encrypted for Impact`.
+4. **Cross-episode memory** — save `threat_model.pkl` to disk; on next episode load, pre-warm the correlator weights based on known attacker behavior.
+5. **Attacker novelty score** — if fingerprint distance > threshold → novel adversary → raise alert, lower deception threshold immediately.
+
+**Files to create:** `soma/layers/threat_model.py`
+**New correlator input:** `attacker_novelty_score` as a 6th signal (weight 0.15, displacing learned_attacks weight reduction).
+
+---
+
+### EXT-4 — Adaptive Adversary Training (Self-Play RL)
+**Biological analogy:** Thymic selection — T-cells are trained against self-antigens in a controlled environment to prevent autoimmunity; here, the defender trains against an adaptive red agent.
+
+The current PPO was trained exclusively against `B_lineAgent` (scripted, deterministic). Against an adaptive adversary it will fail. Fix this with self-play:
+1. **Red agent RL** (`soma/envs/red_agent_env.py`) — build a PPO red agent trained to maximize damage against the current blue PPO. Observation: the blue agent's last 5 actions + compromise state. Action: CAGE 2 red actions (exploit, privilege escalation, impact).
+2. **Alternating self-play loop** — train blue 50k steps → freeze blue, train red 50k steps → freeze red, train blue again. Repeat 4 cycles.
+3. **Curriculum** — start red against random blue, anneal toward frozen-PPO blue, then self-play. Prevents Nash collapse.
+4. **Measure robustness** — evaluate final blue against B_lineAgent (baseline) AND against the trained red agent. Report both detection rates.
+
+**Files to create:** `soma/envs/red_agent_env.py`, `scripts/train_selfplay.py`
+**Expected outcome:** detection rate against adaptive red drops from 0.982 to ~0.65; self-play recovers it to ≥ 0.80 within 4 cycles.
+
+---
+
+### EXT-5 — Negative Selection (Self / Non-Self Discriminator)
+**Biological analogy:** Central tolerance in the thymus eliminates T-cells that react to self-peptides; only cells that DON'T react to self survive.
+
+Replace the IsolationForest (degenerate on zero-variance data) with a principled negative selection algorithm:
+1. **Self set** — collect clean CybORG episodes; define `self` as the empirical distribution of (host, feature) tuples.
+2. **Detector generation** — generate N random detectors (bit-string or hypersphere in feature space). Eliminate any detector that matches ≥ 1 self observation within radius r.
+3. **Anomaly detection** — at runtime, an observation is flagged if ≥ k detectors match it (k-out-of-N vote). Threshold k controls FPR/TPR tradeoff.
+4. **Affinity maturation** — surviving detectors that fire on confirmed attacks are cloned with slight perturbation, generating a stronger detector pool over time (mimics somatic hypermutation).
+
+**Files to create:** `soma/layers/negative_selection.py`  
+**Replaces:** IsolationForest in `InnateImmunityLayer`; drop-in `is_anomalous()` / `per_host_scores()` API.
+**Advantage:** interpretable (each detector is a feature-space region), adaptive (maturation), and designed for zero-variance clean data.
+
+---
+
+### EXT-6 — Cytokine Signaling (Multi-Host Coordination)
+**Biological analogy:** Cytokines are chemical messengers that coordinate immune response across the body — infected cells alert neighbors, which pre-activate before the pathogen arrives.
+
+Currently each host is assessed independently. Add lateral signaling:
+1. **Cytokine field** (`soma/layers/cytokine.py`) — a 6×6 diffusion matrix over the network topology. When host A fires, it sends a signal to network-adjacent hosts proportional to the edge weight.
+2. **Pre-activation** — adjacent hosts that receive cytokine signal above threshold lower their own detection threshold for the next 3 steps (anticipatory defense).
+3. **Amplification cascade** — if 2+ adjacent hosts both fire within 2 steps, emit a "cascade cytokine" that activates the entire subnet (mimics inflammatory cascade).
+4. **Signal decay** — cytokine concentration decays 0.3×/step so pre-activation is transient and doesn't cause persistent FPR elevation.
+5. **Frontend** — animate cytokine flow on the `NetworkGraph` as glowing edge pulses traveling between nodes.
+
+**Files to create:** `soma/layers/cytokine.py`
+**Correlator integration:** add `cytokine_primed` as a per-host boolean input; primed hosts get 1.5× weight on their innate contribution.
+
+---
+
+### EXT-7 — Clonal Selection & Affinity Maturation (Defense Evolution)
+**Biological analogy:** B-cells whose receptors best match an antigen are clonally expanded and undergo somatic hypermutation to produce higher-affinity variants.
+
+Evolve the learned attack gallery over time:
+1. **Clone scoring** — after each episode, score each gallery entry by how well it matched confirmed attack steps (innate fired AND incident was HIGH AND kill-chain edge confirmed).
+2. **Expansion** — high-scoring entries (affinity ≥ 0.8) are cloned with Gaussian noise in latent space (σ=0.05), creating 3 mutant variants.
+3. **Selection pressure** — if gallery size > 20, prune lowest-scoring entries. Keeps gallery lean and high-quality.
+4. **Isotype switching** — if an attack type is seen 3+ episodes consecutively, promote it to a "memory entry" with lower recognition threshold (0.5 vs 0.6), representing long-term immunological memory.
+
+**Files to create/modify:** `soma/layers/clonal_selector.py`, extend `LearnedAttackRecognizer`
+**Metric:** gallery affinity score distribution per episode; track mean affinity over 10 episodes.
+
+---
+
+### EXT-8 — Persistent Cross-Episode Immune Memory
+**Biological analogy:** Memory B-cells and T-cells persist long after pathogen clearance; re-exposure triggers faster, stronger response.
+
+Currently SOMA resets completely between episodes. Add persistence:
+1. **Memory store** (`models/immune_memory/`) — serialize `AdaptiveDeceptionController.threat_memory`, `LearnedAttackRecognizer._gallery`, `AttackTracer` kill-chain history, and `ThreatModel` fingerprints to disk after each episode.
+2. **Memory-boosted response** — on episode start, load prior memory; if the attack fingerprint matches a remembered adversary, immediately lower deception threshold to MIN and pre-activate cytokine field on previously compromised hosts.
+3. **Decay schedule** — memory entries age with each episode; entries not re-confirmed after 5 episodes have their threshold raised back toward base (simulates immunological waning).
+4. **Cross-episode metrics** — track mean time-to-detection across episodes; demonstrate that with memory, episode N+1 detects faster than episode 1 (immune priming).
+
+**Files to create:** `soma/layers/immune_memory.py`, `scripts/run_multi_episode.py`
+**Demo impact:** run 5 consecutive episodes; show detection latency curve dropping across episodes in `LearningPanel`.
+
+---
+
+### EXT-9 — Deception Effectiveness Measurement
+**Biological analogy:** Immune tolerance assays measure whether tolerance therapy actually suppresses auto-reactive cells.
+
+Currently we activate honeypots but never measure if they worked:
+1. **Dwell-time tracker** — measure how long the attacker spends on honeypot-active hosts vs real hosts.
+2. **Misdirection score** — if an attacker takes an action on a honeypot host (detectable via obs delta on that host), score +1 misdirection. Track misdirection/total_actions ratio.
+3. **Coverage gap** — detect steps where attacker compromised a host with no active honeypot nearby; these are deception failures.
+4. **κ-conditioned effectiveness** — compare misdirection rates across the three trained signal game policies (κ=0, 5, 10); the policy with highest κ should show highest misdirection (rational attacker pays more attention to signals).
+5. **Frontend** — add a "Deception Effectiveness" row to `HoneypotPanel` showing running misdirection score and dwell time.
+
+**Files to create:** `soma/eval/deception_metrics.py`
+**Key metric:** misdirection ratio — `actions_on_honeypots / total_attacker_actions`. Target: ≥ 0.30 (attacker wastes 30%+ of actions on decoys).
+
+---
+
+### EXT-10 — Live Adaptive PPO Fine-Tuning (Online Learning)
+**Biological analogy:** Peripheral tolerance continuously updates the self-model; adaptive immunity tunes its response based on ongoing antigen exposure.
+
+The current PPO is frozen at deployment. Add cautious online fine-tuning:
+1. **Experience buffer** — collect (obs, action, reward) tuples from the live demo stream into a replay buffer (max 5000 steps).
+2. **Periodic fine-tune** — every 500 steps, run 1 PPO gradient update on the buffer with a low learning rate (1e-5) to adapt to the current episode's attack pattern.
+3. **Safety constraint** — only fine-tune when: (a) buffer has ≥ 200 steps, (b) current detection rate hasn't dropped below 0.60 in the last 50 steps, (c) fine-tune improves cumulative reward on a held-out validation window.
+4. **Checkpoint guard** — if fine-tuned policy degrades beyond 10% of baseline, revert to `soma_ppo_final.zip` automatically.
+
+**Files to create:** `soma/layers/online_ppo.py`
+**Risk note:** online RL can destabilize — the checkpoint guard and conservative LR are mandatory safeguards.
 
 ---
 
