@@ -1,33 +1,38 @@
 /**
  * hooks/useWebSocket.js
  *
- * Tries a live WebSocket connection to ws://localhost:8765.
- * Falls back to /demo_episode.json and auto-streams it at a fixed interval.
+ * Loads static demo data immediately so the UI is never blank, then attempts
+ * a live WebSocket connection in the background.
  *
- * No play/pause — data always flows. Click events in the Timeline to inspect
- * a specific point; the stream continues from there.
+ * If the WS connects (within WS_TIMEOUT_MS): switches to live mode.
+ * If not: stays in static replay mode and schedules one silent retry after
+ * COLD_RETRY_MS — enough time for a Render free-tier cold start (~30-60 s).
  */
 import { useState, useEffect, useRef, useCallback } from "react";
 
-const STEP_INTERVAL_MS = 800;
+const STEP_INTERVAL_MS = 800;   // static auto-advance rate
+const WS_TIMEOUT_MS    = 30000; // wait up to 30 s for WS (Render cold start)
+const COLD_RETRY_MS    = 35000; // silent retry 35 s after timeout fires
 
 export default function useWebSocket(url) {
   const [steps,        setSteps]       = useState([]);
   const [meta,         setMeta]        = useState(null);
   const [step,         setStepIdx]     = useState(0);
   const [connected,    setConnected]   = useState(false);
+  const [warming,      setWarming]     = useState(true);
   const [reconnectKey, setReconnectKey] = useState(0);
 
-  const wsRef      = useRef(null);
-  const timerRef   = useRef(null);
-  const stepsRef   = useRef([]);
-  const pausedRef  = useRef(false);
-  const retryRef   = useRef(0);       // reconnect attempt counter
+  const wsRef           = useRef(null);
+  const timerRef        = useRef(null);
+  const stepsRef        = useRef([]);
+  const pausedRef       = useRef(false);
+  const retryRef        = useRef(0);
+  const retriedColdRef  = useRef(false); // only one cold-start retry per mount
 
   useEffect(() => { stepsRef.current = steps; }, [steps]);
 
   // ------------------------------------------------------------------
-  // Static fallback — auto-streams from step 0
+  // Static data — loaded immediately so the UI always has content
   // ------------------------------------------------------------------
   const loadStatic = useCallback(() => {
     fetch("/demo_episode.json")
@@ -42,11 +47,18 @@ export default function useWebSocket(url) {
   }, []);
 
   // ------------------------------------------------------------------
-  // WebSocket
+  // WebSocket — background connection attempt alongside static data
   // ------------------------------------------------------------------
   useEffect(() => {
     let wsConnected = false;
-    let fallbackTimer;
+    let wsTimer;
+    let coldRetryTimer;
+
+    // Always load static first — user sees content immediately
+    loadStatic();
+
+    // Only show the "warming" indicator on the initial connection attempt
+    setWarming(reconnectKey === 0);
 
     try {
       const ws = new WebSocket(url);
@@ -56,7 +68,8 @@ export default function useWebSocket(url) {
         wsConnected = true;
         retryRef.current = 0;
         setConnected(true);
-        clearTimeout(fallbackTimer);
+        setWarming(false);
+        clearTimeout(wsTimer);
       };
 
       ws.onmessage = (e) => {
@@ -78,36 +91,49 @@ export default function useWebSocket(url) {
 
       ws.onclose = () => {
         setConnected(false);
-        if (!wsConnected) {
-          loadStatic();
-        } else if (retryRef.current < 3) {
+        if (wsConnected && retryRef.current < 3) {
           retryRef.current++;
           setTimeout(() => setReconnectKey((k) => k + 1), 2000);
         }
       };
       ws.onerror = () => { setConnected(false); };
 
-      fallbackTimer = setTimeout(() => {
-        if (!wsConnected) { ws.close(); loadStatic(); }
-      }, 1500);
+      // Give WS 30 s to connect; if not, close it and schedule one cold retry
+      wsTimer = setTimeout(() => {
+        if (!wsConnected) {
+          ws.close();
+          setWarming(false);
+          if (!retriedColdRef.current) {
+            retriedColdRef.current = true;
+            coldRetryTimer = setTimeout(
+              () => setReconnectKey((k) => k + 1),
+              COLD_RETRY_MS,
+            );
+          }
+        }
+      }, WS_TIMEOUT_MS);
     } catch {
-      loadStatic();
+      setWarming(false);
     }
 
-    return () => { clearTimeout(fallbackTimer); wsRef.current?.close(); };
+    return () => {
+      clearTimeout(wsTimer);
+      clearTimeout(coldRetryTimer);
+      wsRef.current?.close();
+    };
   }, [url, loadStatic, reconnectKey]);
 
   // ------------------------------------------------------------------
-  // Auto-advance (static mode only — live WS drives step via onmessage)
+  // Auto-advance (static replay only — live WS drives step via onmessage)
   // ------------------------------------------------------------------
   useEffect(() => {
-    if (connected) return;           // live WS drives itself
+    if (connected) return;
     if (stepsRef.current.length === 0) return;
 
     timerRef.current = setInterval(() => {
       if (pausedRef.current) return;
       setStepIdx((prev) => {
-        if (prev + 1 >= stepsRef.current.length) return 0;  // loop
+        if (prev + 1 >= stepsRef.current.length) return 0;
         return prev + 1;
       });
     }, STEP_INTERVAL_MS);
@@ -129,5 +155,5 @@ export default function useWebSocket(url) {
   const state = steps[step] ?? null;
   const metaWithSteps = meta ? { ...meta, _steps: steps } : null;
 
-  return { state, meta: metaWithSteps, step, totalSteps: steps.length, connected, setStep };
+  return { state, meta: metaWithSteps, step, totalSteps: steps.length, connected, warming, setStep };
 }

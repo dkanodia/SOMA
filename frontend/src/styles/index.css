@@ -240,6 +240,16 @@ button {
   background: var(--ok);
 }
 
+.status-dot.warming {
+  background: var(--gold);
+  animation: pulse-dot 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
 .console-main {
   display: flex;
   flex-direction: column;
@@ -402,6 +412,11 @@ button {
 .live-pill.replay {
   background: var(--mem-dim);
   color: var(--mem);
+}
+
+.live-pill.warming {
+  background: var(--gold-dim);
+  color: var(--gold);
 }
 
 .live-dot {

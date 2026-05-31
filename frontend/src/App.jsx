@@ -60,7 +60,7 @@ const NAV_ITEMS = [
   { id: "auditlog",   label: "Audit Log",   icon: "≡" },
 ];
 
-function ConsoleSidebar({ connected, activeNav, setNav }) {
+function ConsoleSidebar({ connected, warming, activeNav, setNav }) {
   const [clock, setClock] = React.useState(() =>
     new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" })
   );
@@ -100,10 +100,10 @@ function ConsoleSidebar({ connected, activeNav, setNav }) {
           </div>
         </div>
         <div className="connection-card">
-          <span className={connected ? "status-dot live" : "status-dot"} />
+          <span className={connected ? "status-dot live" : warming ? "status-dot warming" : "status-dot"} />
           <div>
-            <strong>{connected ? "Live feed" : "Session replay"}</strong>
-            <span>{connected ? clock : "Historical analysis"}</span>
+            <strong>{connected ? "Live feed" : warming ? "Connecting…" : "Session replay"}</strong>
+            <span>{connected ? clock : warming ? "Awaiting live stream" : "Historical analysis"}</span>
           </div>
         </div>
       </div>
@@ -757,7 +757,7 @@ function enrichState(raw) {
 
 export default function App() {
   const {
-    state, meta, step, totalSteps, connected, setStep,
+    state, meta, step, totalSteps, connected, warming, setStep,
   } = useWebSocket(process.env.REACT_APP_WS_URL || "ws://localhost:8765");
 
   const currentState = enrichState(state) ?? {};
@@ -786,7 +786,7 @@ export default function App() {
 
   return (
     <div className="app-root">
-      <ConsoleSidebar connected={connected} activeNav={activeNav} setNav={setActiveNav} />
+      <ConsoleSidebar connected={connected} warming={warming} activeNav={activeNav} setNav={setActiveNav} />
       <main className="console-main">
         <TopBar state={currentState} step={step} activeNav={activeNav} />
 
@@ -848,9 +848,9 @@ export default function App() {
         </>}
 
         <div className="status-bar">
-          <span className={connected ? "live-pill live" : "live-pill replay"}>
+          <span className={connected ? "live-pill live" : warming ? "live-pill warming" : "live-pill replay"}>
             <span className="live-dot" />
-            {connected ? "Live" : "Replaying session"}
+            {connected ? "Live" : warming ? "Connecting…" : "Replaying session"}
           </span>
           <span className="sb-sep" />
           <span className="sb-item">{stepToTimestamp(step)}</span>
