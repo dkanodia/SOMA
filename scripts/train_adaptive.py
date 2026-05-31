@@ -45,12 +45,21 @@ def main():
     evaluate_action_distribution(agent, env_fn)
 
     print("\nRunning behavioral evaluation (100 episodes)...")
+    # Try isolation_forest.joblib first, fall back to baseline.joblib
     innate_path = INNATE_DIR / "isolation_forest.joblib"
-    if not innate_path.exists():
+    baseline_path = INNATE_DIR / "baseline.joblib"
+
+    if innate_path.exists():
+        innate = InnateImmunityLayer.load(innate_path)
+        print(f"Loaded innate model from {innate_path}")
+    elif baseline_path.exists():
+        print(f"[WARN] isolation_forest.joblib not found, using baseline.joblib")
+        innate = InnateImmunityLayer.load(baseline_path)
+    else:
         raise FileNotFoundError(
-            f"{innate_path} not found — run train_innate.py first"
+            f"Neither {innate_path} nor {baseline_path} found — run train_innate.py first"
         )
-    innate    = InnateImmunityLayer.load(innate_path)
+
     layer1_fn = innate.is_anomalous
 
     def predict_fn(obs):

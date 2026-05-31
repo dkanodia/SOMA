@@ -81,9 +81,10 @@ class CybORGWrapper(gym.Env):
         self._include_red   = include_red
         self._env           = None   # lazy-initialized on first reset()
         self._step_count    = 0
+        self._analyze_clean: dict[int, int] = {}  # host_soma_idx -> step last analyzed+clean
 
         self.observation_space = spaces.Box(
-            low=0, high=255, shape=(OBS_DIM,), dtype=np.int64
+            low=0.0, high=1.0, shape=(OBS_DIM,), dtype=np.float32
         )
         self.action_space = spaces.Discrete(N_ACTIONS)
 
@@ -92,17 +93,38 @@ class CybORGWrapper(gym.Env):
         from CybORG import CybORG
         from CybORG.Agents import B_lineAgent
         from CybORG.Agents.Wrappers import ChallengeWrapper
+        from CybORG.Simulator.Scenarios import FileReaderScenarioGenerator
         import inspect
         from pathlib import Path as _Path
+
+        # gym.utils.seeding.RandomNumberGenerator (a np.random.Generator subclass)
+        # breaks copy.deepcopy with NumPy 1.26 and also lacks .randint() which
+        # CybORG's simulator uses (legacy API). Patch the class directly so both
+        # deepcopy and randint work, without replacing the seeding function.
+        import gym.utils.seeding as _gym_seeding
+        _RNG = _gym_seeding.RandomNumberGenerator
+        if not hasattr(_RNG, '__deepcopy__'):
+            def _rng_deepcopy(self, memo):
+                new_rng = _RNG(self.bit_generator.__class__())
+                new_rng.bit_generator.state = self.bit_generator.state.copy()
+                return new_rng
+            _RNG.__deepcopy__ = _rng_deepcopy
+        if not hasattr(_RNG, 'randint'):
+            def _rng_randint(self, low, high=None, size=None, dtype=int):
+                if high is None:
+                    low, high = 0, low
+                return self.integers(low, high, size=size, dtype=dtype)
+            _RNG.randint = _rng_randint
 
         if self._scenario_path is None:
             cyborg_file = _Path(inspect.getfile(CybORG))
             self._scenario_path = str(
-                cyborg_file.parent / "Shared" / "Scenarios" / "Scenario1b.yaml"
+                cyborg_file.parent / "Simulator" / "Scenarios" / "scenario_files" / "Scenario1b.yaml"
             )
 
-        agents = {"Red": B_lineAgent} if self._include_red else {}
-        cyborg = CybORG(self._scenario_path, "sim", agents=agents)
+        sg = FileReaderScenarioGenerator(self._scenario_path)
+        agents = {"Red": B_lineAgent()} if self._include_red else {}
+        cyborg = CybORG(sg, "sim", agents=agents)
         self._env = ChallengeWrapper(agent_name="Blue", env=cyborg)
 
     # ------------------------------------------------------------------
@@ -112,7 +134,8 @@ class CybORGWrapper(gym.Env):
             self._init_cyborg()
         obs = self._env.reset()
         self._step_count = 0
-        return np.array(obs, dtype=np.int64), {}
+        self._analyze_clean.clear()
+        return np.array(obs, dtype=np.float32), {}
 
     # ------------------------------------------------------------------
     def step(self, action: int):
@@ -120,9 +143,34 @@ class CybORGWrapper(gym.Env):
         self._step_count += 1
         if info is None:
             info = {}
+
+        reward = float(reward)
+
+        # Anti-reward-hacking: penalize re-analyzing clean hosts within cooldown window
+        action_int = int(action)
+        action_name = BLUE_ACTIONS[action_int] if action_int < len(BLUE_ACTIONS) else ""
+        if action_name.startswith("Analyze_"):
+            host_name = action_name.split("_", 1)[1]
+            if host_name in HOST_NAMES:
+                soma_idx = HOST_NAMES.index(host_name)
+                # Check if penalizing for recent analyze of clean host
+                if soma_idx in self._analyze_clean:
+                    if (self._step_count - self._analyze_clean[soma_idx]) < 5:
+                        reward -= 2.0
+
+                # After the step, check if this host is now clean and update tracking
+                if host_name in _CYBORG_HOST_ORDER:
+                    obs_raw = np.array(obs, dtype=np.int64)
+                    cyborg_idx = _CYBORG_HOST_ORDER.index(host_name)
+                    feat_start = cyborg_idx * _CYBORG_FEATURES_PER_HOST
+                    exploit = int(obs_raw[feat_start + 1])
+                    priv = int(obs_raw[feat_start + 3])
+                    if exploit == 0 and priv == 0:
+                        self._analyze_clean[soma_idx] = self._step_count
+
         # Expose deterministic red agent phase index for detection labelling.
         info["red_agent_step"] = self._step_count
-        return np.array(obs, dtype=np.int64), float(reward), bool(done), False, info
+        return np.array(obs, dtype=np.float32), reward, bool(done), False, info
 
     # ------------------------------------------------------------------
     def render(self):
