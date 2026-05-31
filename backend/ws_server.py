@@ -226,19 +226,28 @@ def _imap_poll_loop():
             if _get_state() == "CLEAN":
                 with imaplib.IMAP4_SSL("imap.gmail.com") as mail:
                     mail.login(GMAIL_USER, GMAIL_PASS)
-                    mail.select("INBOX")
+                    mail.select('"[Gmail]/All Mail"')
                     _, ids = mail.search(None, "UNSEEN")
                     uid_list = (ids[0] or b"").split()
-                    if uid_list:
-                        uid = uid_list[0]
+                    # Mark ALL unseen as seen first, then check for human senders
+                    for uid in uid_list:
                         _, raw_data = mail.fetch(uid, "(RFC822)")
                         raw = raw_data[0][1]
                         msg = message_from_bytes(raw)
                         sender  = msg.get("From",    "unknown@sender.com")
                         subject = msg.get("Subject", "(no subject)")
                         mail.store(uid, "+FLAGS", "\\Seen")
+                        # Skip automated Google / no-reply emails
+                        sender_lower = sender.lower()
+                        if any(x in sender_lower for x in (
+                            "no-reply", "noreply", "@google.com",
+                            "@accounts.google.com", "mailer-daemon",
+                        )):
+                            print(f"[imap] Skipping automated email from {sender}")
+                            continue
                         print(f"[imap] New email from {sender}: {subject}")
                         _post_to_loop(_on_email_received(sender, subject))
+                        break  # only trigger on first human email
         except Exception as e:
             print(f"[imap] Error: {e}")
         time.sleep(2)
@@ -659,10 +668,12 @@ async def _handle_client(websocket):
         finally:
             _dashboard_clients.discard(websocket)
             print(f"[ws/dashboard] disconnected ({len(_dashboard_clients)} clients)")
-            # Auto-reset when last client leaves — browser refresh always starts fresh
+            # Auto-reset when last client leaves — 10s grace period for tab switches
             if not _dashboard_clients and _get_state() != "CLEAN":
-                print("[soma] No clients — auto-resetting to CLEAN")
-                await _reset_demo()
+                await asyncio.sleep(10)
+                if not _dashboard_clients and _get_state() != "CLEAN":
+                    print("[soma] No clients after 10s — auto-resetting to CLEAN")
+                    await _reset_demo()
 
     # ── Virus backdoor ─────────────────────────────────────────────────────
     elif path == "/virus":

