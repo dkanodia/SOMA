@@ -8,7 +8,8 @@ import "./styles/index.css";
 // Config — backend URL from environment variable (set in Vercel dashboard)
 // ---------------------------------------------------------------------------
 
-const WS_URL = process.env.REACT_APP_WS_URL || "ws://localhost:8765";
+const _urlParam = new URLSearchParams(window.location.search).get("ws");
+const WS_URL = _urlParam || process.env.REACT_APP_WS_URL || "ws://localhost:8765";
 
 const STATE_COLOR = {
   CLEAN:          "var(--ok)",
