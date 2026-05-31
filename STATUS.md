@@ -393,22 +393,105 @@ These fill in gaps that exist but don't break the core demo:
 
 ---
 
-## Summary Table
+## Remaining Work (as of 2026-05-30)
 
-| System Area | Done | Remaining |
-|-------------|------|-----------|
-| Layer 1 — Innate | ✅ Rule-based per-host scoring, wired, displayed | IsolationForest degenerate on zero-variance CybORG clean data; rule-based fallback in use |
-| Layer 2 — PPO | ✅ Trained (200k), wired, evaluated | lateral_movement_dr=0.982, impact_dr=1.000 |
-| Layer 3a — Tolerance | ✅ Implemented, tested, wired | Wired into demo pipeline (Priority 1 Task 4) |
-| Layer 3b — Deception (theory) | ✅ PBE solver, signal game env, RL trained | κ sweep complete, convergence plots generated |
-| Layer 3b — Deception (bridge) | ✅ **AdaptiveDeceptionController** — adaptive threshold, rotation, threat memory | PBE mixing rates not yet wired to budget |
-| Layer 4 — Memory/Drift | ✅ Trained, wired, displayed | |
-| Layer 5 — Learned Attacks | ✅ Implemented, wired | Wired into demo pipeline (Priority 1 Task 5) |
-| Fusion — Correlator | ✅ Wired | Fused FPR fixed (Priority 1 Task 3) |
-| Fusion — Orchestrator | ✅ Wired, displayed | |
-| Frontend — layout | ✅ Sidebar, header, 4-tab panel | |
-| Frontend — all 10 panels | ✅ All mounted and live | |
-| Backend — WS replay | ✅ Deployed on Render | Free tier sleep latency |
-| Frontend — deployed | ✅ Vercel, wss:// wired | |
-| Theory — PBE | ✅ Solver + RL comparison | Validated in `results/evaluation_report.md` §4; RL q* ≈0.51 vs PBE 0.77 at κ=0 |
-| Evaluation harness | ✅ Scripts + test suite | Numbers not re-run post-fix |
+Everything below is outstanding — not yet implemented or still producing incorrect results. Ordered by impact on live data accuracy.
+
+---
+
+### Priority A — Critical (Blocks accurate live-data results)
+
+These gaps mean the system produces wrong numbers or silently skips a calibrated layer when running on live data.
+
+- [ ] **Train and save `drift_detector.joblib`** ← *most urgent*
+  - `LongDwellDetector` has `fit_pca()`, `calibrate_threshold()`, and `save()` — the training path exists but has never been run end-to-end.
+  - Without this file: `demo.py` instantiates an uncalibrated `LongDwellDetector`; `drift_alarm()` always returns `False`; Layer 4 contributes nothing to the correlator score.
+  - **Fix:** Add a `train_drift_detector()` function to `scripts/train_innate.py` (or a standalone `scripts/train_drift.py`). Load `data/clean_train.npy`, call `detector.fit_pca()` on per-host slices, then `detector.calibrate_threshold(X_val, fpr_target=0.001)`, then `detector.save("models/innate/drift_detector.joblib")`.
+
+- [ ] **Recalibrate `ImmuneToleranceLayer` on real CybORG clean data**
+  - `demo.py` `load_models()` calibrates tolerance on `generate_clean_episodes()` (synthetic), not `data/clean_train.npy` (real CybORG).
+  - Synthetic clean data does not match real CybORG observation distributions → tolerance FPR = **17.6%** vs. the per-layer 1% target.
+  - **Fix:** In `demo.py` `load_models()`, replace `generate_clean_episodes(n_steps=600)` with `np.load("data/clean_train.npy")` when that file exists. The calibration call (`tolerance.calibrate(X_clean)`) stays the same.
+
+- [ ] **Fix Fused FPR (currently 35%, target <10%)**
+  - Root cause: tolerance's 17.6% per-step FPR feeds a soft signal into the correlator. The multi-layer gate (`≥2 layers fired OR score ≥0.50`) doesn't block it because tolerance_breach can combine with any weak innate signal to cross the LOW threshold (0.15).
+  - Fixing tolerance calibration (above) is the primary fix. Secondary fix if FPR remains elevated: reduce `LAYER_WEIGHTS["tolerance_breach"]` in `soma/fusion/network_correlator.py` from `0.20` → `0.05`, or require tolerance_breach to be accompanied by ≥1 other named layer before it contributes to the score.
+  - **Acceptance criterion:** Re-run `soma/eval/fpr_calibration.py`; fused FPR should be ≤ 10% after both tolerance and drift fixes.
+
+---
+
+### Priority B — High (Completeness / correctness)
+
+- [ ] **Wire PBE mixing rates to `AdaptiveDeceptionController.MAX_ACTIVE`**
+  - `MAX_ACTIVE = 2` is a hardcoded class constant in `soma/layers/deception.py`.
+  - The PBE solver already returns `q_star` (probability defender masks real assets) for each κ. The budget should be `floor(N_hosts × q_star)` where N_hosts = 6.
+  - At κ=0: PBE q*=0.769 → budget=4. At κ=10: q*=0.769 → budget=4 (but r*=0.103 → lower baiting frequency). The baiting rate `r_star` can govern the cooldown period between honeypot rotations.
+  - **Fix:** In `AdaptiveDeceptionController.__init__()`, accept optional `kappa` parameter; call `compute_pbe(kappa=kappa)` and set `self.MAX_ACTIVE = max(1, int(6 * pbe.q_star))` and derive cooldown from `pbe.r_star`.
+
+- [ ] **Regenerate `demo_episode.json` after Priority A fixes**
+  - The current `results/demo_episode.json` and `frontend/public/demo_episode.json` were generated with an uncalibrated drift detector and synthetic tolerance calibration.
+  - After fixing drift detector and tolerance, re-run: `python scripts/demo.py --static --steps 200`
+  - Then copy to `frontend/public/demo_episode.json`, commit, and redeploy backend on Render so the WebSocket server serves the corrected episode.
+
+- [ ] **Re-run all evaluation numbers post-fix**
+  - `results/evaluation_report.md` numbers reflect pre-fix state (noted: "Numbers not re-run post-fix").
+  - After Priority A fixes: re-run `scripts/evaluate.py` (Layer 2 PPO eval) and `soma/eval/fpr_calibration.py` (all layers). Update the report tables with current TPR/FPR for each layer and fused.
+  - Also update the per-layer FPR column in the Summary Table below.
+
+---
+
+### Priority C — Medium (Accuracy improvements, no live-data blockers)
+
+- [ ] **Fix IsolationForest for zero-variance CybORG clean data**
+  - CybORG clean observations have near-zero variance across episodes → IsolationForest trees assign near-identical anomaly scores to all inputs → degenerate detector.
+  - Current workaround: rule-based scoring (activity×0.5 + compromised×0.8 + sessions×0.2) is used instead. The IsolationForest model is saved but not the active scorer.
+  - **Fix options:** (a) Add small Gaussian noise during training: `X_train += np.random.normal(0, 1e-4, X_train.shape)` before calling `iso.fit()`; (b) Use `max_features=0.8` and `bootstrap=True` in the IF constructor to break ties; (c) Accept the rule-based fallback as permanent and document it clearly.
+
+- [ ] **Add Layer 3a (Tolerance) frontend panel**
+  - No dedicated visualization exists for the tolerance layer. Only a status badge appears in `ImmuneResponsePanel`.
+  - **Fix:** Create `frontend/src/components/TolerancePanel.jsx` — a per-host bar chart showing the current z-score vs. the suppress_sigma (1.5) and breach_sigma (3.0) thresholds. Wire the `tolerance_suppressed` and `tolerance_breached` arrays from the WebSocket payload. Mount in `App.jsx`.
+
+- [ ] **Train `LearnedAttackRecognizer` on real CybORG attack episodes**
+  - Gallery currently has 4 synthetic signatures from `_populate_gallery()`. Cosine similarity recognition is functional but not validated against real attack feature distributions.
+  - **Fix:** With CybORG installed locally, run `scripts/export_demo_cyber.py` to record real B_lineAgent attack episodes. Extract 10-step observation windows per attack phase; call `learned.learn_attack(name, window)` for each. Re-save `models/innate/baseline.joblib`.
+
+- [ ] **Set up external keep-alive for Render free tier**
+  - `/health` endpoint is live at `https://soma-21v4.onrender.com/health`.
+  - Render free tier sleeps after 15 minutes of inactivity; first WebSocket connection after sleep takes 30–60 s.
+  - **Fix:** Register `https://soma-21v4.onrender.com/health` in [UptimeRobot](https://uptimerobot.com) or [cron-job.org](https://cron-job.org) with a 14-minute ping interval. Not a code change — external configuration.
+
+---
+
+### Priority D — Low (Cleanup / nice-to-have)
+
+- [ ] **Clean up PBE solver TODO comment**
+  - `soma/theory/pbe_solver.py:92` still has: `TODO: verify closed-form against Carroll & Grosu before pitch.`
+  - Verification was done (see `results/convergence/comparison.json` and `results/evaluation_report.md` §4). Remove the TODO and replace with a one-line note pointing to the comparison file.
+
+- [ ] **Remove duplicate adaptive model checkpoint**
+  - `models/adaptive/soma_ppo_200000_steps.zip` and `models/adaptive/soma_ppo_final.zip` are the same weights saved at the same step. One copy wastes 247 KB in git history.
+  - **Fix:** Delete `soma_ppo_200000_steps.zip`; update any references in scripts to use `soma_ppo_final.zip`.
+
+- [ ] **FPR reduction factor target**
+  - Fusion currently provides 0.0 FPR improvement over best single layer (antibody/memory at 0.0%). After fixing tolerance calibration and drift detector, remeasure and confirm fusion FPR reduction > 0 (i.e., fused FPR < average per-layer FPR). Update `results/evaluation_report.md` §5.
+
+---
+
+## Summary Table (current state)
+
+| System Area | Status | Outstanding |
+|-------------|--------|-------------|
+| Layer 1 — Innate | Rule-based scoring in use (IF degenerate) | Fix IF for zero-variance data, or document rule-based as permanent |
+| Layer 2 — PPO | ✅ Trained (200k), evaluated: DR=98.2%/100.0% | None |
+| Layer 3a — Tolerance | Implemented, wired — but FPR 17.6% | Recalibrate on `clean_train.npy`; add frontend panel |
+| Layer 3b — Deception (theory) | ✅ PBE solver + RL trained, ConvergencePanel live | Clean up TODO comment in `pbe_solver.py` |
+| Layer 3b — Deception (bridge) | `AdaptiveDeceptionController` wired | Wire PBE q*/r* to set `MAX_ACTIVE` and cooldown dynamically |
+| Layer 4 — Memory/Drift | Wired + displayed — but **`drift_detector.joblib` missing** | Train and save drift detector; drift alarm currently always False |
+| Layer 5 — Learned Attacks | Wired, synthetic gallery (4 entries) | Train on real CybORG attack episodes |
+| Fusion — Correlator | Wired, multi-layer gate in place | Fix fused FPR (35%) — tolerance bleed-through |
+| Fusion — Orchestrator | ✅ Wired, displayed | None |
+| Frontend — all panels | ✅ 13 panels mounted and live | Add `TolerancePanel.jsx` for Layer 3a |
+| Backend — WS replay | ✅ Deployed on Render | Keep-alive external config; regen episode after Priority A fixes |
+| Frontend — deployed | ✅ Vercel, wss:// wired | None |
+| Theory — PBE | ✅ Solver + RL comparison validated | Remove stale TODO comment |
+| Evaluation report | Written — numbers pre-fix | Re-run all metrics after Priority A fixes |
