@@ -28,7 +28,7 @@ PORT       = int(os.environ.get("PORT", 8765))
 EPISODE    = os.environ.get("EPISODE", "data/demo_episode.json")
 STEP_DELAY = float(os.environ.get("STEP_DELAY", 0.3))
 
-_episode_cache: dict | None = None
+_episode_cache = None
 
 
 def resolve_episode_path() -> pathlib.Path:
