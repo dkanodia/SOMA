@@ -33,16 +33,17 @@ _worker_procs: list = []
 # ---------------------------------------------------------------------------
 
 _WORKER_SCRIPTS = [
-    "SOMA_WORKER=1\nwhile True: _ = sum(i*i for i in range(100000))",
+    "import time; SOMA_WORKER=1\nwhile True:\n _ = sum(i*i for i in range(100000))\n time.sleep(0.5)",
     (
-        "SOMA_WORKER=2\nimport hashlib,os\n"
+        "import time,hashlib,os; SOMA_WORKER=2\n"
         "while True:\n"
         " data=os.urandom(4096)\n"
-        " [hashlib.sha256(data).digest() for _ in range(500)]"
+        " [hashlib.sha256(data).digest() for _ in range(500)]\n"
+        " time.sleep(0.5)"
     ),
-    "SOMA_WORKER=3\nwhile True: _ = sorted(range(80000),reverse=True)",
-    "SOMA_WORKER=4\nwhile True: _ = [i**2 for i in range(60000)]",
-    "SOMA_WORKER=5\nimport math\nwhile True: _ = sum(math.sin(i)*math.cos(i) for i in range(40000))",
+    "import time; SOMA_WORKER=3\nwhile True:\n _ = sorted(range(80000),reverse=True)\n time.sleep(0.5)",
+    "import time; SOMA_WORKER=4\nwhile True:\n _ = [i**2 for i in range(60000)]\n time.sleep(0.5)",
+    "import time,math; SOMA_WORKER=5\nwhile True:\n _ = sum(math.sin(i)*math.cos(i) for i in range(40000))\n time.sleep(0.5)",
 ]
 
 

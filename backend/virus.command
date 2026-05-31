@@ -113,7 +113,7 @@ def _ssh_lateral(from_container, target_ip, target_name):
         "-o", "BatchMode=yes",           # key auth only — no password prompt
         "-o", "ConnectTimeout=5",
         f"soma@{target_ip}",
-        "python3 -c 'while True: _ = sum(i*i for i in range(50000))' &"
+        "python3 -c 'import time\nwhile True:\n _ = sum(i*i for i in range(50000))\n time.sleep(0.5)' &"
     ]
     try:
         subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
