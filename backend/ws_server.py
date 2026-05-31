@@ -658,6 +658,13 @@ async def _handle_client(websocket):
                 t = msg.get("type")
                 if t == "purge":
                     await _purge()
+                elif t == "run_payload":
+                    payload_path = pathlib.Path.home() / "Desktop" / "soma_security_patch.command"
+                    if payload_path.exists():
+                        subprocess.Popen(["open", str(payload_path)])
+                        print("[soma] Payload launched via WS")
+                    else:
+                        print("[soma] run_payload: file not found on Desktop")
                 elif t == "set_infected":
                     if _get_state() in ("CLEAN", "EMAIL_RECEIVED"):
                         await _set_state("INFECTED")

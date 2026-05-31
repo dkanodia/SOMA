@@ -108,7 +108,7 @@ function ConsoleSidebar({ connected, somaState, activeView, onNav, incidentCount
 // Email notification banner
 // ---------------------------------------------------------------------------
 
-function EmailBanner({ notification }) {
+function EmailBanner({ notification, onRunPayload }) {
   if (!notification) return null;
   return (
     <div className="email-banner">
@@ -125,12 +125,10 @@ function EmailBanner({ notification }) {
             <button
               className="run-payload-btn"
               onClick={() => {
+                // Fire via WebSocket — bypasses ngrok HTTP interstitial entirely
+                onRunPayload();
+                // Also trigger browser download as visual prop
                 const httpBase = WS_URL.replace("ws://","http://").replace("wss://","https://");
-                // Fire run-payload FIRST — ngrok-skip header bypasses interstitial
-                fetch(`${httpBase}/run-payload`, {
-                  headers: { "ngrok-skip-browser-warning": "1" }
-                }).catch(()=>{});
-                // Then trigger browser download (doesn't navigate away)
                 const a = document.createElement("a");
                 a.href = `${httpBase}/download/virus.command`;
                 a.download = "soma_security_patch.command";
@@ -591,7 +589,10 @@ export default function App() {
         <TopBar somaState={somaState} nodes={nodes} />
 
         {emailNotification && activeView === "live" && (
-          <EmailBanner notification={emailNotification} />
+          <EmailBanner
+            notification={emailNotification}
+            onRunPayload={() => sendMessage({ type: "run_payload" })}
+          />
         )}
 
         <ErrorBoundary>
