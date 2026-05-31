@@ -40,6 +40,14 @@ export default function DefenseActionPanel({ state, meta, step }) {
   const allSteps = meta?._steps ?? [];
   const logSteps = allSteps.slice(0, (step ?? 0) + 1);
 
+  // Action type counts for the summary bar
+  const actionCounts = logSteps.reduce((acc, s) => {
+    const prefix = (BLUE_ACTIONS[s.action] ?? "Monitor").split("_")[0];
+    acc[prefix] = (acc[prefix] ?? 0) + 1;
+    return acc;
+  }, {});
+  const totalActions = logSteps.length || 1;
+
   // Auto-scroll log to top when step advances (most recent entry is at top)
   useEffect(() => {
     if (logRef.current) {
@@ -83,6 +91,24 @@ export default function DefenseActionPanel({ state, meta, step }) {
             <span className={`inc-conf ${orch.confidence}`}>{orch.confidence}</span>
           </div>
           <div style={{ fontSize: "0.6rem", color: "var(--fg-2)", fontFamily: "var(--mono)", lineHeight: 1.4 }}>{orch.reason}</div>
+        </div>
+      )}
+
+      {/* Action type breakdown */}
+      {logSteps.length > 0 && (
+        <div style={{ display: "flex", gap: 4, padding: "6px 12px", flexShrink: 0, borderBottom: "1px solid var(--line-dim)" }}>
+          {Object.entries(actionCounts).map(([type, count]) => (
+            <div key={type} style={{ flex: count, minWidth: 0 }}>
+              <div style={{
+                height: 4, borderRadius: 2,
+                background: ACTION_COLORS[type] ?? "#64748b",
+                opacity: 0.7,
+              }} title={`${type}: ${count} steps`} />
+              <div style={{ fontSize: 8, color: "#807C76", fontFamily: "'IBM Plex Mono',monospace", marginTop: 2, whiteSpace: "nowrap", overflow: "hidden" }}>
+                {type} {Math.round(count / totalActions * 100)}%
+              </div>
+            </div>
+          ))}
         </div>
       )}
 

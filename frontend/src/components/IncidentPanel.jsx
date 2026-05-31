@@ -19,19 +19,48 @@ function sortIncidents(incidents) {
   );
 }
 
+const LAYER_CHIP_COLORS = {
+  innate:           { bg: "var(--gold-dim)",  fg: "var(--gold)" },
+  memory:           { bg: "var(--mem-dim)",   fg: "var(--mem)" },
+  tolerance_breach: { bg: "var(--alert-dim)", fg: "var(--alert)" },
+  learned_attacks:  { bg: "var(--ok-dim)",    fg: "var(--ok)" },
+};
+
 function IncidentCard({ inc }) {
-  const layers = (inc.layers_fired ?? []).join(" + ") || "none";
   return (
     <div className={`incident-card ${inc.confidence}`}>
       <div className="incident-header">
         <span className="inc-host">{inc.host}</span>
-        <span className="inc-score">score={inc.score?.toFixed(2)}</span>
         <span className={`inc-conf ${inc.confidence}`}>{inc.confidence}</span>
-        {inc.attack_type && inc.attack_type !== "unknown" && (
-          <span style={{ fontSize: "0.6rem", color: "#34d399" }}>{inc.attack_type}</span>
-        )}
+        <span className="inc-score" style={{ marginLeft: "auto" }}>
+          {inc.score?.toFixed(3)}
+        </span>
       </div>
-      <div className="inc-layers">Layers: {layers}</div>
+
+      {/* Which layers fired */}
+      {inc.layers_fired?.length > 0 && (
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 3, margin: "4px 0" }}>
+          {inc.layers_fired.map((l) => {
+            const c = LAYER_CHIP_COLORS[l] ?? { bg: "var(--panel-3)", fg: "var(--fg-3)" };
+            return (
+              <span key={l} style={{
+                padding: "1px 5px", borderRadius: 3, fontSize: "0.52rem",
+                background: c.bg, color: c.fg,
+                fontFamily: "var(--mono)", letterSpacing: "0.04em", textTransform: "uppercase",
+              }}>{l.replace(/_/g, " ")}</span>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Attack type */}
+      {inc.attack_type && inc.attack_type !== "unknown" && inc.attack_type !== "anomaly" && (
+        <div style={{ fontSize: "0.66rem", color: "var(--ok)", fontFamily: "var(--mono)", marginBottom: 3 }}>
+          {inc.attack_type.replaceAll("_", " ")}
+        </div>
+      )}
+
+      {/* Explanation */}
       {inc.explanation && (
         <div className="inc-reason">{inc.explanation}</div>
       )}

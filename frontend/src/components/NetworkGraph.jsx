@@ -41,26 +41,31 @@ const NODE_RADIUS = 22;
 // Color logic
 function nodeColor(host, state, meta) {
   if (!state) return "#242422";
-  const compHosts = state.compromised_hosts ?? [];
-  const innateScore = state.host_innate_scores?.[host] ?? 0;
+  // compromised_hosts: enriched from host_states, or direct if present
+  const compHosts    = state.compromised_hosts ?? [];
+  // host_innate_scores: enriched alias of anomaly_scores
+  const innateScore  = (state.host_innate_scores ?? state.anomaly_scores ?? {})[host] ?? 0;
   const innateThresh = meta?.innate_threshold ?? 0.5;
-  const driftScore = state.drift_scores?.[host] ?? 0;
-  const memThresh = meta?.memory_threshold ?? 1.0;
+  // drift_scores: enriched from centroid_pos
+  const driftScore   = (state.drift_scores ?? {})[host] ?? 0;
+  const memThresh    = meta?.memory_threshold ?? 1.0;
+  const driftAlarm   = state.drift_alarms?.[host] ?? false;
 
-  if (compHosts.includes(host))     return "#A83D2E";  // confirmed compromised
-  if (driftScore > memThresh)        return "#6452A0";  // memory alarm
-  if (innateScore > innateThresh)    return "#C49A30";  // innate alarm
-  if (state.tolerance_breached?.includes(host)) return "#B87030";
-  return "#3A7A58";                                      // healthy
+  if (compHosts.includes(host))              return "#A83D2E";  // compromised
+  if (driftScore > memThresh || driftAlarm)  return "#6452A0";  // memory alarm
+  if (innateScore > innateThresh)            return "#C49A30";  // innate alarm
+  if (state.tolerance_breached?.includes(host)) return "#B87030"; // role breach
+  return "#3A7A58";                                               // healthy
 }
 
 function nodeGlow(host, state, meta) {
   if (!state) return null;
-  const compHosts = state.compromised_hosts ?? [];
-  if (compHosts.includes(host)) return "#A83D2E";
-  const driftScore = state.drift_scores?.[host] ?? 0;
-  const memThresh = meta?.memory_threshold ?? 1.0;
-  if (driftScore > memThresh) return "#6452A0";
+  if ((state.compromised_hosts ?? []).includes(host)) return "#A83D2E";
+  const driftScore = (state.drift_scores ?? {})[host] ?? 0;
+  const driftAlarm = state.drift_alarms?.[host] ?? false;
+  if (driftScore > (meta?.memory_threshold ?? 1.0) || driftAlarm) return "#6452A0";
+  const innateScore = (state.host_innate_scores ?? state.anomaly_scores ?? {})[host] ?? 0;
+  if (innateScore > (meta?.innate_threshold ?? 0.5)) return "#C49A3066";
   return null;
 }
 
