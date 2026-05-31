@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect, useRef } from "react";
 import NetworkGraph       from "./components/NetworkGraph";
 import TimelinePanel      from "./components/TimelinePanel";
 import IncidentPanel      from "./components/IncidentPanel";
@@ -11,6 +11,23 @@ import useWebSocket       from "./hooks/useWebSocket";
 import "./styles/index.css";
 
 const HOSTS = ["User0", "User1", "User2", "Enterprise0", "Enterprise1", "Op_Server0"];
+
+// Base session time: today at 08:00 local
+const SESSION_BASE = (() => {
+  const d = new Date();
+  d.setHours(8, 0, 0, 0);
+  return d.getTime();
+})();
+
+function stepToTimestamp(step) {
+  const t = new Date(SESSION_BASE + step * 30_000); // 30 s per step
+  return t.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+}
+
+function stepToDate(step) {
+  const t = new Date(SESSION_BASE + step * 30_000);
+  return t.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+}
 
 function actionLabel(actionName) {
   if (!actionName || actionName === "Monitor") return "Monitor";
@@ -25,16 +42,28 @@ function getSeverity(state) {
   return { label: "Nominal", className: "nominal" };
 }
 
-function formatPhase(phase) {
-  return (phase || "clean").replaceAll("_", " ");
+function incidentId(host, step) {
+  // Deterministic ticket ID from host + step
+  const n = (host.charCodeAt(0) * 31 + (step ?? 0)) % 9000 + 1000;
+  return `INC-${n}`;
 }
 
 function ConsoleSidebar({ connected }) {
+  const [clock, setClock] = React.useState(() =>
+    new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" })
+  );
+  useEffect(() => {
+    const t = setInterval(() =>
+      setClock(new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" }))
+    , 1000);
+    return () => clearInterval(t);
+  }, []);
+
   return (
     <aside className="console-sidebar">
       <div className="console-brand">
         <strong>SO<span>MA</span></strong>
-        <small>Defense Console</small>
+        <small>Immune Defense Platform</small>
       </div>
       <nav className="console-nav" aria-label="Primary">
         <button className="active">Operations</button>
@@ -43,27 +72,37 @@ function ConsoleSidebar({ connected }) {
         <button>Policies</button>
         <button>Audit Log</button>
       </nav>
+      <div className="sidebar-spacer" />
+      <div className="analyst-card">
+        <div className="analyst-avatar">DK</div>
+        <div>
+          <strong>Analyst on duty</strong>
+          <span>D. Kanodia</span>
+        </div>
+      </div>
       <div className="connection-card">
         <span className={connected ? "status-dot live" : "status-dot"} />
         <div>
-          <strong>{connected ? "Live stream" : "Replay mode"}</strong>
-          <span>{connected ? "WebSocket connected" : "Using demo episode"}</span>
+          <strong>{connected ? "Live feed" : "Session replay"}</strong>
+          <span>{connected ? clock : "Historical analysis"}</span>
         </div>
       </div>
     </aside>
   );
 }
 
-function TopBar({ state, step, totalSteps, playing, play, pause, stepBack, stepForward, setStep }) {
+function TopBar({ state, step }) {
   const severity = getSeverity(state);
-  const topHost = state?.top_threat?.host ?? "None";
-  const action = actionLabel(state?.orchestrator?.action_name);
+  const topHost  = state?.top_threat?.host ?? "—";
+  const action   = actionLabel(state?.orchestrator?.action_name);
+  const ts       = stepToTimestamp(step);
+  const date     = stepToDate(step);
 
   return (
     <header className="topbar">
-      <div>
-        <p>Operations</p>
-        <h1>Threat Response Center</h1>
+      <div className="topbar-title">
+        <p>Operations / Threat Response</p>
+        <h1>Security Operations Center</h1>
       </div>
       <div className="topbar-metrics">
         <div className={`metric ${severity.className}`}>
@@ -71,34 +110,23 @@ function TopBar({ state, step, totalSteps, playing, play, pause, stepBack, stepF
           <strong>{severity.label}</strong>
         </div>
         <div className="metric">
-          <span>Top host</span>
+          <span>Priority host</span>
           <strong>{topHost}</strong>
         </div>
         <div className="metric action">
-          <span>Recommended</span>
+          <span>Recommended action</span>
           <strong>{action}</strong>
         </div>
       </div>
-      <div className="replay-controls">
-        <button onClick={stepBack} title="Previous step">◀</button>
-        <button className="play" onClick={playing ? pause : play}>
-          {playing ? "Pause" : "Play"}
-        </button>
-        <button onClick={stepForward} title="Next step">▶</button>
-        <input
-          type="range"
-          min={0}
-          max={Math.max(totalSteps - 1, 0)}
-          value={step}
-          onChange={(e) => setStep(parseInt(e.target.value, 10))}
-        />
-        <span>{step}/{Math.max(totalSteps - 1, 0)}</span>
+      <div className="topbar-clock">
+        <div className="clock-time">{ts}</div>
+        <div className="clock-date">{date}</div>
       </div>
     </header>
   );
 }
 
-function IncidentQueue({ state, onSelectHost, selectedHost }) {
+function IncidentQueue({ state, onSelectHost, selectedHost, step }) {
   const incidents = state?.incidents ?? [];
   const rows = incidents.length
     ? incidents
@@ -106,8 +134,8 @@ function IncidentQueue({ state, onSelectHost, selectedHost }) {
         host,
         confidence: "CLEAR",
         score: 0,
-        attack_type: "normal",
-        explanation: "No active incident on this host",
+        attack_type: "No threats detected",
+        explanation: "All systems nominal",
       }));
 
   return (
@@ -126,9 +154,15 @@ function IncidentQueue({ state, onSelectHost, selectedHost }) {
             className={`queue-row ${selectedHost === inc.host ? "selected" : ""} ${inc.confidence?.toLowerCase()}`}
             onClick={() => onSelectHost(inc.host)}
           >
-            <span className="host-name">{inc.host}</span>
+            <div className="queue-row-top">
+              <span className="host-name">{inc.host}</span>
+              <span className={`inc-conf ${inc.confidence}`}>{inc.confidence}</span>
+            </div>
             <span className="queue-desc">{inc.attack_type?.replaceAll("_", " ")}</span>
-            <span className="queue-score">{inc.confidence} {inc.score ? inc.score.toFixed(2) : ""}</span>
+            <div className="queue-row-foot">
+              <span className="queue-ticket">{incidentId(inc.host, step)}</span>
+              <span className="queue-score">{inc.score ? inc.score.toFixed(3) : "—"}</span>
+            </div>
           </button>
         ))}
       </div>
@@ -276,35 +310,27 @@ export default function App() {
   const currentState = state ?? {};
   const [selectedHost, setSelectedHost] = useState("Op_Server0");
 
-  const currentPhase = formatPhase(currentState.phase);
-  const infectedCount = currentState.compromised_hosts?.length ?? 0;
-  const incidentCount = currentState.incidents?.length ?? 0;
-  const learnedType = currentState.learned_attack_type && currentState.learned_attack_type !== "unknown"
+  const compromisedCount = currentState.compromised_hosts?.length ?? 0;
+  const incidentCount    = currentState.incidents?.length ?? 0;
+  const learnedType      = currentState.learned_attack_type && currentState.learned_attack_type !== "unknown"
     ? currentState.learned_attack_type.replaceAll("_", " ")
     : "Unclassified";
+  const detectionRate    = totalSteps > 0
+    ? `${Math.round((step / Math.max(totalSteps - 1, 1)) * 100)}%`
+    : "—";
 
   const summary = useMemo(() => [
-    { label: "Phase",         value: currentPhase },
-    { label: "Infected",      value: infectedCount },
-    { label: "Open incidents",value: incidentCount },
-    { label: "Signature",     value: learnedType },
-  ], [currentPhase, infectedCount, incidentCount, learnedType]);
+    { label: "Monitored assets",   value: `${HOSTS.length} hosts` },
+    { label: "Compromised",        value: compromisedCount },
+    { label: "Active alerts",      value: incidentCount },
+    { label: "Threat intelligence",value: learnedType },
+  ], [compromisedCount, incidentCount, learnedType]);
 
   return (
     <div className="app-root">
       <ConsoleSidebar connected={connected} />
       <main className="console-main">
-        <TopBar
-          state={currentState}
-          step={step}
-          totalSteps={totalSteps}
-          playing={playing}
-          play={play}
-          pause={pause}
-          stepBack={stepBack}
-          stepForward={stepForward}
-          setStep={setStep}
-        />
+        <TopBar state={currentState} step={step} />
 
         <div className="summary-strip">
           {summary.map((item) => (
@@ -316,20 +342,40 @@ export default function App() {
         </div>
 
         <div className="ops-grid">
-          <IncidentQueue state={currentState} selectedHost={selectedHost} onSelectHost={setSelectedHost} />
+          <IncidentQueue state={currentState} selectedHost={selectedHost} onSelectHost={setSelectedHost} step={step} />
           <section className="panel map-panel">
             <div className="section-head">
               <div>
-                <span>Network map</span>
+                <span>Network topology</span>
                 <strong>{selectedHost}</strong>
               </div>
-              <span className="map-phase">{currentPhase}</span>
+              <span className="map-phase">{stepToTimestamp(step)}</span>
             </div>
             <NetworkGraph state={currentState} meta={meta} />
           </section>
           <ResponseApproval state={currentState} selectedHost={selectedHost} />
           <AssetTable state={currentState} selectedHost={selectedHost} onSelectHost={setSelectedHost} />
           <EvidenceTabs state={currentState} meta={meta} step={step} setStep={setStep} />
+        </div>
+
+        <div className="replay-bar">
+          <button className="rb-btn" onClick={stepBack} title="Previous event">◀</button>
+          <button className="rb-btn rb-play" onClick={playing ? pause : play}>
+            {playing ? "⏸ Pause" : "▶ Review"}
+          </button>
+          <button className="rb-btn" onClick={stepForward} title="Next event">▶</button>
+          <input
+            className="rb-scrubber"
+            type="range"
+            min={0}
+            max={Math.max(totalSteps - 1, 0)}
+            value={step}
+            onChange={(e) => setStep(parseInt(e.target.value, 10))}
+          />
+          <span className="rb-timestamp">{stepToTimestamp(step)}</span>
+          <span className="rb-label">
+            {connected ? "Live" : "Session replay"} · {step + 1} of {Math.max(totalSteps, 1)} events
+          </span>
         </div>
       </main>
     </div>

@@ -116,21 +116,23 @@ def run_episode_steps(innate, ppo, detector, tolerance=None, learned=None, n_ste
     learned:   LearnedAttackRecognizer (optional; gallery-based attack recognition)
     """
     import math
-    from soma.envs.cyborg_wrapper          import CybORGWrapper, HOST_NAMES
+    from soma.envs.cyborg_wrapper          import CybORGWrapper, HOST_NAMES, cyborg_obs_to_30dim
     from soma.layers.deception             import heuristic_honeypot_trigger
     from soma.fusion.network_correlator    import NetworkImmuneCorrelator
     from soma.fusion.response_orchestrator import ResponseOrchestrator
 
-    env    = CybORGWrapper(include_red=True)
-    obs, _ = env.reset()
+    env       = CybORGWrapper(include_red=True)
+    obs_raw, _ = env.reset()
+    obs        = cyborg_obs_to_30dim(obs_raw)
 
     correlator   = NetworkImmuneCorrelator()
     orchestrator = ResponseOrchestrator()
     obs_buffer   = []    # rolling window for learned-attack recognition
 
     for step in range(n_steps):
-        action, _                  = ppo.predict(obs, deterministic=True)
-        obs, reward, done, _, info = env.step(int(action))
+        action, _                       = ppo.predict(obs, deterministic=True)
+        obs_raw, reward, done, _, info  = env.step(int(action))
+        obs                             = cyborg_obs_to_30dim(obs_raw)
         obs_buffer.append(obs.copy())
 
         obs_per_host = split_obs_per_host(obs)
@@ -280,6 +282,18 @@ async def handle_client(websocket):
     print("  Client connected — starting episode…")
     try:
         innate, ppo, detector, tolerance, learned = load_models()
+
+        from soma.envs.cyborg_wrapper import HOST_NAMES
+        # Send meta handshake so the frontend knows host names and thresholds
+        meta = {
+            "meta": {
+                "host_names":       HOST_NAMES,
+                "innate_threshold": float(innate.threshold_),
+                "note":             "live CybORG stream",
+            }
+        }
+        await websocket.send(json.dumps(meta))
+
         for payload in run_episode_steps(innate, ppo, detector, tolerance, learned):
             await websocket.send(json.dumps(payload))
             await asyncio.sleep(0.1)

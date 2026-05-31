@@ -130,6 +130,57 @@ button {
   border-left-color: var(--gold);
 }
 
+.sidebar-spacer {
+  flex: 1;
+}
+
+.analyst-card {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  margin: 0 12px 8px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--panel);
+}
+
+.analyst-avatar {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--mem-dim);
+  color: var(--mem);
+  font-size: .6rem;
+  font-weight: 700;
+  letter-spacing: .03em;
+}
+
+.analyst-card strong,
+.analyst-card span {
+  display: block;
+}
+
+.analyst-card strong {
+  color: var(--fg-3);
+  font-family: var(--mono);
+  font-size: .52rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+
+.analyst-card span {
+  color: var(--fg);
+  font-size: .76rem;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
 .connection-card {
   display: flex;
   gap: 9px;
@@ -171,7 +222,7 @@ button {
 
 .console-main {
   display: grid;
-  grid-template-rows: auto auto minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
   min-width: 0;
   min-height: 0;
   overflow: hidden;
@@ -179,13 +230,39 @@ button {
 
 .topbar {
   display: grid;
-  grid-template-columns: minmax(190px, .75fr) minmax(390px, 1fr) minmax(360px, .9fr);
+  grid-template-columns: minmax(190px, .75fr) minmax(390px, 1fr) auto;
   gap: 14px;
   align-items: center;
   min-width: 0;
   padding: 14px 18px;
   border-bottom: 1px solid var(--line);
   background: var(--panel);
+}
+
+.topbar-title {
+  min-width: 0;
+}
+
+.topbar-clock {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.clock-time {
+  color: var(--fg);
+  font-family: var(--mono);
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+  line-height: 1.1;
+}
+
+.clock-date {
+  color: var(--fg-3);
+  font-family: var(--mono);
+  font-size: .56rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
 }
 
 .topbar p,
@@ -251,15 +328,6 @@ button {
 .metric.critical strong { color: var(--alert); }
 .metric.action strong { color: var(--gold); }
 
-.replay-controls {
-  display: grid;
-  grid-template-columns: 32px 58px 32px minmax(90px, 1fr) auto;
-  gap: 6px;
-  align-items: center;
-  min-width: 0;
-}
-
-.replay-controls button,
 .small-button,
 .approval-actions button {
   min-height: 30px;
@@ -269,28 +337,69 @@ button {
   color: var(--fg-2);
 }
 
-.replay-controls button:hover,
 .small-button:hover,
 .approval-actions button:hover {
   border-color: var(--gold);
   color: var(--fg);
 }
 
-.replay-controls .play,
 .primary-action {
   color: var(--fg);
   font-weight: 700;
 }
 
-.replay-controls input {
-  min-width: 0;
-  accent-color: var(--gold);
+/* Replay bar — footer strip */
+.replay-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 18px;
+  border-top: 1px solid var(--line);
+  background: var(--ink);
 }
 
-.replay-controls span {
+.rb-btn {
+  flex: 0 0 auto;
+  min-width: 28px;
+  min-height: 26px;
+  padding: 0 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--panel);
+  color: var(--fg-2);
+  font-size: .7rem;
+}
+
+.rb-btn:hover {
+  border-color: var(--fg-3);
+  color: var(--fg);
+}
+
+.rb-play {
+  padding: 0 12px;
+  color: var(--fg);
+  font-size: .72rem;
+  font-weight: 600;
+}
+
+.rb-scrubber {
+  flex: 1;
+  min-width: 0;
+  accent-color: var(--gold);
+  cursor: pointer;
+}
+
+.rb-timestamp {
+  color: var(--fg);
+  font-family: var(--mono);
+  font-size: .7rem;
+  white-space: nowrap;
+}
+
+.rb-label {
   color: var(--fg-3);
   font-family: var(--mono);
-  font-size: .62rem;
+  font-size: .58rem;
   white-space: nowrap;
 }
 
@@ -372,21 +481,45 @@ button {
 }
 
 .queue-row {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  grid-template-areas:
-    "host score"
-    "desc score";
-  gap: 3px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
   width: 100%;
-  min-height: 58px;
+  min-height: 62px;
   margin-bottom: 6px;
   border: 1px solid var(--line);
   border-left: 3px solid var(--line);
   border-radius: var(--r);
   background: var(--panel-2);
-  padding: 8px;
+  padding: 8px 10px;
   text-align: left;
+}
+
+.queue-row-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.queue-row-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.queue-ticket {
+  color: var(--fg-3);
+  font-family: var(--mono);
+  font-size: .55rem;
+  letter-spacing: .04em;
+}
+
+.queue-score {
+  color: var(--fg-2);
+  font-family: var(--mono);
+  font-size: .6rem;
 }
 
 .queue-row:hover,
@@ -399,26 +532,17 @@ button {
 .queue-row.low { border-left-color: var(--fg-3); }
 
 .host-name {
-  grid-area: host;
   color: var(--fg);
   font-weight: 700;
+  font-size: .82rem;
 }
 
 .queue-desc {
-  grid-area: desc;
   overflow: hidden;
   color: var(--fg-3);
+  font-size: .68rem;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.queue-score {
-  grid-area: score;
-  align-self: center;
-  color: var(--fg-2);
-  font-family: var(--mono);
-  font-size: .62rem;
-  text-align: right;
 }
 
 .map-panel {
@@ -776,7 +900,7 @@ button {
   }
 
   .topbar {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr auto;
   }
 
   .ops-grid {
@@ -853,12 +977,14 @@ button {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .replay-controls {
-    grid-template-columns: 32px 58px 32px auto;
+  .replay-bar {
+    flex-wrap: wrap;
+    gap: 6px;
   }
 
-  .replay-controls input {
-    grid-column: 1 / -1;
+  .rb-scrubber {
+    order: 10;
+    width: 100%;
   }
 
   .asset-row {

@@ -71,10 +71,21 @@ export default function useWebSocket(url) {
       ws.onmessage = (e) => {
         try {
           const msg = JSON.parse(e.data);
-          // Live mode: expect {meta, steps} or individual step frames
           if (msg.steps) {
+            // Static export format: full episode in one message
             setMeta(msg.meta);
             setSteps(msg.steps);
+          } else if (msg.step !== undefined && !msg.error) {
+            // Live stream: individual step frames arriving in real time
+            setSteps((prev) => {
+              const next = [...prev];
+              next[msg.step] = msg;
+              return next;
+            });
+            setStepIdx(msg.step);
+          } else if (msg.meta) {
+            // Meta-only handshake frame sent at session start
+            setMeta(msg.meta);
           }
         } catch { /* ignore */ }
       };
