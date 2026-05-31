@@ -8,11 +8,12 @@ import IncidentPanel      from "./components/IncidentPanel";
 import DefenseActionPanel from "./components/DefenseActionPanel";
 import DriftPanel         from "./components/DriftPanel";
 import HoneypotPanel      from "./components/HoneypotPanel";
+import ConvergencePanel   from "./components/ConvergencePanel";
 import useWebSocket       from "./hooks/useWebSocket";
 import "./styles/index.css";
 
-const TABS = ["incidents", "defense", "drift", "honeypot"];
-const TAB_LABELS = { incidents: "Incidents", defense: "Defense", drift: "Drift", honeypot: "Honeypot" };
+const TABS = ["incidents", "defense", "drift", "honeypot", "convergence"];
+const TAB_LABELS = { incidents: "Incidents", defense: "Defense", drift: "Drift", honeypot: "Honeypot", convergence: "Signal Game" };
 
 const LAYERS = ["innate", "memory", "tolerance", "learned", "orchestrator"];
 
@@ -23,9 +24,10 @@ const NAV_SECTIONS = [
     { id: "timeline",  name: "Timeline" },
   ]},
   { label: "Detection", items: [
-    { id: "incidents", name: "Incidents" },
-    { id: "drift",     name: "Drift Monitor" },
-    { id: "evasion",   name: "Evasion Matrix" },
+    { id: "incidents",   name: "Incidents" },
+    { id: "drift",       name: "Drift Monitor" },
+    { id: "evasion",     name: "Evasion Matrix" },
+    { id: "convergence", name: "Signal Game" },
   ]},
   { label: "Response", items: [
     { id: "defense",   name: "Defense Actions" },
@@ -231,7 +233,8 @@ export default function App() {
                   <DefenseActionPanel state={state} meta={meta} step={step} layerVisible={layerVisible} />
                 )}
                 {activeTab === "drift"     && <DriftPanel state={state} />}
-                {activeTab === "honeypot"  && <HoneypotPanel state={state} />}
+                {activeTab === "honeypot"    && <HoneypotPanel state={state} />}
+                {activeTab === "convergence" && <ConvergencePanel />}
               </div>
             </div>
           </div>

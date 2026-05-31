@@ -1,0 +1,28 @@
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+Running theoretical κ sweep (pure math, fast)...
+
+Running κ sweep on SignalingGameEnv (standalone)...
+κ=0.0:  learned q=0.510 (PBE 0.769)  learned r=0.507 (PBE 0.308)
+κ=5.0:  learned q=0.534 (PBE 0.769)  learned r=0.558 (PBE 0.154)
+κ=10.0:  learned q=0.536 (PBE 0.769)  learned r=0.486 (PBE 0.103)
+
+Generating convergence plot (hero visual)...
+Saved: results/convergence/convergence_plot.png
+
+Saving RL vs PBE comparison data...
+
+Copying assets to frontend/public/ for dashboard...
+  Copied convergence_plot.png
+  Copied kappa_sweep.png
+  Copied comparison.json
+
+Done.
+Hero visual: results/convergence/convergence_plot.png
+Comparison:  results/convergence/comparison.json
+
+RL vs PBE summary:
+  κ=0.0:  q=0.510 (PBE 0.769)  r=0.507 (PBE 0.308)
+  κ=5.0:  q=0.534 (PBE 0.769)  r=0.558 (PBE 0.154)
+  κ=10.0:  q=0.536 (PBE 0.769)  r=0.486 (PBE 0.103)
