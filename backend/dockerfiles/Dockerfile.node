@@ -9,23 +9,20 @@ RUN apt-get update && apt-get install -y \
     procps \
     net-tools \
     curl \
-    nginx \
+    sshpass \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install --no-cache-dir websockets aiohttp
+RUN pip3 install --no-cache-dir websockets
 
+# Demo user with intentionally weak credentials
 RUN useradd -m -s /bin/bash soma && echo 'soma:soma123' | chpasswd
 RUN mkdir -p /run/sshd
 
 COPY configs/sshd_config /etc/ssh/sshd_config
-COPY configs/nginx_honeypot.conf /etc/nginx/sites-enabled/default
 COPY soma_agent.py /soma_agent.py
-COPY honeypot_server.py /honeypot_server.py
-# Identical content to enterprise0 — convincing decoy
-COPY fake_data/enterprise0/ /var/www/html/
 COPY fake_data/user0/ /home/soma/documents/
-COPY dockerfiles/entrypoint_honeypot.sh /entrypoint.sh
+COPY dockerfiles/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-EXPOSE 22 80 8766
+EXPOSE 22
 CMD ["/entrypoint.sh"]

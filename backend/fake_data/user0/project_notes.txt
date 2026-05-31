@@ -1,0 +1,14 @@
+Q1 2025 Roadmap — CONFIDENTIAL
+================================
+- Launch new customer portal by March (see enterprise0:/var/www/html/)
+- Migrate prod DB to new data center (coordinate with ops team)
+- Budget approved: $2.4M capex, $800K opex
+- Board presentation: Feb 14th
+
+Internal contacts:
+  Slack: #engineering-private
+  Confluence: https://acmecorp.internal/wiki
+  Jira: https://acmecorp.atlassian.net
+
+Data center creds: see credentials.txt
+SSH keys: see ssh_config

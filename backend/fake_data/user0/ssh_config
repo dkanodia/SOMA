@@ -1,0 +1,14 @@
+Host enterprise0
+    HostName 172.20.0.20
+    User soma
+    PasswordAuthentication yes
+
+Host enterprise1
+    HostName 172.20.0.21
+    User soma
+    PasswordAuthentication yes
+
+Host op-server
+    HostName 172.20.0.30
+    User soma
+    PasswordAuthentication yes

@@ -1,31 +1,32 @@
 """
-backend/ws_server.py
-====================
-SOMA Live Demo — WebSocket + HTTP server on port 8765.
+backend/ws_server.py — SOMA Live Demo
+WebSocket + HTTP server on :8765
 
-HTTP routes (via process_request before WS upgrade):
-  GET /                           health check
-  GET /download/virus.command     serve the virus script as a download
+HTTP routes:
+  GET /                         health check
+  GET /download/virus.command   serve the virus script as a download
 
 WebSocket paths:
-  /dashboard    React frontend — receives all broadcast messages, sends purge
-  /virus        virus.command backdoor — bidirectional
-  /honeypot     Docker container — sends telemetry here instead of HTTP POST
+  /dashboard          React frontend clients
+  /virus              virus.command backdoor
+  /agent/{NODE_NAME}  Docker container soma_agent.py connections
+  /honeypot           Docker honeypot telemetry
 
-Background tasks:
-  - Gmail IMAP polling thread (every 2s) → EMAIL_RECEIVED on new unseen email
-  - psutil monitoring asyncio loop (every 1s) → node_metrics broadcast
-  - Anomaly detection → ISOLATING + Docker spawn + virus redirect
-
-State machine:
-  CLEAN → EMAIL_RECEIVED → INFECTED → ISOLATING → CONTAINED → PURGED
+State machine: CLEAN → EMAIL_RECEIVED → INFECTED → ISOLATING → CONTAINED → PURGED
 
 Broadcast messages (server → dashboard):
   {"type": "email_notification", "from": ..., "subject": ..., "has_attachment": true}
   {"type": "node_metrics", "nodes": [{id, cpu, processes, anomaly_score, status}]}
-  {"type": "state_change", "state": "..."}
-  {"type": "honeypot_active", "port": 8766, "metrics": {cpu, processes, exfil_attempts, lan_scans}}
+  {"type": "state_change", "state": "...", "detection_secs": N}
+  {"type": "honeypot_active", "port": 8766, "metrics": {...}}
+  {"type": "lateral_movement", "from_node": ..., "src_ip": ..., "dst_ip": ..., "dst_port": N}
   {"type": "purge_complete"}
+
+Anomaly detection (no external model — pure rolling z-score):
+  Multi-signal: CPU 40% + net_bytes_out 40% + tcp_conn_count 20%
+  display_score = 0.08 + max(composite_z, 0) * 0.20
+  Isolation triggers when User0 display_score > 0.65 (z > 2.85σ above baseline)
+  Baseline windows only updated during CLEAN / EMAIL_RECEIVED states.
 
 Environment variables:
   GMAIL_USER         — Gmail address to poll
@@ -34,27 +35,21 @@ Environment variables:
 """
 
 import asyncio
+import collections
 import http
 import imaplib
 import json
 import os
 import pathlib
-import random
 import signal
 import subprocess
-import sys
 import threading
 import time
 from email import message_from_bytes
 
-import numpy as np
 import psutil
 import websockets
 from websockets.http11 import Headers, Response as WsResponse
-
-# Add SOMA root to path so soma.* imports resolve from the backend directory
-_SOMA_ROOT = pathlib.Path(__file__).parent.parent
-sys.path.insert(0, str(_SOMA_ROOT))
 
 # ---------------------------------------------------------------------------
 # Config
@@ -65,163 +60,79 @@ GMAIL_USER = os.environ.get("GMAIL_USER", "")
 GMAIL_PASS = os.environ.get("GMAIL_APP_PASSWORD", "")
 VIRUS_PATH = pathlib.Path(__file__).parent / "virus.command"
 
-# ---------------------------------------------------------------------------
-# InnateImmunityLayer — loaded once at startup
-# ---------------------------------------------------------------------------
+# Nodes: User0 = host machine (psutil), rest = Docker containers (soma_agent.py)
+_HOST_NAMES    = ["User0", "Enterprise0", "Enterprise1", "Op_Server0"]
+_SOMA_NET_CIDR = "172.22.0."
 
-# 30-dim feature order expected by the model (from soma/envs/cyborg_wrapper.py)
-_MODEL_HOST_NAMES = ["User0", "User1", "User2", "Enterprise0", "Enterprise1", "Op_Server0"]
-_FEATURES_PER_HOST = 5
-_NETWORK_POS = {
-    "User0": 0.10, "User1": 0.10, "User2": 0.10,
-    "Enterprise0": 0.50, "Enterprise1": 0.50,
-    "Op_Server0": 0.90,
-}
-
-_innate_model     = None   # dict: {if_model, scaler, threshold}
-_innate_baseline: float = 0.0   # clean-Mac raw IF score, calibrated at startup
-
-
-def _load_innate_model():
-    """
-    Load IsolationForest + StandardScaler directly from the joblib file,
-    bypassing soma.layers.innate which imports gymnasium (only in the venv).
-    The joblib payload is plain sklearn objects — no soma imports needed.
-    """
-    global _innate_model
-    model_path = _SOMA_ROOT / "models" / "innate" / "isolation_forest.joblib"
-    if not model_path.exists():
-        print(f"[innate] Model not found at {model_path} — using heuristic fallback")
-        return
-    try:
-        import joblib as _joblib
-        payload = _joblib.load(model_path)
-        _innate_model = {
-            "if":        payload["model"],
-            "scaler":    payload["scaler"],
-            "threshold": float(payload["threshold"]),
-        }
-        print(f"[innate] Loaded IsolationForest  threshold={_innate_model['threshold']:.4f}")
-        _calibrate_baseline()
-    except Exception as e:
-        print(f"[innate] Could not load model ({e}) — using heuristic fallback")
-
-
-def _raw_if_score(obs: np.ndarray) -> float:
-    """Score a 30-dim obs using the loaded IsolationForest (higher = more anomalous)."""
-    X_s = _innate_model["scaler"].transform(obs.reshape(1, -1))
-    return float(-_innate_model["if"].score_samples(X_s)[0])
-
-
-def _calibrate_baseline(n_samples: int = 10, delay: float = 0.2):
-    """
-    Take N psutil samples of the clean Mac and record the mean IF score as
-    baseline. Corrects for the gap between CybORG training data (near-zero CPU)
-    and real Mac idle CPU (~10-20%), so the displayed anomaly score is meaningful.
-    """
-    global _innate_baseline
-    psutil.cpu_percent(interval=None)   # warm up
-    scores = []
-    print(f"[innate] Calibrating Mac clean baseline ({n_samples} samples)…")
-    for _ in range(n_samples):
-        time.sleep(delay)
-        cpu = psutil.cpu_percent(interval=None) / 100
-        procs_norm = min(len(psutil.pids()) / 200, 1.0)
-        obs = _build_obs_30dim(cpu, procs_norm, 0.0)
-        scores.append(_raw_if_score(obs))
-    _innate_baseline = float(np.mean(scores))
-    thr = _innate_model["threshold"]
-    print(f"[innate] Mac clean baseline: {_innate_baseline:.4f}  "
-          f"(threshold: {thr:.4f}  delta: {_innate_baseline - thr:+.4f})")
-
-
-def _build_obs_30dim(
-    user0_cpu: float,
-    user0_procs: float,
-    user0_compromised: float,
-) -> np.ndarray:
-    """
-    Build a 30-dim observation vector for the InnateImmunityLayer.
-    User0 gets real psutil values; other hosts get clean simulated values.
-
-    Feature layout per host: [activity, compromised, sessions, processes, network_pos]
-    """
-    obs = np.zeros(_FEATURES_PER_HOST * len(_MODEL_HOST_NAMES), dtype=np.float32)
-    for i, host in enumerate(_MODEL_HOST_NAMES):
-        start = i * _FEATURES_PER_HOST
-        if host == "User0":
-            obs[start + 0] = user0_cpu           # activity  = CPU usage
-            obs[start + 1] = user0_compromised   # compromised flag
-            obs[start + 2] = user0_procs         # sessions proxy
-            obs[start + 3] = user0_compromised   # processes spike when compromised
-            obs[start + 4] = _NETWORK_POS[host]
-        else:
-            # Simulated clean host: very low near-zero activity
-            clean_val = max(0.0, random.gauss(0.03, 0.005))
-            obs[start + 0] = clean_val
-            obs[start + 1] = 0.0
-            obs[start + 2] = clean_val
-            obs[start + 3] = 0.0
-            obs[start + 4] = _NETWORK_POS.get(host, 0.5)
-    return obs
-
-
-def _compute_user0_anomaly(
-    cpu: float,
-    procs_norm: float,
-    compromised: float,
-    state: str,
-) -> float:
-    """
-    Compute User0 anomaly score using the real InnateImmunityLayer model.
-
-    The model was trained on CybORG clean data (near-zero CPU/features), so
-    a normal Mac already scores above the calibrated CybORG threshold. We
-    correct for this by computing the delta above the Mac clean baseline,
-    then amplifying so the infected state clearly crosses 0.65+ for the demo:
-
-      display = 0.08 + (raw - baseline) * amplification
-
-    - Clean state:    delta ≈ 0.0   → display ≈ 0.08  (green)
-    - Infected state: delta ≈ 0.012 → display ≈ 0.82  (red) with amp=60
-    """
-    if _innate_model is not None:
-        obs = _build_obs_30dim(cpu, procs_norm, compromised)
-        raw   = _raw_if_score(obs)
-        delta = max(raw - _innate_baseline, 0.0)
-        # Amplify delta; add a small floor so score is never 0 even when clean
-        AMPLIFICATION = 60.0
-        CLEAN_FLOOR   = 0.08
-        score = CLEAN_FLOOR + delta * AMPLIFICATION
-        return round(min(max(score, 0.0), 1.0), 3)
-    # Heuristic fallback (no model available)
-    return _score_heuristic(cpu, procs_norm, procs_norm, compromised, state)
-
-
-def _score_heuristic(cpu: float, sess: float, proc: float, comp: float, state: str) -> float:
-    base = 0.3 * cpu + 0.2 * sess + 0.2 * proc + 0.3 * comp
-    if state in ("INFECTED", "ISOLATING", "CONTAINED"):
-        base = min(base + 0.40, 1.0)
-    return round(max(0.0, min(base, 1.0)), 3)
-
-ANOMALY_THRESHOLD    = 0.65
-INFECTED_DWELL_SECS  = 5      # stay INFECTED for at least this long before isolating
+# Anomaly detection
+_WINDOW_SIZE       = 60    # rolling window ticks
+_MIN_WINDOW        = 10    # min samples before scoring
+_ANOMALY_THRESHOLD = 0.65  # display score that triggers isolation
+_INFECTED_DWELL    = 5     # seconds in INFECTED before isolation can fire
 
 # ---------------------------------------------------------------------------
-# Global state (protected by asyncio — only mutated on the event loop)
+# Global state
 # ---------------------------------------------------------------------------
 
 _demo_state: str         = "CLEAN"
 _dashboard_clients: set  = set()
 _virus_ws                = None
 _virus_worker_pids: list = []
-_event_loop              = None   # set in main() so threads can post to it
-_infected_at: float      = 0.0   # monotonic timestamp when INFECTED state was entered
-_detection_secs: float   = 0.0   # how long it took to detect (CLEAN→ISOLATING)
+_event_loop              = None
+_infected_at: float      = 0.0
+_detection_secs: float   = 0.0
+_honeypot_metrics_cache  = None   # cached for late-joining dashboard clients
+
+# Latest metrics received from each Docker container agent
+_agent_data: dict = {}   # node_name → latest agent_metrics dict
+
+# Rolling windows for z-score baseline (separate per node)
+_cpu_windows = collections.defaultdict(lambda: collections.deque(maxlen=_WINDOW_SIZE))
+_net_windows = collections.defaultdict(lambda: collections.deque(maxlen=_WINDOW_SIZE))
+_tcp_windows = collections.defaultdict(lambda: collections.deque(maxlen=_WINDOW_SIZE))
+
+# Host net I/O delta tracking for User0
+_host_net_prev_out: int = 0
+
+# ---------------------------------------------------------------------------
+# Anomaly scoring — rolling z-score (no external model)
+# ---------------------------------------------------------------------------
+
+def _z_score(val: float, window: collections.deque, min_std: float) -> float:
+    if len(window) < _MIN_WINDOW:
+        return 0.0
+    vals = list(window)
+    mean = sum(vals) / len(vals)
+    var  = sum((v - mean) ** 2 for v in vals) / len(vals)
+    std  = max(var ** 0.5, min_std)
+    return (val - mean) / std
+
+
+def _compute_anomaly(name: str, cpu: float, net_out: float, tcp_count: int) -> float:
+    """
+    Multi-signal z-score detector.
+    Baseline windows grow only during CLEAN / EMAIL_RECEIVED states.
+    At infection, baseline is frozen → z-score reflects true deviation.
+
+    Isolation threshold 0.65 ≡ composite_z ≈ 2.85σ.
+    """
+    state = _demo_state
+    if state in ("CLEAN", "EMAIL_RECEIVED"):
+        _cpu_windows[name].append(cpu)
+        _net_windows[name].append(float(net_out))
+        _tcp_windows[name].append(float(tcp_count))
+
+    z_cpu = _z_score(cpu,             _cpu_windows[name], min_std=1.0)
+    z_net = _z_score(float(net_out),  _net_windows[name], min_std=1000.0)
+    z_tcp = _z_score(float(tcp_count), _tcp_windows[name], min_std=1.0)
+
+    composite = 0.4 * z_cpu + 0.4 * z_net + 0.2 * z_tcp
+    display   = 0.08 + max(composite, 0.0) * 0.20
+    return round(min(max(display, 0.0), 1.0), 3)
 
 
 # ---------------------------------------------------------------------------
-# Helpers
+# State helpers
 # ---------------------------------------------------------------------------
 
 def _get_state() -> str:
@@ -230,15 +141,17 @@ def _get_state() -> str:
 
 async def _set_state(new_state: str):
     global _demo_state, _infected_at, _detection_secs
-    import time as _time
     if new_state == "INFECTED":
-        _infected_at = _time.monotonic()
+        _infected_at = time.monotonic()
     elif new_state == "ISOLATING" and _infected_at:
-        _detection_secs = round(_time.monotonic() - _infected_at, 1)
+        _detection_secs = round(time.monotonic() - _infected_at, 1)
     _demo_state = new_state
     print(f"[soma] State → {new_state}")
-    await _broadcast({"type": "state_change", "state": new_state,
-                      "detection_secs": _detection_secs if new_state == "ISOLATING" else 0})
+    await _broadcast({
+        "type":           "state_change",
+        "state":          new_state,
+        "detection_secs": _detection_secs if new_state == "ISOLATING" else 0,
+    })
 
 
 async def _broadcast(msg: dict):
@@ -256,7 +169,6 @@ async def _broadcast(msg: dict):
 
 
 def _post_to_loop(coro):
-    """Schedule a coroutine on the main event loop from any thread."""
     if _event_loop and not _event_loop.is_closed():
         asyncio.run_coroutine_threadsafe(coro, _event_loop)
 
@@ -267,9 +179,10 @@ def _post_to_loop(coro):
 
 def _imap_poll_loop():
     if not GMAIL_USER or not GMAIL_PASS:
-        print("[imap] GMAIL_USER/GMAIL_APP_PASSWORD not set — email polling disabled")
+        print("[imap] GMAIL_USER/GMAIL_APP_PASSWORD not set — email trigger disabled")
+        print("[imap] Use set_infected message from dashboard to trigger manually")
         return
-    print(f"[imap] Polling {GMAIL_USER} for unseen emails every 2s")
+    print(f"[imap] Polling {GMAIL_USER} every 2s")
     while True:
         try:
             if _get_state() == "CLEAN":
@@ -286,7 +199,7 @@ def _imap_poll_loop():
                         sender  = msg.get("From",    "unknown@sender.com")
                         subject = msg.get("Subject", "(no subject)")
                         mail.store(uid, "+FLAGS", "\\Seen")
-                        print(f"[imap] New email — from: {sender}  subject: {subject}")
+                        print(f"[imap] New email from {sender}: {subject}")
                         _post_to_loop(_on_email_received(sender, subject))
         except Exception as e:
             print(f"[imap] Error: {e}")
@@ -304,91 +217,137 @@ async def _on_email_received(sender: str, subject: str):
 
 
 # ---------------------------------------------------------------------------
-# psutil monitoring loop (asyncio task — 1-second interval)
+# psutil monitoring loop (1-second asyncio task)
 # ---------------------------------------------------------------------------
 
 async def _psutil_loop():
+    global _host_net_prev_out
     print("[psutil] Monitoring loop started")
-    _psutil_one_time_init()   # warm up cpu_percent
-    await asyncio.sleep(0.5)
+    psutil.cpu_percent(interval=None)   # warm-up (first call always returns 0)
+    _host_net_prev_out = psutil.net_io_counters().bytes_sent
+    await asyncio.sleep(1)
 
     while True:
         await asyncio.sleep(1)
         state = _get_state()
 
-        # Real readings from victim machine
-        cpu_raw  = psutil.cpu_percent(interval=None)   # 0-100
-        procs    = len(psutil.pids())
-        net_sent = psutil.net_io_counters().bytes_sent
+        # ── User0: real host machine readings ──────────────────────────────
+        cpu_raw = psutil.cpu_percent(interval=None)
+        procs   = len(psutil.pids())
+        net_now = psutil.net_io_counters()
+        net_out = max(0, net_now.bytes_sent - _host_net_prev_out)
+        _host_net_prev_out = net_now.bytes_sent
+        try:
+            tcp_count = len([c for c in psutil.net_connections() if c.status == "ESTABLISHED"])
+        except Exception:
+            tcp_count = 0
 
-        user0_cpu      = cpu_raw / 100
-        user0_sessions = min(procs / 200, 1.0)
-        user0_procs    = min(procs / 300, 1.0)
+        user0_anom = _compute_anomaly("User0", cpu_raw, net_out, tcp_count)
 
-        user0_compromised = 1.0 if state in ("INFECTED", "ISOLATING", "CONTAINED") else 0.0
+        nodes = [{
+            "id":            "User0",
+            "cpu":           round(cpu_raw / 100, 3),
+            "processes":     procs,
+            "anomaly_score": user0_anom,
+            "status":        "red" if user0_anom > 0.75 else "yellow" if user0_anom > 0.5 else "green",
+        }]
 
-        nodes = []
-        for i, name in enumerate(_HOST_NAMES):
-            if name == "User0":
-                cpu        = user0_cpu
-                anom       = _compute_user0_anomaly(
-                                 user0_cpu, user0_sessions,
-                                 user0_compromised, state)
-                real_procs = procs
+        # ── Container nodes: data from soma_agent.py ───────────────────────
+        for name in _HOST_NAMES[1:]:
+            data = _agent_data.get(name)
+            if data:
+                c_cpu  = data.get("cpu_pct", 0.0)
+                c_net  = data.get("net_bytes_out", 0)
+                c_tcp  = data.get("tcp_conn_count", 0)
+                c_proc = data.get("proc_count", 0)
+                anom   = _compute_anomaly(name, c_cpu, c_net, c_tcp)
             else:
-                cpu        = max(0.0, min(random.gauss(0.04, 0.01), 1.0))
-                anom       = max(0.0, random.gauss(0.04, 0.01))
-                real_procs = int(max(0.0, min(random.gauss(0.05, 0.01), 1.0)) * 200)
+                c_cpu  = 0.0
+                c_proc = 0
+                anom   = 0.04   # show as offline/quiet
 
-            status = ("red" if anom > 0.75 else "yellow" if anom > 0.5 else "green")
+            status = "red" if anom > 0.75 else "yellow" if anom > 0.5 else "green"
             nodes.append({
                 "id":            name,
-                "cpu":           round(cpu, 3),
-                "processes":     real_procs,
+                "cpu":           round(c_cpu / 100, 3) if data else 0.0,
+                "processes":     c_proc,
                 "anomaly_score": round(anom, 3),
                 "status":        status,
             })
 
         await _broadcast({"type": "node_metrics", "nodes": nodes})
 
-        # Anomaly-triggered isolation — only after minimum dwell in INFECTED
-        import time as _time
+        # ── Anomaly-triggered isolation ─────────────────────────────────────
         if (state == "INFECTED"
-                and nodes[0]["anomaly_score"] > ANOMALY_THRESHOLD
+                and user0_anom > _ANOMALY_THRESHOLD
                 and _infected_at > 0
-                and _time.monotonic() - _infected_at >= INFECTED_DWELL_SECS):
+                and time.monotonic() - _infected_at >= _INFECTED_DWELL):
             await _set_state("ISOLATING")
             asyncio.ensure_future(_isolate())
 
 
-# Display aliases for the live demo — these are presentation-friendly names shown in the
-# frontend node grid. They intentionally differ from the actual CybORG CAGE 2 topology
-# (_MODEL_HOST_NAMES: User0-2, Enterprise0-1, Op_Server0) to make the demo more relatable.
-# Anomaly scoring only applies to "User0", which matches in both lists.
-_HOST_NAMES = ["User0", "Enterprise0", "Op_Server0", "Contractor0", "External0", "DMZ_Server0"]
+# ---------------------------------------------------------------------------
+# Container agent handler
+# ---------------------------------------------------------------------------
 
+async def _handle_agent(websocket, node_name: str):
+    """Receive soma_agent.py metrics from a Docker container."""
+    print(f"[ws/agent:{node_name}] connected")
+    try:
+        async for raw in websocket:
+            try:
+                msg = json.loads(raw)
+            except Exception:
+                continue
+            if msg.get("type") != "agent_metrics":
+                continue
 
-def _psutil_one_time_init():
-    psutil.cpu_percent(interval=None)   # first call always returns 0.0
+            _agent_data[node_name] = msg
+
+            # Lateral movement: new TCP connections between soma-net nodes
+            for conn in msg.get("new_connections", []):
+                src = conn.get("src_ip", "")
+                dst = conn.get("dst_ip", "")
+                if src.startswith(_SOMA_NET_CIDR) and dst.startswith(_SOMA_NET_CIDR):
+                    print(f"[soma] Lateral movement: {src} → {dst} on {node_name}")
+                    await _broadcast({
+                        "type":      "lateral_movement",
+                        "from_node": node_name,
+                        "src_ip":    src,
+                        "dst_ip":    dst,
+                        "dst_port":  conn.get("dst_port", 0),
+                    })
+
+    except websockets.exceptions.ConnectionClosed:
+        pass
+    finally:
+        _agent_data.pop(node_name, None)
+        print(f"[ws/agent:{node_name}] disconnected")
 
 
 # ---------------------------------------------------------------------------
-# Isolation: Docker honeypot + virus redirect
+# Isolation — Docker honeypot + virus redirect
 # ---------------------------------------------------------------------------
 
 async def _isolate():
-    global _virus_ws
     print("[soma] Spawning Docker honeypot (soma_honeypot_image → :8766)...")
     try:
         subprocess.Popen([
-            "docker", "run", "-d", "--name", "soma_honeypot",
+            "docker", "run", "-d",
+            "--name", "soma_honeypot",
+            "--network", "soma-net",
+            "--ip", "172.22.0.99",
             "-p", "8766:8766",
+            "-p", "8082:80",
+            "-e", "SOMA_HOST=host.docker.internal",
+            "-e", "SOMA_PORT=8765",
+            "-e", "NODE_NAME=Honeypot",
             "soma_honeypot_image",
         ])
     except Exception as e:
         print(f"[soma] Docker error: {e}")
 
-    await asyncio.sleep(2)  # let container start
+    await asyncio.sleep(2)
 
     if _virus_ws is not None:
         try:
@@ -405,19 +364,18 @@ async def _isolate():
 # ---------------------------------------------------------------------------
 
 async def _purge():
-    global _virus_worker_pids
+    global _virus_worker_pids, _honeypot_metrics_cache
     print("[soma] Purging honeypot and workers...")
-    # Docker cleanup (run in executor to avoid blocking)
     loop = asyncio.get_event_loop()
     await loop.run_in_executor(None, _docker_cleanup)
-    # Kill virus CPU workers
     for pid_str in _virus_worker_pids:
         try:
             os.kill(int(pid_str), signal.SIGTERM)
             print(f"[soma] Killed worker PID {pid_str}")
         except Exception:
             pass
-    _virus_worker_pids = []
+    _virus_worker_pids      = []
+    _honeypot_metrics_cache = None
     await _set_state("PURGED")
     await _broadcast({"type": "purge_complete"})
 
@@ -429,8 +387,8 @@ def _docker_cleanup():
 
 
 async def _reset_demo():
-    global _infected_at, _detection_secs, _virus_ws, _virus_worker_pids
-    print("[soma] Resetting demo → CLEAN")
+    global _infected_at, _detection_secs, _virus_ws, _virus_worker_pids, _honeypot_metrics_cache
+    print("[soma] Resetting → CLEAN")
     loop = asyncio.get_event_loop()
     await loop.run_in_executor(None, _docker_cleanup)
     for pid_str in _virus_worker_pids:
@@ -438,16 +396,17 @@ async def _reset_demo():
             os.kill(int(pid_str), signal.SIGTERM)
         except Exception:
             pass
-    _virus_worker_pids = []
-    _infected_at       = 0.0
-    _detection_secs    = 0.0
+    _virus_worker_pids      = []
+    _infected_at            = 0.0
+    _detection_secs         = 0.0
+    _honeypot_metrics_cache = None
     await _set_state("CLEAN")
     await _broadcast({"type": "demo_reset"})
     print("[soma] Demo reset complete")
 
 
 # ---------------------------------------------------------------------------
-# HTTP handler (intercepts requests before WebSocket upgrade)
+# HTTP handler (before WebSocket upgrade)
 # ---------------------------------------------------------------------------
 
 async def _process_request(connection, request):
@@ -468,46 +427,51 @@ async def _process_request(connection, request):
             return WsResponse(200, "OK", hdrs, body)
         return connection.respond(http.HTTPStatus.NOT_FOUND, "Not found\n")
 
-    # /dashboard, /virus, /honeypot → proceed to WebSocket upgrade
+    # All WebSocket paths fall through to upgrade
     return None
 
 
 # ---------------------------------------------------------------------------
-# WebSocket handlers
+# WebSocket router
 # ---------------------------------------------------------------------------
 
 async def _handle_client(websocket):
-    global _virus_ws, _virus_worker_pids, _infected_at
+    global _virus_ws, _virus_worker_pids, _honeypot_metrics_cache
 
     path = websocket.request.path
 
     # ── Dashboard ──────────────────────────────────────────────────────────
     if path == "/dashboard":
         _dashboard_clients.add(websocket)
-        count = len(_dashboard_clients)
-        print(f"[ws/dashboard] connected  ({count} clients)")
+        print(f"[ws/dashboard] connected ({len(_dashboard_clients)} clients)")
         try:
-            # Send current state on connect
-            await websocket.send(json.dumps({"type": "state_change", "state": _get_state()}))
+            # Catch up new client on current state
+            await websocket.send(json.dumps({
+                "type":           "state_change",
+                "state":          _get_state(),
+                "detection_secs": _detection_secs,
+            }))
+            if _honeypot_metrics_cache is not None:
+                await websocket.send(json.dumps(_honeypot_metrics_cache))
+
             async for raw in websocket:
                 try:
                     msg = json.loads(raw)
                 except Exception:
                     continue
-                if msg.get("type") == "purge":
+                t = msg.get("type")
+                if t == "purge":
                     await _purge()
-                elif msg.get("type") == "set_infected":
-                    # Manual shortcut: presenter marks as infected without email flow
+                elif t == "set_infected":
                     if _get_state() in ("CLEAN", "EMAIL_RECEIVED"):
                         await _set_state("INFECTED")
-                elif msg.get("type") == "reset":
-                    # Reset demo back to CLEAN (presenter control)
+                elif t == "reset":
                     await _reset_demo()
         except websockets.exceptions.ConnectionClosed:
             pass
         finally:
             _dashboard_clients.discard(websocket)
-            print(f"[ws/dashboard] disconnected  ({len(_dashboard_clients)} clients)")
+            print(f"[ws/dashboard] disconnected ({len(_dashboard_clients)} clients)")
 
     # ── Virus backdoor ─────────────────────────────────────────────────────
     elif path == "/virus":
@@ -524,7 +488,6 @@ async def _handle_client(websocket):
                     print(f"[ws/virus] PID={msg.get('pid')}  workers={_virus_worker_pids}")
                     if _get_state() == "EMAIL_RECEIVED":
                         await _set_state("INFECTED")
-                # virus_telemetry is noted but we use psutil for User0 readings
         except websockets.exceptions.ConnectionClosed:
             pass
         finally:
@@ -532,9 +495,14 @@ async def _handle_client(websocket):
                 _virus_ws = None
             print("[ws/virus] Backdoor disconnected")
 
-    # ── Honeypot (Docker container reports here via WebSocket) ─────────────
+    # ── Container agents ───────────────────────────────────────────────────
+    elif path.startswith("/agent/"):
+        node_name = path[len("/agent/"):]
+        await _handle_agent(websocket, node_name)
+
+    # ── Honeypot telemetry ─────────────────────────────────────────────────
     elif path == "/honeypot":
-        print("[ws/honeypot] Docker container connected")
+        print("[ws/honeypot] Docker honeypot connected")
         try:
             async for raw in websocket:
                 try:
@@ -542,20 +510,22 @@ async def _handle_client(websocket):
                 except Exception:
                     continue
                 if msg.get("type") == "honeypot_telemetry":
-                    await _broadcast({
-                        "type":    "honeypot_active",
-                        "port":    8766,
+                    payload = {
+                        "type": "honeypot_active",
+                        "port": 8766,
                         "metrics": {
                             "cpu":            msg.get("cpu", 0),
                             "processes":      msg.get("processes", 0),
                             "exfil_attempts": msg.get("exfil_attempts", 0),
                             "lan_scans":      msg.get("lan_scans", 0),
                         },
-                    })
+                    }
+                    _honeypot_metrics_cache = payload
+                    await _broadcast(payload)
         except websockets.exceptions.ConnectionClosed:
             pass
         finally:
-            print("[ws/honeypot] Docker container disconnected")
+            print("[ws/honeypot] Docker honeypot disconnected")
 
     else:
         await websocket.close(1008, "Unknown path")
@@ -569,16 +539,12 @@ async def main():
     global _event_loop
     _event_loop = asyncio.get_running_loop()
 
-    print(f"[soma] Starting on port {PORT}")
+    print(f"[soma] Starting on :{PORT}")
     if not GMAIL_USER:
         print("[soma] WARNING: GMAIL_USER not set — email trigger disabled")
-        print("[soma]          Presenter can use set_infected message from dashboard to manually trigger")
+        print("[soma]          Send {type:set_infected} from dashboard to trigger manually")
 
-    # Gmail polling background thread
-    t = threading.Thread(target=_imap_poll_loop, daemon=True)
-    t.start()
-
-    # psutil monitoring asyncio task
+    threading.Thread(target=_imap_poll_loop, daemon=True).start()
     asyncio.ensure_future(_psutil_loop())
 
     async with websockets.serve(
@@ -588,13 +554,12 @@ async def main():
         process_request=_process_request,
     ):
         print(f"[soma] Ready")
-        print(f"[soma]   GET  http://0.0.0.0:{PORT}/download/virus.command")
-        print(f"[soma]   WS   ws://0.0.0.0:{PORT}/dashboard")
-        print(f"[soma]   WS   ws://0.0.0.0:{PORT}/virus")
-        print(f"[soma]   WS   ws://0.0.0.0:{PORT}/honeypot")
+        print(f"[soma]   GET http://0.0.0.0:{PORT}/download/virus.command")
+        print(f"[soma]   WS  ws://0.0.0.0:{PORT}/dashboard")
+        print(f"[soma]   WS  ws://0.0.0.0:{PORT}/virus")
+        print(f"[soma]   WS  ws://0.0.0.0:{PORT}/agent/{{NODE_NAME}}")
         await asyncio.Future()
 
 
 if __name__ == "__main__":
-    _load_innate_model()   # calibrates Mac baseline before event loop starts
     asyncio.run(main())

@@ -1,0 +1,85 @@
+networks:
+  soma-net:
+    name: soma-net
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.22.0.0/24
+          gateway: 172.22.0.1
+
+x-common: &common
+  extra_hosts:
+    - "host.docker.internal:host-gateway"
+  restart: unless-stopped
+
+services:
+  soma-user0:
+    <<: *common
+    build:
+      context: backend
+      dockerfile: dockerfiles/Dockerfile.node
+    container_name: soma-user0
+    hostname: soma-user0
+    networks:
+      soma-net:
+        ipv4_address: 172.22.0.10
+    environment:
+      NODE_NAME: User0
+      SOMA_HOST: host.docker.internal
+      SOMA_PORT: "8765"
+
+  soma-enterprise0:
+    <<: *common
+    build:
+      context: backend
+      dockerfile: dockerfiles/Dockerfile.enterprise0
+    container_name: soma-enterprise0
+    hostname: soma-enterprise0
+    networks:
+      soma-net:
+        ipv4_address: 172.22.0.20
+    environment:
+      NODE_NAME: Enterprise0
+      SOMA_HOST: host.docker.internal
+      SOMA_PORT: "8765"
+    ports:
+      - "8081:80"
+      - "2220:22"
+
+  soma-enterprise1:
+    <<: *common
+    build:
+      context: backend
+      dockerfile: dockerfiles/Dockerfile.enterprise1
+    container_name: soma-enterprise1
+    hostname: soma-enterprise1
+    networks:
+      soma-net:
+        ipv4_address: 172.22.0.21
+    environment:
+      NODE_NAME: Enterprise1
+      SOMA_HOST: host.docker.internal
+      SOMA_PORT: "8765"
+    ports:
+      - "2221:22"
+
+  soma-op-server0:
+    <<: *common
+    build:
+      context: backend
+      dockerfile: dockerfiles/Dockerfile.op_server0
+    container_name: soma-op-server0
+    hostname: soma-op-server0
+    networks:
+      soma-net:
+        ipv4_address: 172.22.0.30
+    environment:
+      NODE_NAME: Op_Server0
+      SOMA_HOST: host.docker.internal
+      SOMA_PORT: "8765"
+    ports:
+      - "2223:22"
+
+  # soma-honeypot is NOT started by docker-compose — spawned dynamically
+  # during ISOLATING phase by ws_server.py: docker run soma_honeypot_image
+  # Build once before demo: docker build -t soma_honeypot_image -f backend/Dockerfile.honeypot backend/

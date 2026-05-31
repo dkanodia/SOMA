@@ -103,6 +103,7 @@ export default function useWebSocket(url) {
   const [nodes,              setNodes]              = useState([]);
   const [honeypotMetrics,    setHoneypotMetrics]    = useState(null);
   const [detectionSecs,      setDetectionSecs]      = useState(0);
+  const [lateralMovements,   setLateralMovements]   = useState([]);
 
   const wsRef          = useRef(null);
   const reconnectRef   = useRef(null);
@@ -232,6 +233,12 @@ export default function useWebSocket(url) {
         case "honeypot_active":
           setHoneypotMetrics(msg.metrics ?? null);
           break;
+        case "lateral_movement":
+          setLateralMovements(prev => [
+            { ...msg, ts: Date.now() },
+            ...prev.slice(0, 9),
+          ]);
+          break;
         case "purge_complete":
           setHoneypotMetrics(null);
           setSomaState("PURGED");
@@ -242,6 +249,7 @@ export default function useWebSocket(url) {
           setNodes([]);
           setHoneypotMetrics(null);
           setDetectionSecs(0);
+          setLateralMovements([]);
           break;
         default:
           break;
@@ -289,6 +297,7 @@ export default function useWebSocket(url) {
     nodes,
     honeypotMetrics,
     detectionSecs,
+    lateralMovements,
     sendMessage,
   };
 }

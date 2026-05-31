@@ -352,6 +352,7 @@ export default function App() {
     nodes,
     honeypotMetrics,
     detectionSecs,
+    lateralMovements,
     sendMessage,
   } = useWebSocket(WS_URL);
 
@@ -402,6 +403,27 @@ export default function App() {
               </div>
               <NodeGrid nodes={nodes} somaState={somaState} />
             </section>
+
+            {lateralMovements.length > 0 && (
+              <section className="panel lateral-panel">
+                <div className="section-head">
+                  <div>
+                    <span>Lateral movement</span>
+                    <strong>{lateralMovements.length} event{lateralMovements.length !== 1 ? "s" : ""}</strong>
+                  </div>
+                </div>
+                <ul className="lateral-list">
+                  {lateralMovements.map((ev, i) => (
+                    <li key={i} className="lateral-event">
+                      <span className="lat-node">{ev.from_node}</span>
+                      <span className="lat-arrow">→</span>
+                      <span className="lat-ip">{ev.dst_ip}:{ev.dst_port}</span>
+                      <span className="lat-time">{new Date(ev.ts).toLocaleTimeString("en-GB")}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
 
             <HoneypotPanel metrics={honeypotMetrics} onPurge={handlePurge} />
 

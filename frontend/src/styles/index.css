@@ -1801,3 +1801,31 @@ button {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0.3; }
 }
+
+/* Lateral movement panel */
+.lateral-panel { animation: fadein 0.2s ease; }
+
+.lateral-list {
+  list-style: none;
+  margin: 0;
+  padding: 0.25rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.lateral-event {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-family: var(--mono);
+  padding: 0.2rem 0.4rem;
+  border-left: 2px solid var(--alert);
+  background: color-mix(in srgb, var(--alert) 5%, transparent);
+}
+
+.lat-node  { color: var(--alert); font-weight: 600; min-width: 7rem; }
+.lat-arrow { color: var(--fg-3); }
+.lat-ip    { color: var(--fg); flex: 1; }
+.lat-time  { color: var(--fg-3); font-size: 0.7rem; }
