@@ -14,43 +14,14 @@
 | Rewrite `useWebSocket.js` — new message router | Handles `lateral_movement`, `honeypot_active`, `purge_complete`, `demo_reset` |
 | Add lateral movement panel to `App.jsx` | Shows real SSH lateral movement events as they arrive with source/dest IPs |
 | Rebuild all Docker images and verify end-to-end | All 4 agents connect, real `/proc` metrics flowing, clean anomaly score = 0.080 |
+| Fix `virus.command` asyncio.gather bug | Replaced `asyncio.gather` with `create_task` + `cancel` — redirect now fires correctly |
+| Integrate `LiveNetworkGraph.jsx` into `App.jsx` | Imported on App.jsx:4, rendered on App.jsx:399 with `nodes`, `somaState`, `honeypotMetrics` props |
+| Fix `ws_server.py` async API deprecations | `ensure_future` → `create_task`; `get_event_loop()` → `get_running_loop()` in `_purge`/`_reset_demo` |
+| Fix `_reset_demo()` not clearing `_virus_ws` | Added `_virus_ws = None` so stale connection is dropped on reset |
 
 ---
 
 ## 🔴 To Do
-
-### High Priority
-
-#### Fix `virus.command` asyncio.gather bug — redirect never fires
-**File:** `backend/virus.command` (Python backdoor section)
-
-**Problem:** The current code uses:
-```python
-_, redirect_port = await asyncio.gather(send_telemetry(), recv_commands())
-```
-`send_telemetry()` is an infinite loop. `asyncio.gather` waits for **all** coroutines to finish, so even when `recv_commands()` receives the `{"type":"redirect"}` message and returns, the gather never resolves — the virus never switches to port 8766.
-
-**Fix:**
-```python
-telemetry_task = asyncio.create_task(send_telemetry())
-redirect_port = await recv_commands()
-telemetry_task.cancel()
-# reconnect to ws://localhost:{redirect_port}/virus
-```
-
----
-
-#### Integrate `LiveNetworkGraph.jsx` into `App.jsx`
-**File:** `frontend/src/App.jsx`
-
-`LiveNetworkGraph.jsx` exists in `frontend/src/components/` but is never imported or rendered. It needs to:
-- Be imported at the top of `App.jsx`
-- Receive props: `nodes`, `somaState`, `lateralMovements`
-- Be placed in the `live-demo-body` section (above or below the node grid)
-- Animate edges during lateral movement events
-- Expand to show honeypot decoy zone during `ISOLATING` / `CONTAINED` states
-
----
 
 ### Medium Priority
 
