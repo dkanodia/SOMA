@@ -52,19 +52,22 @@ const DECOY_TOPO = [
   ["D-Enterprise1", "D-Op_Server0"],
 ];
 
-const SHORT = {
-  Attacker:      "ATTK",
-  User0:         "User0",
-  User1:         "User1",
-  User2:         "User2",
-  Enterprise0:   "Ent0",
-  Enterprise1:   "Ent1",
-  Op_Server0:    "Srv0",
-  "D-User0":       "User0",
-  "D-Enterprise0": "Ent0",
-  "D-Enterprise1": "Ent1",
-  "D-Op_Server0":  "Srv0",
+// Display labels — human-readable names for each node
+const LABEL = {
+  Attacker:        "THREAT",
+  User0:           "WS-DK",      // victim host — monitored via psutil (DK's machine)
+  User1:           "WS-02",
+  User2:           "WS-03",
+  Enterprise0:     "FILE-SRV",
+  Enterprise1:     "WEB-SRV",
+  Op_Server0:      "DC-01",      // domain controller
+  "D-User0":       "WS-DK",
+  "D-Enterprise0": "FILE-SRV",
+  "D-Enterprise1": "WEB-SRV",
+  "D-Op_Server0":  "DC-01",
 };
+// Keep SHORT as an alias so existing references work
+const SHORT = LABEL;
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -91,7 +94,7 @@ function scoreToColor(score) {
 // Component
 // ---------------------------------------------------------------------------
 
-export default function LiveNetworkGraph({ nodes, somaState, honeypotMetrics }) {
+export default function LiveNetworkGraph({ nodes, somaState, honeypotMetrics, victimNode }) {
   const nodeMap = useMemo(
     () => Object.fromEntries((nodes || []).map((n) => [n.id, n])),
     [nodes]
@@ -114,6 +117,7 @@ export default function LiveNetworkGraph({ nodes, somaState, honeypotMetrics }) 
         <span className={`lng-state-tag lng-state-${somaState}`}>{somaState.replace("_", " ")}</span>
       </div>
 
+      <div className="lng-svg-wrap">
       <svg viewBox={`0 0 ${W} ${totalH}`} className="lng-svg"
         style={{ transition: "height 0.5s ease" }}>
         <defs>
@@ -168,12 +172,12 @@ export default function LiveNetworkGraph({ nodes, somaState, honeypotMetrics }) 
         <text x={64} y={13} textAnchor="middle"
           fill="#303631" fontSize={7.5}
           fontFamily="'JetBrains Mono','Fira Code',monospace" letterSpacing="0.5">
-          EXTERNAL
+          INTERNET
         </text>
         <text x={352} y={13} textAnchor="middle"
           fill="#303631" fontSize={7.5}
           fontFamily="'JetBrains Mono','Fira Code',monospace" letterSpacing="0.5">
-          INTERNAL NETWORK
+          CORPORATE LAN
         </text>
 
         {/* ── Static real topology edges ─────────────────────────────────── */}
@@ -185,19 +189,20 @@ export default function LiveNetworkGraph({ nodes, somaState, honeypotMetrics }) 
           );
         })}
 
-        {/* ── Attack edge: Attacker → User0 ─────────────────────────────── */}
+        {/* ── Attack edge: Attacker → victim node ───────────────────────── */}
         {attacking && !contained && (() => {
-          const { x1, y1, x2, y2 } = edgePoints(POS.Attacker, POS.User0);
+          const victimPos = POS[victimNode ?? "User0"] ?? POS.User0;
+          const { x1, y1, x2, y2 } = edgePoints(POS.Attacker, victimPos);
           return <line x1={x1} y1={y1} x2={x2} y2={y2}
             stroke="#B64A38" strokeWidth={1.8}
             markerEnd="url(#arr-alert)" className="lng-attack-line" />;
         })()}
 
-        {/* ── Redirect: User0 → honeypot entry (attacker traffic diverted) ─ */}
+        {/* ── Redirect: victim → honeypot entry (attacker traffic diverted) */}
         {isolating && !purged && (() => {
-          // Arrow from User0 downward to the decoy zone entry
-          const sx = POS.User0.x;
-          const sy = POS.User0.y + R + 2;
+          const victimPos = POS[victimNode ?? "User0"] ?? POS.User0;
+          const sx = victimPos.x;
+          const sy = victimPos.y + R + 2;
           const ex = DPOS["D-User0"].x;
           const ey = DPOS["D-User0"].y - R - 6;
           return (
@@ -230,7 +235,7 @@ export default function LiveNetworkGraph({ nodes, somaState, honeypotMetrics }) 
           const { x, y } = POS[id];
           const n      = nodeMap[id];
           const score  = n?.anomaly_score ?? 0;
-          const isVic  = id === "User0";
+          const isVic  = id === (victimNode ?? "User0");
           const isAtk  = id === "Attacker";
 
           // When contained, real User0 shows as recovered
@@ -420,6 +425,7 @@ export default function LiveNetworkGraph({ nodes, somaState, honeypotMetrics }) 
           );
         })()}
       </svg>
+      </div>
     </div>
   );
 }

@@ -21,6 +21,14 @@ frontend/build/
 frontend/.env.local
 frontend/.env.*.local
 
+# Secrets — never commit
+backend/.env
+.env
+
+# Demo payload — not part of the repo
+demo_payload.command
+demo_payload.zip
+
 # Claude Code local config
 .claude/
 

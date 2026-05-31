@@ -1,15 +1,14 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import useWebSocket from "./hooks/useWebSocket";
 import ErrorBoundary from "./components/ErrorBoundary";
 import LiveNetworkGraph from "./components/LiveNetworkGraph";
 import "./styles/index.css";
 
 // ---------------------------------------------------------------------------
-// Constants
+// Config — backend URL from environment variable (set in Vercel dashboard)
 // ---------------------------------------------------------------------------
 
-const WS_URL   = process.env.REACT_APP_WS_URL || "ws://localhost:8765";
-const HTTP_URL = WS_URL.replace(/^ws/, "http");
+const WS_URL = process.env.REACT_APP_WS_URL || "ws://localhost:8765";
 
 const STATE_COLOR = {
   CLEAN:          "var(--ok)",
@@ -50,7 +49,7 @@ function useClock() {
 // Sidebar
 // ---------------------------------------------------------------------------
 
-function ConsoleSidebar({ connected, somaState }) {
+function ConsoleSidebar({ connected, somaState, activeView, onNav, incidentCount }) {
   const clock = useClock();
   const stateColor = STATE_COLOR[somaState] ?? "var(--fg-3)";
 
@@ -62,15 +61,18 @@ function ConsoleSidebar({ connected, somaState }) {
       </div>
 
       <nav className="console-nav" aria-label="Primary">
-        <button className="active">
+        <button className={activeView === "live" ? "active" : ""} onClick={() => onNav("live")}>
           <span className="nav-icon">⬡</span>
           Live Demo
         </button>
-        <button disabled style={{ opacity: 0.4 }}>
+        <button className={activeView === "incidents" ? "active" : ""} onClick={() => onNav("incidents")}>
           <span className="nav-icon">⚠</span>
           Incidents
+          {incidentCount > 0 && (
+            <span className="nav-badge">{incidentCount}</span>
+          )}
         </button>
-        <button disabled style={{ opacity: 0.4 }}>
+        <button className={activeView === "assets" ? "active" : ""} onClick={() => onNav("assets")}>
           <span className="nav-icon">□</span>
           Assets
         </button>
@@ -105,22 +107,21 @@ function ConsoleSidebar({ connected, somaState }) {
 // Email notification banner
 // ---------------------------------------------------------------------------
 
-function EmailBanner({ notification, onDownload }) {
+function EmailBanner({ notification }) {
   if (!notification) return null;
   return (
     <div className="email-banner">
       <div className="email-banner-icon">✉</div>
       <div className="email-banner-body">
         <div className="email-banner-title">
-          <strong>NEW EMAIL DETECTED</strong>
+          <strong>THREAT EMAIL DETECTED</strong>
           <span className="email-from">From: {notification.from}</span>
         </div>
         <div className="email-subject">{notification.subject}</div>
-        <div className="email-attachment">📎 soma_security_patch.command</div>
+        {notification.has_attachment && (
+          <div className="email-attachment">📎 Attachment detected — SOMA monitoring for execution</div>
+        )}
       </div>
-      <button className="download-btn" onClick={onDownload}>
-        Download File
-      </button>
     </div>
   );
 }
@@ -129,8 +130,18 @@ function EmailBanner({ notification, onDownload }) {
 // Node card
 // ---------------------------------------------------------------------------
 
+const NODE_DISPLAY = {
+  User0:       "WS-DK",
+  User1:       "WS-02",
+  User2:       "WS-03",
+  Enterprise0: "FILE-SRV",
+  Enterprise1: "WEB-SRV",
+  Op_Server0:  "DC-01",
+};
+
 function NodeCard({ node, isVictim, somaState }) {
-  const pulsing = isVictim && (somaState === "INFECTED" || somaState === "ISOLATING");
+  const pulsing      = isVictim && (somaState === "INFECTED" || somaState === "ISOLATING");
+  const quarantined  = isVictim && somaState === "CONTAINED";
   const score = node.anomaly_score ?? 0;
   const borderColor =
     node.status === "red"    ? "var(--alert)" :
@@ -141,12 +152,13 @@ function NodeCard({ node, isVictim, somaState }) {
 
   return (
     <div
-      className={`node-card${pulsing ? " node-card--pulse" : ""}`}
+      className={`node-card${pulsing ? " node-card--pulse" : ""}${quarantined ? " node-card--quarantined" : ""}`}
       style={{ borderColor }}
     >
       <div className="node-card-header">
-        <span className="node-name">{node.id}</span>
-        {isVictim && (
+        <span className="node-name">{NODE_DISPLAY[node.id] ?? node.id}</span>
+        {quarantined && <span className="quarantine-tag">QUARANTINED</span>}
+        {isVictim && !quarantined && (
           <span className="victim-tag">VICTIM</span>
         )}
         <span
@@ -193,6 +205,11 @@ function NodeCard({ node, isVictim, somaState }) {
           CPU spike · Unexpected outbound · Anomaly: {score.toFixed(2)}
         </div>
       )}
+      {quarantined && (
+        <div className="node-quarantine-tip">
+          Processes suspended by SOMA · Awaiting purge
+        </div>
+      )}
     </div>
   );
 }
@@ -201,7 +218,7 @@ function NodeCard({ node, isVictim, somaState }) {
 // Node grid
 // ---------------------------------------------------------------------------
 
-function NodeGrid({ nodes, somaState }) {
+function NodeGrid({ nodes, somaState, victimNode }) {
   if (nodes.length === 0) {
     return (
       <div className="node-grid-empty">
@@ -215,7 +232,7 @@ function NodeGrid({ nodes, somaState }) {
         <NodeCard
           key={node.id}
           node={node}
-          isVictim={node.id === "User0"}
+          isVictim={node.id === victimNode}
           somaState={somaState}
         />
       ))}
@@ -227,14 +244,14 @@ function NodeGrid({ nodes, somaState }) {
 // Honeypot panel
 // ---------------------------------------------------------------------------
 
-function HoneypotPanel({ metrics, onPurge }) {
+function HoneypotPanel({ metrics, port, onPurge }) {
   if (!metrics) return null;
   return (
     <div className="honeypot-panel">
       <div className="honeypot-header">
         <span className="honeypot-title">
           <span className="honeypot-dot" />
-          HONEYPOT ACTIVE — :8766
+          HONEYPOT ACTIVE{port ? ` — :${port}` : ""}
         </span>
         <span className="honeypot-sub">Docker sandbox capturing malicious activity</span>
       </div>
@@ -255,6 +272,118 @@ function HoneypotPanel({ metrics, onPurge }) {
       <button className="purge-btn" onClick={onPurge}>
         Purge &amp; Destroy
       </button>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Incidents panel
+// ---------------------------------------------------------------------------
+
+const SEV_COLOR = {
+  critical: "var(--alert)",
+  high:     "var(--warn)",
+  info:     "var(--ok)",
+};
+
+function IncidentsPanel({ incidents }) {
+  if (incidents.length === 0) {
+    return (
+      <div className="incidents-empty">
+        <span>No incidents recorded this session</span>
+        <small>Events will appear here as SOMA detects threats</small>
+      </div>
+    );
+  }
+  return (
+    <div className="incidents-panel">
+      <div className="incidents-header">
+        <h2>Incident Log</h2>
+        <span className="incidents-count">{incidents.length} event{incidents.length !== 1 ? "s" : ""}</span>
+      </div>
+      <ul className="incidents-list">
+        {incidents.map((inc) => (
+          <li key={inc.id} className="incident-row">
+            <span className="inc-sev" style={{ background: SEV_COLOR[inc.severity] ?? "var(--fg-3)" }} />
+            <div className="inc-body">
+              <div className="inc-title">
+                <strong>{inc.title}</strong>
+                <span className="inc-time">{inc.time}</span>
+              </div>
+              <div className="inc-desc">{inc.description}</div>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Assets panel
+// ---------------------------------------------------------------------------
+
+function AssetsPanel({ nodes, victimNode, somaState }) {
+  if (nodes.length === 0) {
+    return (
+      <div className="incidents-empty">
+        <span>No asset data yet</span>
+        <small>Waiting for live telemetry from the network</small>
+      </div>
+    );
+  }
+  return (
+    <div className="assets-panel">
+      <div className="incidents-header">
+        <h2>Network Assets</h2>
+        <span className="incidents-count">{nodes.length} hosts</span>
+      </div>
+      <table className="assets-table">
+        <thead>
+          <tr>
+            <th>Host</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>CPU</th>
+            <th>Processes</th>
+            <th>Anomaly Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          {nodes.map((node) => {
+            const role = node.id.startsWith("User")       ? "Workstation"
+                       : node.id.startsWith("Enterprise") ? "Enterprise Server"
+                       : node.id.startsWith("Op_")        ? "Operations Server"
+                       : "Unknown";
+            const statusColor =
+              node.status === "red"    ? "var(--alert)" :
+              node.status === "yellow" ? "var(--warn)"  : "var(--ok)";
+            const isVictim = node.id === victimNode &&
+              ["INFECTED", "ISOLATING", "CONTAINED"].includes(somaState);
+            return (
+              <tr key={node.id} className={isVictim ? "asset-row--victim" : ""}>
+                <td>
+                  <span className="asset-name">{NODE_DISPLAY[node.id] ?? node.id}</span>
+                  {isVictim && <span className="victim-tag" style={{ marginLeft: 6 }}>VICTIM</span>}
+                </td>
+                <td className="asset-role">{role}</td>
+                <td>
+                  <span className="asset-status-pill" style={{ background: statusColor + "22", color: statusColor, borderColor: statusColor }}>
+                    {node.status?.toUpperCase() ?? "—"}
+                  </span>
+                </td>
+                <td className="asset-mono">{Math.round((node.cpu ?? 0) * 100)}%</td>
+                <td className="asset-mono">{node.processes ?? "—"}</td>
+                <td>
+                  <span style={{ color: (node.anomaly_score ?? 0) > 0.75 ? "var(--alert)" : (node.anomaly_score ?? 0) > 0.5 ? "var(--warn)" : "var(--ok)", fontFamily: "var(--mono)", fontSize: ".75rem" }}>
+                    {(node.anomaly_score ?? 0).toFixed(3)}
+                  </span>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   );
 }
@@ -292,7 +421,7 @@ function StatusBar({ connected, replayMode, somaState, detectionSecs, onSetInfec
           ▶ Skip to Infected
         </button>
       )}
-      {connected && (somaState === "PURGED" || somaState === "CLEAN") && (
+      {connected && somaState !== "CLEAN" && (
         <button className="presenter-btn" onClick={onReset} title="Reset demo to CLEAN">
           ↺ Reset Demo
         </button>
@@ -348,17 +477,56 @@ export default function App() {
     emailNotification,
     nodes,
     honeypotMetrics,
+    honeypotPort,
     detectionSecs,
     lateralMovements,
+    victimNode,
     sendMessage,
   } = useWebSocket(WS_URL);
 
-  const [downloaded, setDownloaded] = useState(false);
+  const [activeView, setActiveView] = useState("live");
+  const [incidents, setIncidents] = useState([]);
+  const incIdRef = useRef(0);
 
-  const handleDownload = useCallback(() => {
-    window.location.href = `${HTTP_URL}/download/virus.command`;
-    setDownloaded(true);
-  }, []);
+  // Accumulate incident log entries from state transitions and lateral movement
+  const prevStateRef = useRef("CLEAN");
+  useEffect(() => {
+    const prev = prevStateRef.current;
+    const cur  = somaState;
+    if (cur === prev) return;
+    prevStateRef.current = cur;
+
+    const time = new Date().toLocaleTimeString("en-GB");
+    const id   = ++incIdRef.current;
+
+    if (cur === "EMAIL_RECEIVED") {
+      setIncidents(p => [{ id, time, severity: "high",     title: "Suspicious Email Received",   description: "Inbound email with attachment flagged — SOMA monitoring for execution." }, ...p]);
+    } else if (cur === "INFECTED") {
+      setIncidents(p => [{ id, time, severity: "critical", title: "Host Compromise Detected",     description: `Anomalous CPU spike and unexpected outbound traffic on ${victimNode}.` }, ...p]);
+    } else if (cur === "ISOLATING") {
+      setIncidents(p => [{ id, time, severity: "critical", title: "Honeypot Deploying",           description: `Isolating ${victimNode} — spawning Docker sandbox to capture malware.` }, ...p]);
+    } else if (cur === "CONTAINED") {
+      setIncidents(p => [{ id, time, severity: "high",     title: "Malware Contained",           description: `Malicious process migrated to honeypot (port ${honeypotPort ?? "?"}) and isolated.` }, ...p]);
+    } else if (cur === "PURGED") {
+      setIncidents(p => [{ id, time, severity: "info",     title: "Honeypot Purged",             description: "Docker sandbox destroyed. Network restored to clean state." }, ...p]);
+    }
+  }, [somaState, victimNode, honeypotPort]);
+
+  // Also log lateral movement events
+  const prevLateralLenRef = useRef(0);
+  useEffect(() => {
+    const prev = prevLateralLenRef.current;
+    if (lateralMovements.length <= prev) return;
+    prevLateralLenRef.current = lateralMovements.length;
+    const ev = lateralMovements[0];
+    const time = new Date().toLocaleTimeString("en-GB");
+    const id   = ++incIdRef.current;
+    setIncidents(p => [{
+      id, time, severity: "high",
+      title: "Lateral Movement Detected",
+      description: `${ev.from_node} → ${ev.dst_ip}:${ev.dst_port}`,
+    }, ...p]);
+  }, [lateralMovements]);
 
   const handlePurge = useCallback(() => {
     sendMessage({ type: "purge" });
@@ -370,43 +538,60 @@ export default function App() {
 
   const handleReset = useCallback(() => {
     sendMessage({ type: "reset" });
-    setDownloaded(false);
+    setIncidents([]);
+    prevStateRef.current = "CLEAN";
+    prevLateralLenRef.current = 0;
   }, [sendMessage]);
-
-  // Clear email banner after download
-  const showBanner = emailNotification && !downloaded;
 
   return (
     <div className="app-root">
-      <ConsoleSidebar connected={connected} somaState={somaState} />
+      <ConsoleSidebar
+        connected={connected}
+        somaState={somaState}
+        activeView={activeView}
+        onNav={setActiveView}
+        incidentCount={incidents.length}
+      />
       <main className="console-main">
         <TopBar somaState={somaState} nodes={nodes} />
 
-        {showBanner && (
-          <EmailBanner
-            notification={emailNotification}
-            onDownload={handleDownload}
-          />
+        {emailNotification && activeView === "live" && (
+          <EmailBanner notification={emailNotification} />
         )}
 
         <ErrorBoundary>
-          <div className="live-demo-body">
-            <section className="panel live-section">
-              <LiveNetworkGraph nodes={nodes} somaState={somaState} honeypotMetrics={honeypotMetrics} />
+          {activeView === "incidents" && (
+            <div className="alt-panel-wrap">
+              <IncidentsPanel incidents={incidents} />
+            </div>
+          )}
+
+          {activeView === "assets" && (
+            <div className="alt-panel-wrap">
+              <AssetsPanel nodes={nodes} victimNode={victimNode} somaState={somaState} />
+            </div>
+          )}
+
+          {activeView === "live" && <div className="live-demo-body">
+            {/* Left column: network graph */}
+            <section className="panel live-section live-section--graph">
+              <LiveNetworkGraph nodes={nodes} somaState={somaState} honeypotMetrics={honeypotMetrics} victimNode={victimNode} />
             </section>
 
-            <section className="panel live-section">
+            {/* Right column: node cards */}
+            <section className="panel live-section live-section--nodes">
               <div className="section-head">
                 <div>
                   <span>Network nodes</span>
                   <strong>Real-time telemetry</strong>
                 </div>
               </div>
-              <NodeGrid nodes={nodes} somaState={somaState} />
+              <NodeGrid nodes={nodes} somaState={somaState} victimNode={victimNode} />
             </section>
 
+            {/* Full-width: lateral movement */}
             {lateralMovements.length > 0 && (
-              <section className="panel lateral-panel">
+              <section className="panel lateral-panel live-section--full">
                 <div className="section-head">
                   <div>
                     <span>Lateral movement</span>
@@ -426,14 +611,16 @@ export default function App() {
               </section>
             )}
 
-            <HoneypotPanel metrics={honeypotMetrics} onPurge={handlePurge} />
-
-            {somaState === "PURGED" && (
-              <button className="reset-btn" onClick={handleReset}>
-                Reset Demo
-              </button>
+            {/* Full-width: honeypot + reset */}
+            {(honeypotMetrics || somaState === "PURGED") && (
+              <div className="live-section--full">
+                <HoneypotPanel metrics={honeypotMetrics} port={honeypotPort} onPurge={handlePurge} />
+                {somaState === "PURGED" && (
+                  <button className="reset-btn" onClick={handleReset}>Reset Demo</button>
+                )}
+              </div>
             )}
-          </div>
+          </div>}
         </ErrorBoundary>
 
         <StatusBar

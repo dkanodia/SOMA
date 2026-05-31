@@ -1,41 +1,43 @@
 /**
  * hooks/useWebSocket.js
  *
- * Live demo WebSocket hook — connects to ws://localhost:8765/dashboard
- * and routes the SOMA live-demo message protocol.
- *
- * Offline fallback: after MAX_RETRIES failed connections, fetches
- * /demo_episode.json and replays it at REPLAY_FPS, driving the same
- * state machine as the live backend.
+ * Connects to the SOMA backend at the URL passed in (set via REACT_APP_WS_URL).
+ * Falls back to offline replay of demo_episode.json after MAX_RETRIES failures.
  *
  * State exposed:
  *   connected          bool
- *   replayMode         bool  — true when replaying offline episode
+ *   replayMode         bool
  *   somaState          "CLEAN"|"EMAIL_RECEIVED"|"INFECTED"|"ISOLATING"|"CONTAINED"|"PURGED"
- *   emailNotification  null | {from, subject}
- *   nodes              array of 6 {id, cpu, processes, anomaly_score, status}
- *   honeypotMetrics    null | {cpu, processes, exfil_attempts, lan_scans}
+ *   emailNotification  null | {from, subject, has_attachment}
+ *   nodes              array of {id, cpu, processes, anomaly_score, status}
+ *   honeypotMetrics    null | {cpu, processes, connections}
+ *   honeypotPort       null | number
+ *   detectionSecs      number
+ *   lateralMovements   array of movement events
+ *   victimNode         string — which node is the victim host (from server)
  *   sendMessage        (obj) => void
  */
 import { useState, useEffect, useRef, useCallback } from "react";
 
 const RECONNECT_DELAY_MS = 3000;
-const MAX_RETRIES        = 3;
+// If an explicit backend URL is configured, never fall back to offline replay —
+// just keep retrying. Replay only activates on the default localhost URL.
+const EXPLICIT_WS_URL = !!process.env.REACT_APP_WS_URL;
+const MAX_RETRIES     = EXPLICIT_WS_URL ? Infinity : 3;
 const REPLAY_FPS         = 7;
-const REPLAY_INTERVAL_MS = Math.round(1000 / REPLAY_FPS); // ~143ms
+const REPLAY_INTERVAL_MS = Math.round(1000 / REPLAY_FPS);
 
 // ---------------------------------------------------------------------------
 // Offline replay helpers
 // ---------------------------------------------------------------------------
 
-// Scripted state machine thresholds (in episode step counts within one cycle)
 const REPLAY_STATES = {
-  EMAIL_AT:     8,   // step at which fake email arrives
-  INFECTED_AT:  20,  // step at which INFECTED triggers (auto-advance from EMAIL)
-  ISOLATING_AT: 38,  // step at which ISOLATING triggers
-  CONTAINED_AT: 40,  // step at which CONTAINED triggers
-  PURGED_AT:    55,  // step at which PURGED triggers
-  CYCLE_LEN:    65,  // total steps per replay cycle before looping
+  EMAIL_AT:     8,
+  INFECTED_AT:  20,
+  ISOLATING_AT: 38,
+  CONTAINED_AT: 40,
+  PURGED_AT:    55,
+  CYCLE_LEN:    65,
 };
 
 function _replayStateAt(cycleStep) {
@@ -48,7 +50,7 @@ function _replayStateAt(cycleStep) {
   return "PURGED";
 }
 
-function _buildReplayNodes(episodeStep, cycleStep) {
+function _buildReplayNodes(episodeStep, cycleStep, victimNode) {
   const hostNames = ["User0", "User1", "User2", "Enterprise0", "Enterprise1", "Op_Server0"];
   const isInfected = cycleStep >= REPLAY_STATES.INFECTED_AT &&
                      cycleStep <  REPLAY_STATES.PURGED_AT;
@@ -57,7 +59,7 @@ function _buildReplayNodes(episodeStep, cycleStep) {
   return hostNames.map((name) => {
     let cpu, processes, anomaly_score;
 
-    if (name === "User0" && isInfected) {
+    if (name === victimNode && isInfected) {
       cpu           = 0.88 + (Math.random() * 0.08);
       processes     = 350  + Math.floor(Math.random() * 60);
       anomaly_score = 0.82 + (Math.random() * 0.12);
@@ -84,10 +86,9 @@ function _buildReplayNodes(episodeStep, cycleStep) {
 
 function _buildHoneypotMetrics() {
   return {
-    cpu:            0.55 + Math.random() * 0.25,
-    processes:      12   + Math.floor(Math.random() * 8),
-    exfil_attempts: 3    + Math.floor(Math.random() * 5),
-    lan_scans:      7    + Math.floor(Math.random() * 6),
+    cpu:         0.55 + Math.random() * 0.25,
+    processes:   12   + Math.floor(Math.random() * 8),
+    connections: 3    + Math.floor(Math.random() * 5),
   };
 }
 
@@ -96,21 +97,23 @@ function _buildHoneypotMetrics() {
 // ---------------------------------------------------------------------------
 
 export default function useWebSocket(url) {
-  const [connected,          setConnected]          = useState(false);
-  const [replayMode,         setReplayMode]         = useState(false);
-  const [somaState,          setSomaState]          = useState("CLEAN");
-  const [emailNotification,  setEmailNotification]  = useState(null);
-  const [nodes,              setNodes]              = useState([]);
-  const [honeypotMetrics,    setHoneypotMetrics]    = useState(null);
-  const [detectionSecs,      setDetectionSecs]      = useState(0);
-  const [lateralMovements,   setLateralMovements]   = useState([]);
+  const [connected,         setConnected]         = useState(false);
+  const [replayMode,        setReplayMode]        = useState(false);
+  const [somaState,         setSomaState]         = useState("CLEAN");
+  const [emailNotification, setEmailNotification] = useState(null);
+  const [nodes,             setNodes]             = useState([]);
+  const [honeypotMetrics,   setHoneypotMetrics]   = useState(null);
+  const [honeypotPort,      setHoneypotPort]      = useState(null);
+  const [detectionSecs,     setDetectionSecs]     = useState(0);
+  const [lateralMovements,  setLateralMovements]  = useState([]);
+  const [victimNode,        setVictimNode]        = useState("User0");
 
-  const wsRef          = useRef(null);
-  const reconnectRef   = useRef(null);
-  const replayRef      = useRef(null);
-  const mountedRef     = useRef(true);
-  const retryCountRef  = useRef(0);
-  const infectedAtRef  = useRef(0);
+  const wsRef         = useRef(null);
+  const reconnectRef  = useRef(null);
+  const replayRef     = useRef(null);
+  const mountedRef    = useRef(true);
+  const retryCountRef = useRef(0);
+  const infectedAtRef = useRef(0);
 
   // ── Offline replay ────────────────────────────────────────────────────────
 
@@ -121,7 +124,6 @@ export default function useWebSocket(url) {
       const res = await fetch("/demo_episode.json");
       episode = await res.json();
     } catch {
-      // If we can't load the episode, just keep showing "Connecting..."
       return;
     }
     if (!mountedRef.current) return;
@@ -130,39 +132,42 @@ export default function useWebSocket(url) {
     setConnected(false);
 
     const steps = episode.steps ?? [];
-    let globalStep = 0;
+    let globalStep   = 0;
     let prevCycleState = "CLEAN";
+    const replayVictim = episode.victim_node ?? "User0";
 
     replayRef.current = setInterval(() => {
       if (!mountedRef.current) return;
 
-      const cycleStep    = globalStep % REPLAY_STATES.CYCLE_LEN;
-      const episodeIdx   = globalStep % steps.length;
-      const episodeStep  = steps[episodeIdx];
-      const newState     = _replayStateAt(cycleStep);
+      const cycleStep   = globalStep % REPLAY_STATES.CYCLE_LEN;
+      const episodeIdx  = globalStep % steps.length;
+      const episodeStep = steps[episodeIdx];
+      const newState    = _replayStateAt(cycleStep);
 
-      // Emit state transitions
       if (newState !== prevCycleState) {
         setSomaState(newState);
 
         if (newState === "EMAIL_RECEIVED") {
-          setEmailNotification({ from: "attacker@example.com", subject: "SOMA security patch required" });
+          setEmailNotification({
+            from:           episode.demo_email_from    ?? "threat-actor@external.net",
+            subject:        episode.demo_email_subject ?? "Security advisory — action required",
+            has_attachment: true,
+          });
         }
         if (newState === "INFECTED") {
           infectedAtRef.current = Date.now();
         }
         if (newState === "ISOLATING") {
-          const secs = Math.round((Date.now() - infectedAtRef.current) / 1000);
-          setDetectionSecs(secs);
+          setDetectionSecs(Math.round((Date.now() - infectedAtRef.current) / 1000));
         }
         if (newState === "CONTAINED") {
-          // keep honeypot metrics updating
+          setHoneypotPort(episode.honeypot_port ?? null);
         }
         if (newState === "PURGED") {
           setHoneypotMetrics(null);
+          setHoneypotPort(null);
         }
         if (newState === "CLEAN" && cycleStep === 0 && globalStep > 0) {
-          // cycle reset
           setEmailNotification(null);
           setNodes([]);
           setDetectionSecs(0);
@@ -171,10 +176,8 @@ export default function useWebSocket(url) {
         prevCycleState = newState;
       }
 
-      // Emit node_metrics every step
-      setNodes(_buildReplayNodes(episodeStep, cycleStep));
+      setNodes(_buildReplayNodes(episodeStep, cycleStep, replayVictim));
 
-      // Update honeypot metrics during CONTAINED
       if (newState === "CONTAINED" || newState === "ISOLATING") {
         setHoneypotMetrics(_buildHoneypotMetrics());
       }
@@ -207,7 +210,6 @@ export default function useWebSocket(url) {
 
     ws.onopen = () => {
       if (!mountedRef.current) { ws.close(); return; }
-      console.log("[SOMA] Dashboard connected");
       retryCountRef.current = 0;
       stopOfflineReplay();
       setConnected(true);
@@ -218,29 +220,33 @@ export default function useWebSocket(url) {
       try { msg = JSON.parse(e.data); } catch { return; }
 
       switch (msg.type) {
-        case "email_notification":
-          setEmailNotification({ from: msg.from, subject: msg.subject });
-          break;
-        case "node_metrics":
-          setNodes(msg.nodes ?? []);
-          break;
         case "state_change":
           setSomaState(msg.state);
+          if (msg.victim_node) setVictimNode(msg.victim_node);
           if (msg.state === "ISOLATING" && msg.detection_secs) {
             setDetectionSecs(msg.detection_secs);
           }
           break;
+        case "email_notification":
+          setEmailNotification({ from: msg.from, subject: msg.subject, has_attachment: msg.has_attachment });
+          break;
+        case "node_metrics":
+          setNodes(msg.nodes ?? []);
+          if (msg.victim_node) setVictimNode(msg.victim_node);
+          break;
         case "honeypot_active":
           setHoneypotMetrics(msg.metrics ?? null);
+          if (msg.port) setHoneypotPort(msg.port);
           break;
         case "lateral_movement":
-          setLateralMovements(prev => [
-            { ...msg, ts: Date.now() },
-            ...prev.slice(0, 9),
-          ]);
+          setLateralMovements(prev => [{ ...msg, ts: Date.now() }, ...prev.slice(0, 9)]);
+          break;
+        case "quarantine_update":
+          // state is already CONTAINED — UI derives quarantine from somaState
           break;
         case "purge_complete":
           setHoneypotMetrics(null);
+          setHoneypotPort(null);
           setSomaState("PURGED");
           setLateralMovements([]);
           break;
@@ -249,6 +255,7 @@ export default function useWebSocket(url) {
           setEmailNotification(null);
           setNodes([]);
           setHoneypotMetrics(null);
+          setHoneypotPort(null);
           setDetectionSecs(0);
           setLateralMovements([]);
           break;
@@ -260,8 +267,13 @@ export default function useWebSocket(url) {
     ws.onclose = () => {
       setConnected(false);
       if (!mountedRef.current) return;
-      // Always retry — never fall back to synthetic replay data
-      reconnectRef.current = setTimeout(connect, RECONNECT_DELAY_MS);
+
+      retryCountRef.current += 1;
+      if (retryCountRef.current >= MAX_RETRIES) {
+        startOfflineReplay();
+      } else {
+        reconnectRef.current = setTimeout(connect, RECONNECT_DELAY_MS);
+      }
     };
 
     ws.onerror = () => {
@@ -293,8 +305,10 @@ export default function useWebSocket(url) {
     emailNotification,
     nodes,
     honeypotMetrics,
+    honeypotPort,
     detectionSecs,
     lateralMovements,
+    victimNode,
     sendMessage,
   };
 }
