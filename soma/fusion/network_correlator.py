@@ -120,11 +120,14 @@ class NetworkImmuneCorrelator:
             if host in tolerance_suppressed and "memory" not in layers_fired:
                 score *= 0.5
 
-            # Learned attacks (shared signal — add to any host that innate flagged)
-            if learned_fired and host in (tolerance_breached or []) or (
-                learned_fired and innate_fired and h_innate and
-                h_innate == max((innate_host_scores or {host: 1}).values())
-            ):
+            # Learned attacks — fire on any host that already has a layer signal,
+            # or on the highest-innate host when the global pattern matches.
+            host_already_flagged = bool(layers_fired)
+            top_innate_host = (
+                max(innate_host_scores, key=innate_host_scores.get)
+                if innate_host_scores else None
+            )
+            if learned_fired and (host_already_flagged or host == top_innate_host):
                 if "learned_attacks" not in layers_fired:
                     layers_fired.append("learned_attacks")
                 score += LAYER_WEIGHTS["learned_attacks"] * learned_attack_conf

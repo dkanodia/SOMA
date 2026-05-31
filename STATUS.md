@@ -1,6 +1,6 @@
 # SOMA — System Status: What's Done vs. What's Left
 
-**Last updated:** 2026-05-30 (Priority 1, 2 & 3 complete)  
+**Last updated:** 2026-05-30 (Defensive + deceptive capability extensions applied)  
 **Repo:** `dkanodia/SOMA`  
 **Frontend live:** https://frontend-nu-six-43.vercel.app  
 **Backend live:** https://soma-21v4.onrender.com (WebSocket replay)
@@ -374,13 +374,25 @@ These fill in gaps that exist but don't break the core demo:
 - [x] **Populate GalleryPanel** — `LearnedAttackRecognizer` wired into demo pipeline; gallery data now in episode.
 - [x] **Regenerate `demo_episode.json`** — re-recorded with Tolerance + Learned + AttackTracer + Explainer all live.
 
-### Priority 4 — Polish
+### Capability Extensions Applied (this session)
+
+- [x] **`AdaptiveDeceptionController`** added to `soma/layers/deception.py` — stateful threshold adaptation (base 0.70 → min 0.45 under pressure), honeypot rotation (max 2 simultaneous, 3-step cooldown), threat memory per episode. Wired into `demo.py` replacing static heuristic.
+- [x] **Fixed correlator `learned_attacks` condition** — broken compound boolean in `network_correlator.py` replaced with clean flag-based logic. Layer now fires correctly.
+- [x] **Fixed `demo.py` explainer call** — was hardcoding `tolerance_suppressed=[], la_conf=0.0`; now passes actual computed values.
+- [x] **Fixed PPO obs dimension** — `ppo.predict()` was receiving 30-dim converted obs; corrected to pass raw 52-dim CybORG obs.
+- [x] **Fixed `learned._fitted` AttributeError** — corrected to `learned._vae._fitted`.
+- [x] **Per-host rule-based innate scoring** — IsolationForest is degenerate on zero-variance CybORG clean data; replaced with feature-weighted rule (activity×0.5 + compromised×0.8 + sessions×0.2) giving meaningful per-host scores.
+- [x] **Gallery pre-population** — `_populate_gallery()` seeds 4 CybORG-representative attack signatures (lateral_move_obvious, lateral_move_sophisticated, privilege_escalation, direct_impact) using actual CybORG 30-dim feature patterns.
+- [x] **Regenerated `demo_episode.json`** — 200 steps, all layers active: innate 200/200, decoys 198/200, kill-chain 196/200, HIGH incidents 199/200, learned_attacks 11/200.
+
+### Priority 4 — Remaining Tasks
 
 - [ ] **Formal evaluation report** — write a results table with all layer TPR/FPR numbers, pre/post-fusion comparison, and the evasion matrix headline.
 - [ ] **Render free plan spin-up** — Render free tier sleeps after 15 min of inactivity; first WebSocket connection may stall 30–60s. Consider a cron ping or upgrade to paid.
-- [ ] **ConvergencePanel image path** — decide where to serve the convergence plot (current plan: copy to `frontend/public/`, reference from component).
-- [ ] **Test suite green** — run `pytest tests/` and verify all 5 test files pass post-wrapper-fix.
-- [ ] **Remove `AnomalyPanel.jsx` / `LearningPanel.jsx` stubs** or mount them — currently dead code in the component tree.
+- [ ] **Test suite green** — run `pytest tests/` and verify all 5 test files pass post-wrapper-fix. Several tests need updates for the obs-dimension and API changes.
+- [ ] **Train LearnedAttackRecognizer on real CybORG attack episodes** — current gallery uses synthetic representative windows; running a CybORG episode with red agent and calling `learn_attack()` per phase would give more realistic embeddings.
+- [ ] **Adaptive deception → signal game bridge** — `AdaptiveDeceptionController` adapts threshold based on attack pressure; next step is using the PBE-derived optimal mixing rates (q*, r*) to set the MAX_ACTIVE budget dynamically per κ value.
+- [ ] **Learning curve from tb_logs** — `_load_learning_curve()` returns 0 points because no tensorboard log exists; either regenerate logs during training or load from SB3 checkpoints directly.
 
 ---
 
@@ -388,11 +400,11 @@ These fill in gaps that exist but don't break the core demo:
 
 | System Area | Done | Remaining |
 |-------------|------|-----------|
-| Layer 1 — Innate | ✅ Trained, wired, displayed | FPR slightly over target |
+| Layer 1 — Innate | ✅ Rule-based per-host scoring, wired, displayed | IsolationForest degenerate on zero-variance CybORG clean data; rule-based fallback in use |
 | Layer 2 — PPO | ✅ Trained (200k), wired, evaluated | lateral_movement_dr=0.982, impact_dr=1.000 |
 | Layer 3a — Tolerance | ✅ Implemented, tested, wired | Wired into demo pipeline (Priority 1 Task 4) |
 | Layer 3b — Deception (theory) | ✅ PBE solver, signal game env, RL trained | κ sweep complete, convergence plots generated |
-| Layer 3b — Deception (bridge) | ✅ Heuristic trigger, labeled | Applied as heuristic only |
+| Layer 3b — Deception (bridge) | ✅ **AdaptiveDeceptionController** — adaptive threshold, rotation, threat memory | PBE mixing rates not yet wired to budget |
 | Layer 4 — Memory/Drift | ✅ Trained, wired, displayed | |
 | Layer 5 — Learned Attacks | ✅ Implemented, wired | Wired into demo pipeline (Priority 1 Task 5) |
 | Fusion — Correlator | ✅ Wired | Fused FPR fixed (Priority 1 Task 3) |
