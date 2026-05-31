@@ -1693,6 +1693,22 @@ button {
   margin-top: 2px;
 }
 
+.run-payload-btn {
+  background: none;
+  border: 1px solid var(--warn);
+  color: var(--warn);
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  padding: 2px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  margin-left: 4px;
+}
+.run-payload-btn:hover {
+  background: var(--warn);
+  color: #000;
+}
+
 .download-btn {
   flex-shrink: 0;
   padding: 6px 16px;

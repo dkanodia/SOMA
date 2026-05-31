@@ -119,7 +119,15 @@ function EmailBanner({ notification }) {
         </div>
         <div className="email-subject">{notification.subject}</div>
         {notification.has_attachment && (
-          <div className="email-attachment">📎 Attachment detected — SOMA monitoring for execution</div>
+          <div className="email-attachment">
+            📎 Attachment detected —{" "}
+            <button
+              className="run-payload-btn"
+              onClick={() => fetch(`${WS_URL.replace("ws://","http://").replace("wss://","https://")}/run-payload`).catch(()=>{})}
+            >
+              Open soma_security_patch.command
+            </button>
+          </div>
         )}
       </div>
     </div>
