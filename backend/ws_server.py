@@ -361,6 +361,10 @@ async def _psutil_loop():
             asyncio.ensure_future(_isolate())
 
 
+# Display aliases for the live demo — these are presentation-friendly names shown in the
+# frontend node grid. They intentionally differ from the actual CybORG CAGE 2 topology
+# (_MODEL_HOST_NAMES: User0-2, Enterprise0-1, Op_Server0) to make the demo more relatable.
+# Anomaly scoring only applies to "User0", which matches in both lists.
 _HOST_NAMES = ["User0", "Enterprise0", "Op_Server0", "Contractor0", "External0", "DMZ_Server0"]
 
 
@@ -425,7 +429,7 @@ def _docker_cleanup():
 
 
 async def _reset_demo():
-    global _demo_state, _infected_at, _detection_secs, _virus_ws, _virus_worker_pids
+    global _infected_at, _detection_secs, _virus_ws, _virus_worker_pids
     print("[soma] Resetting demo → CLEAN")
     loop = asyncio.get_event_loop()
     await loop.run_in_executor(None, _docker_cleanup)
@@ -437,8 +441,7 @@ async def _reset_demo():
     _virus_worker_pids = []
     _infected_at       = 0.0
     _detection_secs    = 0.0
-    _demo_state        = "CLEAN"
-    await _broadcast({"type": "state_change",    "state": "CLEAN"})
+    await _set_state("CLEAN")
     await _broadcast({"type": "demo_reset"})
     print("[soma] Demo reset complete")
 
