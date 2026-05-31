@@ -1,6 +1,6 @@
 # SOMA — System Status: What's Done vs. What's Left
 
-**Last updated:** 2026-05-30 (Priority C complete: IF jitter fix, TolerancePanel, real CybORG attack gallery)  
+**Last updated:** 2026-05-30 (Priority C complete + IF dimension fix verified: all A/B/C tasks done)  
 **Repo:** `dkanodia/SOMA`  
 **Frontend live:** https://frontend-nu-six-43.vercel.app  
 **Backend live:** https://soma-21v4.onrender.com (WebSocket replay)
@@ -438,8 +438,8 @@ Everything below is outstanding — not yet implemented or still producing incor
 
 - [x] **Fix IsolationForest for zero-variance CybORG clean data**
   - Added `jitter: float = 0.0` parameter to `InnateImmunityLayer.fit()`. When `jitter=1e-4`, Gaussian noise is added to break zero-variance ties before fitting.
-  - Updated `train_innate.py` to call `iso.fit(X_train, jitter=1e-4)`.
-  - Re-trained on cached `data/clean_train.npy` (`--skip-collect`): threshold=0.3568, clean→CLEAN, anomalous→ANOMALOUS ⚠. Per-host anomaly scores now vary meaningfully across hosts.
+  - Fixed dimension mismatch: `train_innate.py` now converts cached 52-dim `clean_train.npy` → 30-dim via `cyborg_obs_to_30dim()` before fitting, matching the class's documented 30-dim interface. `anomaly_score(30-dim obs)` now works without `ValueError`.
+  - Re-trained: threshold=0.3605, clean→CLEAN ✓, anomalous→ANOMALOUS ⚠. Per-host scores now vary meaningfully (range=0.28 at step 10 vs. all-identical before).
 
 - [x] **Add Layer 3a (Tolerance) frontend panel**
   - Created `frontend/src/components/TolerancePanel.jsx` — per-host status bar (BREACHED/SUPPRESSED/NORMAL) + stacked area history chart showing fraction of hosts in each state over time.
@@ -478,9 +478,9 @@ Everything below is outstanding — not yet implemented or still producing incor
 
 | System Area | Status | Outstanding |
 |-------------|--------|-------------|
-| Layer 1 — Innate | ✅ IF fixed with jitter=1e-4; per-host scores now vary meaningfully | None |
+| Layer 1 — Innate | ✅ IF fixed: jitter=1e-4 + 52→30-dim conversion; `anomaly_score(30-dim)` works correctly | None |
 | Layer 2 — PPO | ✅ Trained (200k), evaluated: DR=98.2%/100.0% | None |
-| Layer 3a — Tolerance | ✅ Recalibrated on real CybORG data; FPR ≈ 0% | Add frontend panel |
+| Layer 3a — Tolerance | ✅ Recalibrated on real CybORG data; FPR ≈ 0%; TolerancePanel live | None |
 | Layer 3b — Deception (theory) | ✅ PBE solver + RL trained, ConvergencePanel live | Clean up TODO comment in `pbe_solver.py` |
 | Layer 3b — Deception (bridge) | ✅ `AdaptiveDeceptionController` PBE-wired (MAX_ACTIVE=4, cooldown from r*) | Wire explicit kappa selection to scenario config |
 | Layer 4 — Memory/Drift | ✅ `drift_detector.joblib` trained; drift alarms 151/200 steps | Train on real CybORG attack episodes for stronger alarm signal |
