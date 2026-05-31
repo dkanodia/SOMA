@@ -259,12 +259,8 @@ export default function useWebSocket(url) {
     ws.onclose = () => {
       setConnected(false);
       if (!mountedRef.current) return;
-      retryCountRef.current += 1;
-      if (retryCountRef.current >= MAX_RETRIES) {
-        startOfflineReplay();
-      } else {
-        reconnectRef.current = setTimeout(connect, RECONNECT_DELAY_MS);
-      }
+      // Always retry — never fall back to synthetic replay data
+      reconnectRef.current = setTimeout(connect, RECONNECT_DELAY_MS);
     };
 
     ws.onerror = () => {

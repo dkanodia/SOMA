@@ -3,9 +3,15 @@ backend/honeypot_server.py
 ==========================
 Runs inside the soma_honeypot Docker container on port 8766.
 
-Accepts virus WebSocket connections on :8766/virus,
-captures telemetry, and forwards it to the SOMA backend
-by connecting to ws://host.docker.internal:8765/honeypot.
+Accepts virus WebSocket connections on :8766/virus.
+All metrics reported to SOMA are derived directly from what the virus sends —
+no synthetic counters.
+
+Forwarded to SOMA backend at ws://host.docker.internal:8765/honeypot:
+  type:       "honeypot_telemetry"
+  cpu:        float    virus-reported CPU (real psutil from the host)
+  processes:  int      virus-reported process count (real psutil)
+  connections: int     total virus_telemetry messages received (real activity count)
 """
 
 import asyncio
@@ -16,15 +22,13 @@ import websockets
 SOMA_HOST = os.environ.get("SOMA_HOST", "host.docker.internal")
 SOMA_PORT = int(os.environ.get("SOMA_PORT", 8765))
 
-# Queue for forwarding telemetry to SOMA backend
 _telemetry_queue: asyncio.Queue = None
 
 
 async def _virus_handler(ws):
-    """Accept incoming virus connection, count and forward telemetry."""
+    """Accept virus connection and forward real telemetry to SOMA."""
     print("[honeypot] Malware connected on :8766")
-    exfil_attempts = 0
-    lan_scans = 0
+    connections = 0
 
     async for raw in ws:
         try:
@@ -32,24 +36,23 @@ async def _virus_handler(ws):
         except Exception:
             continue
 
-        if msg.get("type") == "virus_telemetry":
-            exfil_attempts += 1
-            if exfil_attempts % 3 == 0:
-                lan_scans += 1
+        if msg.get("type") == "virus_connect":
+            print(f"[honeypot] virus_connect pid={msg.get('pid')} workers={msg.get('cpu_workers')}")
 
-            print(f"[honeypot] telemetry cpu={msg.get('cpu', 0):.2f} "
-                  f"exfil={exfil_attempts} lan={lan_scans}")
+        elif msg.get("type") == "virus_telemetry":
+            connections += 1
+            payload = {
+                "type":        "honeypot_telemetry",
+                "cpu":         msg.get("cpu", 0),
+                "processes":   msg.get("processes", 0),
+                "connections": connections,
+            }
+            print(f"[honeypot] telemetry cpu={payload['cpu']:.2f} procs={payload['processes']} conn={connections}")
+            await _telemetry_queue.put(payload)
 
-            await _telemetry_queue.put({
-                "type":           "honeypot_telemetry",
-                "cpu":            msg.get("cpu", 0),
-                "processes":      msg.get("processes", 0),
-                "exfil_attempts": exfil_attempts,
-                "lan_scans":      lan_scans,
-            })
-
-        # Acknowledge so virus thinks C2 is alive
         await ws.send(json.dumps({"type": "ack", "status": "ok"}))
+
+    print("[honeypot] Malware disconnected")
 
 
 async def _soma_reporter():
@@ -60,7 +63,7 @@ async def _soma_reporter():
         try:
             async with websockets.connect(uri) as soma_ws:
                 print(f"[honeypot] Reporting to SOMA at {uri}")
-                delay = 3   # reset backoff on successful connection
+                delay = 3
                 while True:
                     payload = await _telemetry_queue.get()
                     await soma_ws.send(json.dumps(payload))
@@ -75,9 +78,8 @@ async def main():
     _telemetry_queue = asyncio.Queue()
 
     print(f"[honeypot] Listening on 0.0.0.0:8766")
-    print(f"[honeypot] Reporting to ws://{SOMA_HOST}:{SOMA_PORT}/honeypot")
+    print(f"[honeypot] Will report to ws://{SOMA_HOST}:{SOMA_PORT}/honeypot")
 
-    # Reporter runs in background
     asyncio.ensure_future(_soma_reporter())
 
     async with websockets.serve(_virus_handler, "0.0.0.0", 8766):

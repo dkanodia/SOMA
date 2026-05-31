@@ -381,14 +381,16 @@ async def _purge():
     print("[soma] Purging honeypot and workers...")
     loop = asyncio.get_event_loop()
     await loop.run_in_executor(None, _docker_cleanup)
+    # Kill local CPU worker PIDs from virus.command
     for pid_str in _virus_worker_pids:
         try:
             os.kill(int(pid_str), signal.SIGTERM)
             print(f"[soma] Killed worker PID {pid_str}")
         except Exception:
             pass
+    _virus_worker_pids = []
+    # Kill SSH-spawned python3 workers inside each container
     await loop.run_in_executor(None, _kill_container_workers)
-    _virus_worker_pids      = []
     _honeypot_metrics_cache = None
     await _set_state("PURGED")
     await _broadcast({"type": "purge_complete"})
@@ -528,10 +530,9 @@ async def _handle_client(websocket):
                         "type": "honeypot_active",
                         "port": 8766,
                         "metrics": {
-                            "cpu":            msg.get("cpu", 0),
-                            "processes":      msg.get("processes", 0),
-                            "exfil_attempts": msg.get("exfil_attempts", 0),
-                            "lan_scans":      msg.get("lan_scans", 0),
+                            "cpu":         msg.get("cpu", 0),
+                            "processes":   msg.get("processes", 0),
+                            "connections": msg.get("connections", 0),
                         },
                     }
                     _honeypot_metrics_cache = payload
