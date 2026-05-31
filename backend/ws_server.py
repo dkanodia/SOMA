@@ -242,6 +242,7 @@ async def _set_state(new_state: str):
 
 
 async def _broadcast(msg: dict):
+    global _dashboard_clients
     if not _dashboard_clients:
         return
     data = json.dumps(msg)
