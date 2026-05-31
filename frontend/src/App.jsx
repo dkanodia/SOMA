@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect, useRef } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import NetworkGraph       from "./components/NetworkGraph";
 import TimelinePanel      from "./components/TimelinePanel";
 import IncidentPanel      from "./components/IncidentPanel";
@@ -303,8 +303,7 @@ function EvidenceTabs({ state, meta, step, setStep }) {
 
 export default function App() {
   const {
-    state, meta, step, totalSteps, connected,
-    playing, play, pause, stepForward, stepBack, setStep,
+    state, meta, step, totalSteps, connected, setStep,
   } = useWebSocket(process.env.REACT_APP_WS_URL || "ws://localhost:8765");
 
   const currentState = state ?? {};
@@ -358,24 +357,17 @@ export default function App() {
           <EvidenceTabs state={currentState} meta={meta} step={step} setStep={setStep} />
         </div>
 
-        <div className="replay-bar">
-          <button className="rb-btn" onClick={stepBack} title="Previous event">◀</button>
-          <button className="rb-btn rb-play" onClick={playing ? pause : play}>
-            {playing ? "⏸ Pause" : "▶ Review"}
-          </button>
-          <button className="rb-btn" onClick={stepForward} title="Next event">▶</button>
-          <input
-            className="rb-scrubber"
-            type="range"
-            min={0}
-            max={Math.max(totalSteps - 1, 0)}
-            value={step}
-            onChange={(e) => setStep(parseInt(e.target.value, 10))}
-          />
-          <span className="rb-timestamp">{stepToTimestamp(step)}</span>
-          <span className="rb-label">
-            {connected ? "Live" : "Session replay"} · {step + 1} of {Math.max(totalSteps, 1)} events
+        <div className="status-bar">
+          <span className={connected ? "live-pill live" : "live-pill replay"}>
+            <span className="live-dot" />
+            {connected ? "Live" : "Replaying session"}
           </span>
+          <span className="sb-sep" />
+          <span className="sb-item">{stepToTimestamp(step)}</span>
+          <span className="sb-sep" />
+          <span className="sb-item">{step + 1} of {Math.max(totalSteps, 1)} events</span>
+          <span className="sb-sep" />
+          <span className="sb-item">{totalSteps > 0 ? `${HOSTS.length} hosts monitored` : "Connecting…"}</span>
         </div>
       </main>
     </div>
