@@ -18,6 +18,7 @@ Environment variables:
 """
 
 import asyncio
+import http
 import json
 import os
 import pathlib
@@ -70,12 +71,22 @@ async def handle_client(websocket):
             pass
 
 
+async def process_request(connection, request):
+    """Intercept GET /health before WebSocket upgrade — prevents Render free-tier sleep.
+    Ping this endpoint every 14 min with UptimeRobot or cron-job.org to keep the server warm."""
+    if request.path == "/health":
+        return connection.respond(http.HTTPStatus.OK, "OK\n")
+    return None  # proceed with WebSocket handshake
+
+
 async def main():
     print(f"[ws_server] Starting on port {PORT}")
     print(f"[ws_server] Episode: {EPISODE}")
     print(f"[ws_server] Step delay: {STEP_DELAY}s")
-    async with websockets.serve(handle_client, "0.0.0.0", PORT):
+    async with websockets.serve(handle_client, "0.0.0.0", PORT,
+                                process_request=process_request):
         print(f"[ws_server] Ready — ws://0.0.0.0:{PORT}")
+        print(f"[ws_server] Health check — http://0.0.0.0:{PORT}/health")
         await asyncio.Future()  # run forever
 
 

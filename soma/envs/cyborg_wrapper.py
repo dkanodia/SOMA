@@ -98,13 +98,26 @@ class CybORGWrapper(gym.Env):
 
         if self._scenario_path is None:
             cyborg_file = _Path(inspect.getfile(CybORG))
-            # CAGE 2: scenario files live under Shared/Scenarios/
-            self._scenario_path = str(
-                cyborg_file.parent / "Shared" / "Scenarios" / "Scenario1b.yaml"
-            )
+            # Try new layout first (Simulator/Scenarios/scenario_files/), then legacy
+            candidates = [
+                cyborg_file.parent / "Simulator" / "Scenarios" / "scenario_files" / "Scenario1b.yaml",
+                cyborg_file.parent / "Shared" / "Scenarios" / "Scenario1b.yaml",
+            ]
+            for candidate in candidates:
+                if candidate.exists():
+                    self._scenario_path = str(candidate)
+                    break
+            else:
+                self._scenario_path = str(candidates[0])
 
+        try:
+            from CybORG.Simulator.Scenarios import FileReaderScenarioGenerator
+            sg = FileReaderScenarioGenerator(self._scenario_path)
+        except ImportError:
+            # Older CybORG versions accepted a path string directly
+            sg = self._scenario_path  # type: ignore[assignment]
         agents = {"Red": B_lineAgent} if self._include_red else {}
-        cyborg = CybORG(self._scenario_path, "sim", agents=agents)
+        cyborg = CybORG(sg, "sim", agents=agents)
         self._env = ChallengeWrapper(agent_name="Blue", env=cyborg)
 
     # ------------------------------------------------------------------

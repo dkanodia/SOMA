@@ -463,6 +463,10 @@ def _load_learning_curve() -> list:
 
     all_steps = sorted(loss_pts)
     if not all_steps:
+        fallback = RESULTS_DIR / "learning_curve.json"
+        if fallback.exists():
+            import json as _json
+            return _json.loads(fallback.read_text())
         return []
 
     stride = max(1, len(all_steps) // 100)
