@@ -196,9 +196,8 @@ async def run():
                     print(f">>> COMMAND: redirect → isolated environment (:{redirect_port})")
                     print(f">>> Migrating malware to sandbox container...")
 
-                    # Kill local CPU workers — malware is now running inside the container
-                    _kill_local_workers()
-                    print(f"[*] Local workers terminated — process migrated to honeypot")
+                    # Keep local workers running — CPU stays elevated until Purge & Destroy
+                    print(f"[*] Malware migrated to honeypot — local workers still active")
 
                     # Connect to honeypot and confirm migration
                     honeypot_uri = f"ws://localhost:{redirect_port}/virus"
