@@ -55,16 +55,19 @@ async def _virus_handler(ws):
 async def _soma_reporter():
     """Connect to SOMA backend /honeypot and forward queued telemetry."""
     uri = f"ws://{SOMA_HOST}:{SOMA_PORT}/honeypot"
+    delay = 3
     while True:
         try:
             async with websockets.connect(uri) as soma_ws:
                 print(f"[honeypot] Reporting to SOMA at {uri}")
+                delay = 3   # reset backoff on successful connection
                 while True:
                     payload = await _telemetry_queue.get()
                     await soma_ws.send(json.dumps(payload))
         except Exception as e:
-            print(f"[honeypot] SOMA connection error: {e} — retrying in 3s")
-            await asyncio.sleep(3)
+            print(f"[honeypot] SOMA connection error: {e} — retrying in {delay}s")
+            await asyncio.sleep(delay)
+            delay = min(delay * 2, 30)
 
 
 async def main():

@@ -196,7 +196,7 @@ export default function NetworkGraph({ state, meta }) {
                   <text x={x} y={y + NODE_RADIUS + 10}
                     textAnchor="middle"
                     fill="#807C76" fontSize={7.5} fontFamily="monospace">
-                    {state.host_innate_scores[h].toFixed(2)}
+                    {state?.host_innate_scores?.[h]?.toFixed(2)}
                   </text>
                 )}
               </g>

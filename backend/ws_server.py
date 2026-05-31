@@ -178,7 +178,7 @@ def _compute_user0_anomaly(
         score = CLEAN_FLOOR + delta * AMPLIFICATION
         return round(min(max(score, 0.0), 1.0), 3)
     # Heuristic fallback (no model available)
-    return _score_heuristic(cpu, procs_norm, compromised, state)
+    return _score_heuristic(cpu, procs_norm, procs_norm, compromised, state)
 
 
 def _score_heuristic(cpu: float, sess: float, proc: float, comp: float, state: str) -> float:

@@ -6,7 +6,8 @@ import "./styles/index.css";
 // Constants
 // ---------------------------------------------------------------------------
 
-const WS_URL = process.env.REACT_APP_WS_URL || "ws://localhost:8765";
+const WS_URL   = process.env.REACT_APP_WS_URL || "ws://localhost:8765";
+const HTTP_URL = WS_URL.replace(/^ws/, "http");
 
 const STATE_COLOR = {
   CLEAN:          "var(--ok)",
@@ -354,10 +355,8 @@ export default function App() {
   const [downloaded, setDownloaded] = useState(false);
 
   const handleDownload = useCallback(() => {
-    window.location.href = "http://localhost:8765/download/virus.command";
+    window.location.href = `${HTTP_URL}/download/virus.command`;
     setDownloaded(true);
-    // Clear banner after download
-    setTimeout(() => {}, 0);
   }, []);
 
   const handlePurge = useCallback(() => {
