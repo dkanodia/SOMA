@@ -42,13 +42,19 @@ import pathlib
 import random
 import signal
 import subprocess
+import sys
 import threading
 import time
 from email import message_from_bytes
 
+import numpy as np
 import psutil
 import websockets
 from websockets.http11 import Headers, Response as WsResponse
+
+# Add SOMA root to path so soma.* imports resolve from the backend directory
+_SOMA_ROOT = pathlib.Path(__file__).parent.parent
+sys.path.insert(0, str(_SOMA_ROOT))
 
 # ---------------------------------------------------------------------------
 # Config
@@ -58,6 +64,128 @@ PORT       = int(os.environ.get("PORT", 8765))
 GMAIL_USER = os.environ.get("GMAIL_USER", "")
 GMAIL_PASS = os.environ.get("GMAIL_APP_PASSWORD", "")
 VIRUS_PATH = pathlib.Path(__file__).parent / "virus.command"
+
+# ---------------------------------------------------------------------------
+# InnateImmunityLayer — loaded once at startup
+# ---------------------------------------------------------------------------
+
+# 30-dim feature order expected by the model (from soma/envs/cyborg_wrapper.py)
+_MODEL_HOST_NAMES = ["User0", "User1", "User2", "Enterprise0", "Enterprise1", "Op_Server0"]
+_FEATURES_PER_HOST = 5
+_NETWORK_POS = {
+    "User0": 0.10, "User1": 0.10, "User2": 0.10,
+    "Enterprise0": 0.50, "Enterprise1": 0.50,
+    "Op_Server0": 0.90,
+}
+
+_innate_model = None   # InnateImmunityLayer instance, or None if not loadable
+_innate_baseline: float = 0.0  # clean-Mac raw score, calibrated at startup
+
+
+def _load_innate_model():
+    global _innate_model
+    model_path = _SOMA_ROOT / "models" / "innate" / "isolation_forest.joblib"
+    if not model_path.exists():
+        print(f"[innate] Model not found at {model_path} — using heuristic fallback")
+        return
+    try:
+        from soma.layers.innate import InnateImmunityLayer
+        _innate_model = InnateImmunityLayer.load(model_path)
+        print(f"[innate] Loaded IsolationForest  threshold={_innate_model.threshold_:.4f}")
+        # Calibrate baseline from actual Mac idle readings
+        _calibrate_baseline()
+    except Exception as e:
+        print(f"[innate] Could not load model ({e}) — using heuristic fallback")
+
+
+def _calibrate_baseline(n_samples: int = 10, delay: float = 0.2):
+    """
+    Take N psutil samples of the clean Mac and compute the mean IF score.
+    This corrects for the gap between CybORG training data (near-zero CPU)
+    and real Mac baseline (~10-20% CPU), so the displayed score is meaningful.
+    """
+    global _innate_baseline
+    psutil.cpu_percent(interval=None)   # warm up
+    scores = []
+    for _ in range(n_samples):
+        time.sleep(delay)
+        cpu = psutil.cpu_percent(interval=None) / 100
+        procs_norm = min(len(psutil.pids()) / 200, 1.0)
+        obs = _build_obs_30dim(cpu, procs_norm, 0.0)
+        scores.append(_innate_model.anomaly_score(obs))
+    _innate_baseline = float(np.mean(scores))
+    print(f"[innate] Mac clean baseline: {_innate_baseline:.4f}  "
+          f"(delta to threshold: {_innate_model.threshold_ - _innate_baseline:+.4f})")
+
+
+def _build_obs_30dim(
+    user0_cpu: float,
+    user0_procs: float,
+    user0_compromised: float,
+) -> np.ndarray:
+    """
+    Build a 30-dim observation vector for the InnateImmunityLayer.
+    User0 gets real psutil values; other hosts get clean simulated values.
+
+    Feature layout per host: [activity, compromised, sessions, processes, network_pos]
+    """
+    obs = np.zeros(_FEATURES_PER_HOST * len(_MODEL_HOST_NAMES), dtype=np.float32)
+    for i, host in enumerate(_MODEL_HOST_NAMES):
+        start = i * _FEATURES_PER_HOST
+        if host == "User0":
+            obs[start + 0] = user0_cpu           # activity  = CPU usage
+            obs[start + 1] = user0_compromised   # compromised flag
+            obs[start + 2] = user0_procs         # sessions proxy
+            obs[start + 3] = user0_compromised   # processes spike when compromised
+            obs[start + 4] = _NETWORK_POS[host]
+        else:
+            # Simulated clean host: very low near-zero activity
+            clean_val = max(0.0, random.gauss(0.03, 0.005))
+            obs[start + 0] = clean_val
+            obs[start + 1] = 0.0
+            obs[start + 2] = clean_val
+            obs[start + 3] = 0.0
+            obs[start + 4] = _NETWORK_POS.get(host, 0.5)
+    return obs
+
+
+def _compute_user0_anomaly(
+    cpu: float,
+    procs_norm: float,
+    compromised: float,
+    state: str,
+) -> float:
+    """
+    Compute User0 anomaly score using the real InnateImmunityLayer model.
+
+    The model was trained on CybORG clean data (near-zero CPU/features), so
+    a normal Mac already scores above the calibrated CybORG threshold. We
+    correct for this by computing the delta above the Mac clean baseline,
+    then amplifying so the infected state clearly crosses 0.65+ for the demo:
+
+      display = 0.08 + (raw - baseline) * amplification
+
+    - Clean state:    delta ≈ 0.0   → display ≈ 0.08  (green)
+    - Infected state: delta ≈ 0.025 → display ≈ 0.83  (red) with amp=30
+    """
+    if _innate_model is not None:
+        obs = _build_obs_30dim(cpu, procs_norm, compromised)
+        raw   = _innate_model.anomaly_score(obs)
+        delta = max(raw - _innate_baseline, 0.0)
+        # Amplify delta; add a small floor so score is never 0 even when clean
+        AMPLIFICATION = 30.0
+        CLEAN_FLOOR   = 0.08
+        score = CLEAN_FLOOR + delta * AMPLIFICATION
+        return round(min(max(score, 0.0), 1.0), 3)
+    # Heuristic fallback (no model available)
+    return _score_heuristic(cpu, procs_norm, compromised, state)
+
+
+def _score_heuristic(cpu: float, sess: float, proc: float, comp: float, state: str) -> float:
+    base = 0.3 * cpu + 0.2 * sess + 0.2 * proc + 0.3 * comp
+    if state in ("INFECTED", "ISOLATING", "CONTAINED"):
+        base = min(base + 0.40, 1.0)
+    return round(max(0.0, min(base, 1.0)), 3)
 
 ANOMALY_THRESHOLD    = 0.65
 INFECTED_DWELL_SECS  = 5      # stay INFECTED for at least this long before isolating
@@ -179,22 +307,20 @@ async def _psutil_loop():
         user0_sessions = min(procs / 200, 1.0)
         user0_procs    = min(procs / 300, 1.0)
 
+        user0_compromised = 1.0 if state in ("INFECTED", "ISOLATING", "CONTAINED") else 0.0
+
         nodes = []
         for i, name in enumerate(_HOST_NAMES):
             if name == "User0":
-                cpu  = user0_cpu
-                sess = user0_sessions
-                proc = user0_procs
-                comp = 1.0 if state in ("INFECTED", "ISOLATING", "CONTAINED") else 0.0
-                anom = _score(cpu, sess, proc, comp, state)
+                cpu        = user0_cpu
+                anom       = _compute_user0_anomaly(
+                                 user0_cpu, user0_sessions,
+                                 user0_compromised, state)
                 real_procs = procs
             else:
-                cpu  = max(0.0, min(random.gauss(0.04, 0.01), 1.0))
-                sess = max(0.0, min(random.gauss(0.05, 0.01), 1.0))
-                proc = max(0.0, min(random.gauss(0.05, 0.01), 1.0))
-                comp = 0.0
-                anom = max(0.0, random.gauss(0.04, 0.01))
-                real_procs = int(sess * 200)
+                cpu        = max(0.0, min(random.gauss(0.04, 0.01), 1.0))
+                anom       = max(0.0, random.gauss(0.04, 0.01))
+                real_procs = int(max(0.0, min(random.gauss(0.05, 0.01), 1.0)) * 200)
 
             status = ("red" if anom > 0.75 else "yellow" if anom > 0.5 else "green")
             nodes.append({
@@ -222,14 +348,6 @@ _HOST_NAMES = ["User0", "Enterprise0", "Op_Server0", "Contractor0", "External0",
 
 def _psutil_one_time_init():
     psutil.cpu_percent(interval=None)   # first call always returns 0.0
-
-
-def _score(cpu: float, sess: float, proc: float, comp: float, state: str) -> float:
-    """Heuristic anomaly score for User0 based on real psutil data."""
-    base = 0.3 * cpu + 0.2 * sess + 0.2 * proc + 0.3 * comp
-    if state in ("INFECTED", "ISOLATING", "CONTAINED"):
-        base = min(base + 0.40, 1.0)
-    return round(max(0.0, min(base, 1.0)), 3)
 
 
 # ---------------------------------------------------------------------------
@@ -458,4 +576,5 @@ async def main():
 
 
 if __name__ == "__main__":
+    _load_innate_model()   # calibrates Mac baseline before event loop starts
     asyncio.run(main())
