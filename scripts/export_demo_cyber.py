@@ -92,7 +92,9 @@ def export_demo(
     gen.reset()
 
     ep_mem   = HostDriftLayer(memory_k=10, recent_k=10)
-    ep_mem.threshold_ = memory.threshold_
+    ep_mem.threshold_     = memory.threshold_
+    ep_mem._baseline_mean = memory._baseline_mean.copy() if memory._baseline_mean is not None else None
+    ep_mem._baseline_std  = memory._baseline_std.copy()  if memory._baseline_std  is not None else None
     corr     = NetworkImmuneCorrelator()
     tracer   = AttackTracer()
     explainer = ImmuneExplainer()
@@ -309,7 +311,9 @@ def _compute_evasion_matrix(innate, memory, tolerance, learned, n_episodes=5):
                 stealth=stealth, n_steps=50, attack_start=10, seed=200 + ep,
             )
             ep_mem  = HostDriftLayer(memory_k=10, recent_k=10)
-            ep_mem.threshold_ = memory.threshold_
+            ep_mem.threshold_     = memory.threshold_
+            ep_mem._baseline_mean = memory._baseline_mean.copy() if memory._baseline_mean is not None else None
+            ep_mem._baseline_std  = memory._baseline_std.copy()  if memory._baseline_std  is not None else None
             corr    = NetworkImmuneCorrelator()
             obs_buf = []
 
@@ -412,6 +416,8 @@ def main():
         print("[Demo] Training VAE...")
         learned = LearnedAttackRecognizer()
         learned.fit(X_clean, epochs=50)
+        learned.save(vae_path)
+        print(f"[Demo] VAE saved → {vae_path}")
 
     # Pre-populate gallery with representative attack types
     if learned.gallery_size == 0:

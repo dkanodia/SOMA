@@ -14,6 +14,12 @@ Scoring:
   Layers: innate (0.30), memory (0.30), tolerance_breach (0.20),
           learned_attacks (0.20).
   Confidence: HIGH ≥ 0.6, MEDIUM ≥ 0.35, LOW ≥ 0.15.
+
+FPR control:
+  Single-layer incidents below HIGH confidence are suppressed.
+  Concretely: incidents require ≥ 2 layers fired OR score ≥ 0.50 to surface.
+  This targets the dominant FPR cause: innate-only alarms on clean data.
+  (Innate FPR ≈ 1% per step; with 6 hosts that's 6% fused FPR without the gate.)
 """
 
 from dataclasses import dataclass, field
@@ -125,7 +131,11 @@ class NetworkImmuneCorrelator:
 
             score = min(float(score), 1.0)
 
+            # Gate: require multi-layer confirmation for low-confidence alerts.
+            # Single-layer innate alarms on clean data are the primary FPR source.
             if score < 0.15 or not layers_fired:
+                continue
+            if len(layers_fired) < 2 and score < 0.50:
                 continue
 
             confidence = (

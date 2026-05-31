@@ -17,15 +17,15 @@ import {
 } from "recharts";
 
 const TYPE_COLORS = {
-  "lateral_move_obvious":      "#22d3ee",
-  "lateral_move_sophisticated":"#67e8f9",
-  "privilege_escalation":      "#a855f7",
-  "direct_impact":             "#ef4444",
-  "lateral_move":              "#34d399",
-  "obvious":                   "#f59e0b",
-  "unknown":                   "#64748b",
+  "lateral_move_obvious":      "#3A7A58",
+  "lateral_move_sophisticated":"#5F8D6F",
+  "privilege_escalation":      "#6452A0",
+  "direct_impact":             "#A83D2E",
+  "lateral_move":              "#8BA778",
+  "obvious":                   "#C49A30",
+  "unknown":                   "#807C76",
 };
-const DEFAULT_COLOR = "#94a3b8";
+const DEFAULT_COLOR = "#807C76";
 
 function galleryToPoints(gallery) {
   return (gallery ?? []).map((entry) => ({
@@ -42,11 +42,11 @@ function CustomTooltip({ active, payload }) {
   if (!d) return null;
   return (
     <div style={{
-      background: "#111827", border: "1px solid #1e293b",
+      background: "#171715", border: "1px solid #262624",
       padding: "4px 8px", fontSize: 10,
     }}>
       <div style={{ color: TYPE_COLORS[d.type] ?? DEFAULT_COLOR }}>{d.type}</div>
-      <div style={{ color: "#64748b" }}>n_steps={d.n}  z0={d.x.toFixed(3)}  z1={d.y.toFixed(3)}</div>
+      <div style={{ color: "#807C76" }}>n_steps={d.n}  z0={d.x.toFixed(3)}  z1={d.y.toFixed(3)}</div>
     </div>
   );
 }
@@ -61,9 +61,9 @@ export default function GalleryPanel({ state, meta }) {
   return (
     <div className="panel-inner">
       <div className="panel-title">
-        Attack Gallery — VAE Latent Space (z₀ × z₁)
+        Attack Gallery — VAE Latent Space (z0 x z1)
         {gallery.length > 0 && (
-          <span style={{ color: "#34d399", marginLeft: 6 }}>
+          <span style={{ color: "#3A7A58", marginLeft: 6 }}>
             {gallery.length} signature{gallery.length !== 1 ? "s" : ""}
           </span>
         )}
@@ -74,13 +74,13 @@ export default function GalleryPanel({ state, meta }) {
         ) : (
           <ResponsiveContainer width="100%" height="100%">
             <ScatterChart margin={{ top: 8, right: 10, bottom: 8, left: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis type="number" dataKey="x" name="z₀"
-                tick={{ fill: "#64748b", fontSize: 8 }}
-                label={{ value: "z₀", position: "insideBottomRight", fill: "#64748b", fontSize: 9, offset: -2 }} />
-              <YAxis type="number" dataKey="y" name="z₁"
-                tick={{ fill: "#64748b", fontSize: 8 }} width={28}
-                label={{ value: "z₁", angle: -90, position: "insideLeft", fill: "#64748b", fontSize: 9 }} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#1A1A18" />
+              <XAxis type="number" dataKey="x" name="z0"
+                tick={{ fill: "#807C76", fontSize: 8 }}
+                label={{ value: "z0", position: "insideBottomRight", fill: "#807C76", fontSize: 9, offset: -2 }} />
+              <YAxis type="number" dataKey="y" name="z1"
+                tick={{ fill: "#807C76", fontSize: 8 }} width={28}
+                label={{ value: "z1", angle: -90, position: "insideLeft", fill: "#807C76", fontSize: 9 }} />
               <Tooltip content={<CustomTooltip />} />
               <Scatter data={points} shape="circle">
                 {points.map((p, i) => {
@@ -91,7 +91,7 @@ export default function GalleryPanel({ state, meta }) {
                       key={i}
                       fill={color}
                       fillOpacity={isCurrent ? 0.95 : 0.55}
-                      stroke={isCurrent ? "#fff" : color}
+                      stroke={isCurrent ? "#DEDAD3" : color}
                       strokeWidth={isCurrent ? 2 : 0}
                       r={isCurrent ? 7 : 5}
                     />

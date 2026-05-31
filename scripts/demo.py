@@ -54,13 +54,16 @@ def split_obs_per_host(obs: np.ndarray) -> dict:
 # ---------------------------------------------------------------------------
 
 def load_models():
-    from soma.layers.innate    import InnateImmunityLayer
-    from soma.layers.adaptive  import load as load_ppo
-    from soma.layers.suppressor import LongDwellDetector
+    from soma.layers.innate       import InnateImmunityLayer
+    from soma.layers.adaptive     import load as load_ppo
+    from soma.layers.suppressor   import LongDwellDetector
+    from soma.layers.tolerance    import ImmuneToleranceLayer
+    from soma.layers.learned_attacks import LearnedAttackRecognizer
 
     innate_path = MODELS_DIR / "innate" / "isolation_forest.joblib"
     ppo_path    = MODELS_DIR / "adaptive" / "soma_ppo_final"
     drift_path  = MODELS_DIR / "innate"  / "drift_detector.joblib"
+    vae_path    = MODELS_DIR / "innate"  / "vae.joblib"
 
     if not innate_path.exists():
         raise FileNotFoundError(
@@ -81,17 +84,36 @@ def load_models():
         # In the demo this is acceptable; the centroid trajectory is still visualised.
         detector = LongDwellDetector()
 
-    return innate, ppo, detector
+    # Layer 3 — Tolerance: calibrate on clean synthetic baseline.
+    # Using synthetic data so no CybORG dependency at calibration time.
+    from soma.envs.synthetic_network_gen import generate_clean_episodes
+    X_clean   = generate_clean_episodes(n_steps=600, seed=0)
+    tolerance = ImmuneToleranceLayer()
+    tolerance.calibrate(X_clean)
+
+    # Layer 5 — Learned attack recognizer: load saved VAE or train a fresh one.
+    if vae_path.exists():
+        learned = LearnedAttackRecognizer.load(vae_path)
+        print(f"[demo] Loaded VAE from {vae_path}  gallery={learned.gallery_size}")
+    else:
+        print("[demo] VAE not found — training on synthetic clean data (50 epochs)…")
+        learned = LearnedAttackRecognizer()
+        learned.fit(X_clean, epochs=50)
+
+    return innate, ppo, detector, tolerance, learned
 
 
 # ---------------------------------------------------------------------------
 # Episode runner (shared by live and static paths)
 # ---------------------------------------------------------------------------
 
-def run_episode_steps(innate, ppo, detector, n_steps: int = 200):
+def run_episode_steps(innate, ppo, detector, tolerance=None, learned=None, n_steps: int = 200):
     """
     Generator — yields one payload dict per step.
     Caller decides whether to send over WebSocket or collect for JSON.
+
+    tolerance: ImmuneToleranceLayer (optional; suppresses/boosts incidents by host role)
+    learned:   LearnedAttackRecognizer (optional; gallery-based attack recognition)
     """
     import math
     from soma.envs.cyborg_wrapper          import CybORGWrapper, HOST_NAMES
@@ -104,10 +126,12 @@ def run_episode_steps(innate, ppo, detector, n_steps: int = 200):
 
     correlator   = NetworkImmuneCorrelator()
     orchestrator = ResponseOrchestrator()
+    obs_buffer   = []    # rolling window for learned-attack recognition
 
     for step in range(n_steps):
         action, _                  = ppo.predict(obs, deterministic=True)
         obs, reward, done, _, info = env.step(int(action))
+        obs_buffer.append(obs.copy())
 
         obs_per_host = split_obs_per_host(obs)
 
@@ -115,7 +139,14 @@ def run_episode_steps(innate, ppo, detector, n_steps: int = 200):
         innate_fired   = innate.is_anomalous(obs)
         anomaly_scores = innate.per_host_scores(obs)   # {host: float}
 
-        # Layer 3 — heuristic honeypot trigger (NOT game-theoretic policy)
+        # Layer 3 — tolerance (suppress/breach by host role baseline)
+        if tolerance is not None:
+            tol_suppressed = tolerance.suppressed_hosts(obs)
+            tol_breached   = tolerance.breach_hosts(obs)
+        else:
+            tol_suppressed, tol_breached = [], []
+
+        # Layer 3b — heuristic honeypot trigger (NOT game-theoretic policy)
         honeypot_flags = {
             h: bool(heuristic_honeypot_trigger(anomaly_scores[h]))
             for h in HOST_NAMES
@@ -133,6 +164,13 @@ def run_episode_steps(innate, ppo, detector, n_steps: int = 200):
             traj = detector.centroid_trajectory(h)
             centroid_pos[h] = traj[-1].tolist() if traj else None
 
+        # Layer 5 — learned attack recognizer (rolling 10-step window)
+        la_conf, la_type = 0.0, "unknown"
+        if learned is not None and learned._fitted and len(obs_buffer) >= 3:
+            window = np.array(obs_buffer[-min(len(obs_buffer), 10):])
+            la_conf, la_type = learned.recognize(window)
+        learned_fired = la_conf > 0.3
+
         # Fusion — correlate all layer signals into ranked Incidents
         memory_scores = {
             h: math.sqrt(centroid_pos[h][0] ** 2 + centroid_pos[h][1] ** 2)
@@ -145,10 +183,10 @@ def run_episode_steps(innate, ppo, detector, n_steps: int = 200):
             innate_threshold=float(innate.threshold_),
             memory_scores=memory_scores,
             memory_threshold=1.0,
-            tolerance_suppressed=[],
-            tolerance_breached=[],
-            learned_attack_conf=0.0,
-            learned_attack_type="unknown",
+            tolerance_suppressed=tol_suppressed,
+            tolerance_breached=tol_breached,
+            learned_attack_conf=la_conf,
+            learned_attack_type=la_type,
             innate_host_scores=anomaly_scores,
         )
         top = correlator.top_threat()
@@ -158,7 +196,7 @@ def run_episode_steps(innate, ppo, detector, n_steps: int = 200):
             "innate":   bool(innate_fired),
             "honeypot": any(honeypot_flags.values()),
             "drift":    any(drift_alarms.values()),
-            "learned":  False,
+            "learned":  bool(learned_fired),
         }
         decision = orchestrator.recommend(incidents, layer_flags)
 
@@ -173,7 +211,11 @@ def run_episode_steps(innate, ppo, detector, n_steps: int = 200):
             "anomaly_scores":  {h: float(v) for h, v in anomaly_scores.items()},
             "innate_threshold": float(innate.threshold_),
 
-            # Layer 3 — heuristic, labeled
+            # Layer 3 — tolerance
+            "tolerance_suppressed": tol_suppressed,
+            "tolerance_breached":   tol_breached,
+
+            # Layer 3b — heuristic honeypot (labeled, not game-theoretic)
             "honeypot_flags":  honeypot_flags,
             "honeypot_note":   "heuristic trigger — not the signaling game policy; "
                                "B_lineAgent ignores signals",
@@ -181,6 +223,10 @@ def run_episode_steps(innate, ppo, detector, n_steps: int = 200):
             # Layer 4
             "drift_alarms":   drift_alarms,
             "centroid_pos":   centroid_pos,
+
+            # Layer 5 — learned attacks
+            "learned_attack_conf": float(la_conf),
+            "learned_attack_type": la_type,
 
             # Per-host raw features (for network graph coloring)
             "host_states": {
@@ -233,8 +279,8 @@ async def handle_client(websocket):
     """Stream one episode to the connected frontend client."""
     print("  Client connected — starting episode…")
     try:
-        innate, ppo, detector = load_models()
-        for payload in run_episode_steps(innate, ppo, detector):
+        innate, ppo, detector, tolerance, learned = load_models()
+        for payload in run_episode_steps(innate, ppo, detector, tolerance, learned):
             await websocket.send(json.dumps(payload))
             await asyncio.sleep(0.1)
         print("  Episode complete.")
@@ -266,8 +312,8 @@ def export_static(
     Run this before the pitch and keep the file as a fallback.
     """
     print("Exporting static episode…")
-    innate, ppo, detector = load_models()
-    steps = list(run_episode_steps(innate, ppo, detector, n_steps=n_steps))
+    innate, ppo, detector, tolerance, learned = load_models()
+    steps = list(run_episode_steps(innate, ppo, detector, tolerance, learned, n_steps=n_steps))
 
     from soma.envs.cyborg_wrapper import HOST_NAMES
     episode = {
