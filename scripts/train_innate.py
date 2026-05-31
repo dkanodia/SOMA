@@ -216,6 +216,15 @@ def main():
         np.save(val_cache,   X_val)
         print(f"  Saved to {train_cache}, {val_cache}")
 
+    # CybORGWrapper returns 52-dim raw obs; InnateImmunityLayer expects 30-dim.
+    # Convert here so the saved model matches the documented 30-dim interface.
+    if X_train.shape[1] == 52:
+        from soma.envs.cyborg_wrapper import cyborg_obs_to_30dim
+        print(f"  Converting {X_train.shape[1]}-dim → 30-dim…")
+        X_train = np.vstack([cyborg_obs_to_30dim(r) for r in X_train])
+        X_val   = np.vstack([cyborg_obs_to_30dim(r) for r in X_val])
+        print(f"  Train: {X_train.shape}  Val: {X_val.shape}")
+
     # ------------------------------------------------------------------
     # Step 2 — Train Isolation Forest
     # ------------------------------------------------------------------

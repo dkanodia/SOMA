@@ -9,7 +9,7 @@
       "Enterprise1",
       "Op_Server0"
     ],
-    "innate_threshold": 0.35676838935908345,
+    "innate_threshold": 0.3604757053144169,
     "learning_curve": [],
     "note": "signaling game convergence panel is separate static image"
   },
@@ -318,17 +318,17 @@
           "t_target": 1
         },
         {
-          "source": "Enterprise0",
-          "target": "Op_Server0",
-          "phase": "privilege_escalation",
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
           "confidence": 0.92,
           "t_source": 0,
           "t_target": 1
         },
         {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
+          "source": "Enterprise0",
+          "target": "Op_Server0",
+          "phase": "privilege_escalation",
           "confidence": 0.92,
           "t_source": 0,
           "t_target": 1
@@ -409,7 +409,7 @@
       "step": 2,
       "red_agent_step": 3,
       "action": 20,
-      "reward": -0.1,
+      "reward": 0.0,
       "innate_fired": true,
       "anomaly_scores": {
         "User0": 0.0016507674390304013,
@@ -526,6 +526,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -540,14 +548,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -624,7 +624,7 @@
     {
       "step": 3,
       "red_agent_step": 4,
-      "action": 32,
+      "action": 20,
       "reward": -0.1,
       "innate_fired": true,
       "anomaly_scores": {
@@ -756,6 +756,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -770,14 +778,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -992,6 +992,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -1006,14 +1014,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -1232,6 +1232,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -1246,14 +1254,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -1472,6 +1472,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -1486,14 +1494,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -1712,6 +1712,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -1726,14 +1734,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -1952,6 +1952,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -1966,14 +1974,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -2054,8 +2054,8 @@
     {
       "step": 9,
       "red_agent_step": 10,
-      "action": 32,
-      "reward": -1.1,
+      "action": 20,
+      "reward": -2.1,
       "innate_fired": true,
       "anomaly_scores": {
         "User0": 0.0,
@@ -2192,6 +2192,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -2206,14 +2214,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -2430,6 +2430,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -2444,14 +2452,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -2682,6 +2682,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -2696,14 +2704,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -2788,7 +2788,7 @@
     {
       "step": 12,
       "red_agent_step": 13,
-      "action": 32,
+      "action": 20,
       "reward": -2.1,
       "innate_fired": true,
       "anomaly_scores": {
@@ -2962,6 +2962,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -2976,14 +2984,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -3242,6 +3242,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -3256,14 +3264,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -3522,6 +3522,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -3536,14 +3544,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -3791,6 +3791,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -3805,14 +3813,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -4060,6 +4060,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -4074,14 +4082,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -4327,6 +4327,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -4341,14 +4349,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -4605,6 +4605,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -4619,14 +4627,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -4894,6 +4894,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -4908,14 +4916,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -5183,6 +5183,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -5197,14 +5205,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -5450,6 +5450,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -5464,14 +5472,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -5728,6 +5728,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -5742,14 +5750,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -6017,6 +6017,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -6031,14 +6039,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -6284,6 +6284,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -6298,14 +6306,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -6540,6 +6540,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -6554,14 +6562,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -6818,6 +6818,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -6832,14 +6840,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -7107,6 +7107,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -7121,14 +7129,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -7363,6 +7363,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -7377,14 +7385,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -7641,6 +7641,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -7655,14 +7663,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -7930,6 +7930,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -7944,14 +7952,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -8208,6 +8208,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -8222,14 +8230,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -8486,6 +8486,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -8500,14 +8508,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -8764,6 +8764,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -8778,14 +8786,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -9020,6 +9020,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -9034,14 +9042,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -9298,6 +9298,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -9312,14 +9320,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -9576,6 +9576,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -9590,14 +9598,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -9865,6 +9865,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -9879,14 +9887,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -10132,6 +10132,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -10146,14 +10154,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -10388,6 +10388,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -10402,14 +10410,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -10655,6 +10655,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -10669,14 +10677,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -10933,6 +10933,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -10947,14 +10955,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -11211,6 +11211,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -11225,14 +11233,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -11478,6 +11478,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -11492,14 +11500,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -11778,6 +11778,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -11792,14 +11800,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -12056,6 +12056,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -12070,14 +12078,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -12334,6 +12334,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -12348,14 +12356,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -12623,6 +12623,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -12637,14 +12645,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -12890,6 +12890,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -12904,14 +12912,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -13188,6 +13188,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -13202,14 +13210,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -13499,6 +13499,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -13513,14 +13521,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -13821,6 +13821,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -13835,14 +13843,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -14154,6 +14154,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -14168,14 +14176,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -14476,6 +14476,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -14490,14 +14498,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -14787,6 +14787,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -14801,14 +14809,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -15109,6 +15109,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -15123,14 +15131,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -15420,6 +15420,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -15434,14 +15442,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -15742,6 +15742,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -15756,14 +15764,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -16053,6 +16053,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -16067,14 +16075,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -16375,6 +16375,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -16389,14 +16397,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -16686,6 +16686,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -16700,14 +16708,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -16997,6 +16997,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -17011,14 +17019,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -17319,6 +17319,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -17333,14 +17341,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -17630,6 +17630,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -17644,14 +17652,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -17941,6 +17941,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -17955,14 +17963,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -18252,6 +18252,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -18266,14 +18274,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -18574,6 +18574,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -18588,14 +18596,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -18885,6 +18885,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -18899,14 +18907,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -19174,6 +19174,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -19188,14 +19196,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -19485,6 +19485,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -19499,14 +19507,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -19785,6 +19785,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -19799,14 +19807,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -20096,6 +20096,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -20110,14 +20118,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -20396,6 +20396,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -20410,14 +20418,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -20707,6 +20707,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -20721,14 +20729,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -21018,6 +21018,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -21032,14 +21040,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -21340,6 +21340,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -21354,14 +21362,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -21662,6 +21662,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -21676,14 +21684,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -21951,6 +21951,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -21965,14 +21973,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -22262,6 +22262,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -22276,14 +22284,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -22584,6 +22584,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -22598,14 +22606,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -22906,6 +22906,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -22920,14 +22928,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -23217,6 +23217,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -23231,14 +23239,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -23517,6 +23517,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -23531,14 +23539,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -23817,6 +23817,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -23831,14 +23839,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -24117,6 +24117,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -24131,14 +24139,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -24428,6 +24428,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -24442,14 +24450,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -24739,6 +24739,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -24753,14 +24761,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -25061,6 +25061,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -25075,14 +25083,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -25372,6 +25372,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -25386,14 +25394,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -25672,6 +25672,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -25686,14 +25694,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -25972,6 +25972,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -25986,14 +25994,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -26294,6 +26294,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -26308,14 +26316,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -26605,6 +26605,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -26619,14 +26627,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -26905,6 +26905,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -26919,14 +26927,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -27227,6 +27227,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -27241,14 +27249,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -27538,6 +27538,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -27552,14 +27560,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -27849,6 +27849,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -27863,14 +27871,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -28149,6 +28149,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -28163,14 +28171,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -28471,6 +28471,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -28485,14 +28493,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -28771,6 +28771,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -28785,14 +28793,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -29082,6 +29082,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -29096,14 +29104,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -29393,6 +29393,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -29407,14 +29415,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -29704,6 +29704,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -29718,14 +29726,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -30015,6 +30015,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -30029,14 +30037,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -30315,6 +30315,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -30329,14 +30337,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -30626,6 +30626,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -30640,14 +30648,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -30926,6 +30926,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -30940,14 +30948,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -31248,6 +31248,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -31262,14 +31270,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -31570,6 +31570,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -31584,14 +31592,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -31892,6 +31892,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -31906,14 +31914,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -32181,6 +32181,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -32195,14 +32203,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -32492,6 +32492,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -32506,14 +32514,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -32803,6 +32803,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -32817,14 +32825,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -33125,6 +33125,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -33139,14 +33147,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -33425,6 +33425,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -33439,14 +33447,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -33736,6 +33736,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -33750,14 +33758,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -34036,6 +34036,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -34050,14 +34058,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -34336,6 +34336,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -34350,14 +34358,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -34636,6 +34636,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -34650,14 +34658,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -34925,6 +34925,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -34939,14 +34947,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -35225,6 +35225,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -35239,14 +35247,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -35547,6 +35547,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -35561,14 +35569,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -35869,6 +35869,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -35883,14 +35891,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -36169,6 +36169,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -36183,14 +36191,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -36491,6 +36491,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -36505,14 +36513,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -36802,6 +36802,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -36816,14 +36824,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -37124,6 +37124,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -37138,14 +37146,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -37457,6 +37457,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -37471,14 +37479,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -37779,6 +37779,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -37793,14 +37801,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -38101,6 +38101,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -38115,14 +38123,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -38412,6 +38412,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -38426,14 +38434,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -38712,6 +38712,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -38726,14 +38734,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -39034,6 +39034,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -39048,14 +39056,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -39356,6 +39356,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -39370,14 +39378,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -39667,6 +39667,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -39681,14 +39689,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -39967,6 +39967,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -39981,14 +39989,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -40278,6 +40278,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -40292,14 +40300,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -40578,6 +40578,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -40592,14 +40600,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -40889,6 +40889,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -40903,14 +40911,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -41189,6 +41189,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -41203,14 +41211,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -41522,6 +41522,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -41536,14 +41544,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -41833,6 +41833,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -41847,14 +41855,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -42166,6 +42166,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -42180,14 +42188,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -42466,6 +42466,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -42480,14 +42488,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -42766,6 +42766,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -42780,14 +42788,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -43077,6 +43077,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -43091,14 +43099,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -43377,6 +43377,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -43391,14 +43399,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -43677,6 +43677,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -43691,14 +43699,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -43966,6 +43966,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -43980,14 +43988,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -44277,6 +44277,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -44291,14 +44299,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -44588,6 +44588,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -44602,14 +44610,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -44888,6 +44888,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -44902,14 +44910,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -45210,6 +45210,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -45224,14 +45232,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -45521,6 +45521,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -45535,14 +45543,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -45821,6 +45821,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -45835,14 +45843,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -46154,6 +46154,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -46168,14 +46176,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -46465,6 +46465,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -46479,14 +46487,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -46798,6 +46798,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -46812,14 +46820,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -47109,6 +47109,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -47123,14 +47131,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -47409,6 +47409,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -47423,14 +47431,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -47720,6 +47720,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -47734,14 +47742,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -48020,6 +48020,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -48034,14 +48042,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -48342,6 +48342,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -48356,14 +48364,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -48664,6 +48664,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -48678,14 +48686,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -48975,6 +48975,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -48989,14 +48997,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -49297,6 +49297,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -49311,14 +49319,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -49619,6 +49619,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -49633,14 +49641,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -49941,6 +49941,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -49955,14 +49963,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -50252,6 +50252,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -50266,14 +50274,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -50552,6 +50552,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -50566,14 +50574,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -50874,6 +50874,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -50888,14 +50896,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -51185,6 +51185,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -51199,14 +51207,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -51496,6 +51496,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -51510,14 +51518,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -51818,6 +51818,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -51832,14 +51840,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -52107,6 +52107,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -52121,14 +52129,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -52407,6 +52407,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -52421,14 +52429,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -52729,6 +52729,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -52743,14 +52751,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -53029,6 +53029,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -53043,14 +53051,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -53329,6 +53329,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -53343,14 +53351,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -53640,6 +53640,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -53654,14 +53662,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -53962,6 +53962,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -53976,14 +53984,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -54262,6 +54262,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -54276,14 +54284,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -54584,6 +54584,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -54598,14 +54606,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -54917,6 +54917,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -54931,14 +54939,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -55228,6 +55228,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -55242,14 +55250,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -55539,6 +55539,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -55553,14 +55561,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -55861,6 +55861,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -55875,14 +55883,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -56161,6 +56161,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -56175,14 +56183,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -56450,6 +56450,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -56464,14 +56472,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -56761,6 +56761,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -56775,14 +56783,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -57072,6 +57072,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -57086,14 +57094,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -57394,6 +57394,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -57408,14 +57416,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -57716,6 +57716,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -57730,14 +57738,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -58005,6 +58005,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -58019,14 +58027,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -58305,6 +58305,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -58319,14 +58327,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -58594,6 +58594,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -58608,14 +58616,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -58905,6 +58905,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -58919,14 +58927,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -59205,6 +59205,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -59219,14 +59227,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -59516,6 +59516,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -59530,14 +59538,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
@@ -59838,6 +59838,14 @@
           "t_target": 1
         },
         {
+          "source": "User0",
+          "target": "Enterprise1",
+          "phase": "lateral_movement",
+          "confidence": 0.92,
+          "t_source": 0,
+          "t_target": 1
+        },
+        {
           "source": "Enterprise0",
           "target": "Op_Server0",
           "phase": "privilege_escalation",
@@ -59852,14 +59860,6 @@
           "confidence": 0.84,
           "t_source": 0,
           "t_target": 2
-        },
-        {
-          "source": "User0",
-          "target": "Enterprise1",
-          "phase": "lateral_movement",
-          "confidence": 0.92,
-          "t_source": 0,
-          "t_target": 1
         }
       ],
       "explanation": {
