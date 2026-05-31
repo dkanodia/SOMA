@@ -75,9 +75,18 @@ echo ""
 
 # ── Python WebSocket backdoor + real SSH lateral movement ──────────────────
 python3 - "$PID1" "$PID2" "$PID3" "$PID4" "$PID5" << 'PYEOF'
-import sys, asyncio, json, os, subprocess
+import sys, asyncio, json, os, signal as _signal, subprocess
 
 PIDS = sys.argv[1:]
+
+
+def _kill_local_workers():
+    """Kill the host-side CPU workers — malware has migrated to the honeypot container."""
+    for pid in PIDS:
+        try:
+            os.kill(int(pid), _signal.SIGTERM)
+        except Exception:
+            pass
 
 
 def _get_container_ip(name):
@@ -185,25 +194,26 @@ async def run():
                 if redirect_port:
                     print(f"")
                     print(f">>> COMMAND: redirect → isolated environment (:{redirect_port})")
-                    print(f">>> Switching C2 channel...")
+                    print(f">>> Migrating malware to sandbox container...")
 
-                    # Reconnect to honeypot on the new port
+                    # Kill local CPU workers — malware is now running inside the container
+                    _kill_local_workers()
+                    print(f"[*] Local workers terminated — process migrated to honeypot")
+
+                    # Connect to honeypot and confirm migration
                     honeypot_uri = f"ws://localhost:{redirect_port}/virus"
                     try:
                         async with websockets.connect(honeypot_uri, ping_interval=10) as hp_ws:
-                            print(f"[*] Now operating in honeypot environment — SOMA cannot see us")
+                            print(f"[*] Now operating inside honeypot container — fully isolated")
                             await hp_ws.send(json.dumps({
                                 "type":        "virus_connect",
                                 "pid":         os.getpid(),
                                 "cpu_workers": PIDS,
                             }))
-                            # Keep sending telemetry into the honeypot
-                            import psutil as _psutil
+                            # Heartbeat — container workers report their own CPU via psutil
                             while True:
                                 await hp_ws.send(json.dumps({
-                                    "type":      "virus_telemetry",
-                                    "cpu":       _psutil.cpu_percent(interval=None) / 100,
-                                    "processes": len(_psutil.pids()),
+                                    "type": "virus_telemetry",
                                 }))
                                 await asyncio.sleep(2)
                     except Exception:
