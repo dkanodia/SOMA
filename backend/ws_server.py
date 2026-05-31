@@ -83,6 +83,7 @@ _INFECTED_DWELL    = int(os.environ.get("INFECTED_DWELL", 3))
 _demo_state: str          = "CLEAN"
 _dashboard_clients: set   = set()
 _virus_ws                 = None
+_virus_pid: int           = 0     # PID of the virus.command backdoor process
 _virus_worker_pids: list  = []
 _infected_at: float       = 0.0
 _detection_secs: float    = 0.0
@@ -140,7 +141,7 @@ def _compute_anomaly(name: str, cpu: float, net_out: float, proc_count: int) -> 
 # Process identification — capture suspicious PIDs at detection time
 # ---------------------------------------------------------------------------
 
-_PAYLOAD_MARKER = "SOMA_PAYLOAD"
+_PAYLOAD_MARKER = "SOMA_WORKER"
 
 def _snapshot_suspicious_pids() -> list:
     """
@@ -375,7 +376,9 @@ async def _isolate():
 # ---------------------------------------------------------------------------
 
 def _kill_container_workers():
-    for name in _CONTAINER_NODES:
+    # Include soma-user0 — SSH lateral movement can plant workers there too
+    all_containers = _CONTAINER_NODES + ["User0"]
+    for name in all_containers:
         container = "soma-" + name.lower().replace("_", "-")
         try:
             subprocess.run(
@@ -388,7 +391,7 @@ def _kill_container_workers():
 
 
 async def _purge():
-    global _suspicious_pids, _honeypot_metrics_cache, _virus_worker_pids
+    global _suspicious_pids, _honeypot_metrics_cache, _virus_worker_pids, _virus_pid
     print("[soma] Purging honeypot and identified suspicious processes...")
     loop = asyncio.get_running_loop()
     await loop.run_in_executor(None, _docker_cleanup)
@@ -407,7 +410,15 @@ async def _purge():
             pass
     _suspicious_pids = []
 
-    # Also kill virus.command worker PIDs registered via /virus WS
+    # Kill the virus.command backdoor process itself + all its workers
+    if _virus_pid:
+        try:
+            os.kill(_virus_pid, signal.SIGKILL)
+            print(f"[soma] Killed virus backdoor PID {_virus_pid}")
+        except Exception:
+            pass
+        _virus_pid = 0
+
     for pid_str in _virus_worker_pids:
         try:
             os.kill(int(pid_str), signal.SIGKILL)
@@ -416,8 +427,9 @@ async def _purge():
             pass
     _virus_worker_pids = []
 
-    # Catch any stragglers left from previous sessions
-    subprocess.run(["pkill", "-f", "SOMA_WORKER"], check=False)
+    # Catch any stragglers — workers, bash wrapper, old terminals
+    subprocess.run(["pkill", "-9", "-f", "SOMA_WORKER"], check=False)
+    subprocess.run(["pkill", "-9", "-f", "virus.command"], check=False)
     await loop.run_in_executor(None, _kill_container_workers)
 
     _honeypot_metrics_cache = None
@@ -487,7 +499,7 @@ async def _process_request(connection, request):
                 ("Content-Disposition", 'attachment; filename="virus.command"'),
                 ("Content-Length",      str(len(body))),
             ])
-            return WsResponse(http.HTTPStatus.OK, headers, body)
+            return WsResponse(200, "OK", headers, body)
         return connection.respond(http.HTTPStatus.NOT_FOUND, "virus.command not found\n")
 
     # Accept known WebSocket paths and /agent/* dynamic paths
@@ -546,7 +558,7 @@ async def _handle_client(websocket):
 
     # ── Virus backdoor ─────────────────────────────────────────────────────
     elif path == "/virus":
-        global _virus_ws, _virus_worker_pids
+        global _virus_ws, _virus_pid, _virus_worker_pids
         _virus_ws = websocket
         print("[ws/virus] Backdoor connected")
         try:
@@ -556,8 +568,9 @@ async def _handle_client(websocket):
                 except Exception:
                     continue
                 if msg.get("type") == "virus_connect":
+                    _virus_pid = int(msg.get("pid", 0))
                     _virus_worker_pids = [str(p) for p in msg.get("cpu_workers", [])]
-                    print(f"[ws/virus] PID={msg.get('pid')}  workers={_virus_worker_pids}")
+                    print(f"[ws/virus] PID={_virus_pid}  workers={_virus_worker_pids}")
                     if _get_state() in ("CLEAN", "EMAIL_RECEIVED"):
                         await _set_state("INFECTED")
         except websockets.exceptions.ConnectionClosed:
