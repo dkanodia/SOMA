@@ -1776,6 +1776,21 @@ button {
   color: var(--fg);
 }
 
+.reset-btn {
+  display: block;
+  margin: 0.5rem auto;
+  padding: 0.35rem 1rem;
+  font-size: 0.75rem;
+  color: var(--fg-3);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.15s;
+}
+.reset-btn:hover { opacity: 1; }
+
 /* Animations */
 @keyframes fadein {
   from { opacity: 0; transform: translateY(-4px); }

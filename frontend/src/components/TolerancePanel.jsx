@@ -89,11 +89,13 @@ export default function TolerancePanel({ state, meta }) {
       const sup = s.tolerance_suppressed ?? [];
       const brc = s.tolerance_breached   ?? [];
       const n   = ALL_HOSTS.length;
+      const breached_val   = parseFloat((brc.length / n).toFixed(3));
+      const suppressed_val = parseFloat((sup.length / n).toFixed(3));
       return {
         step:       s.step,
-        breached:   parseFloat((brc.length / n).toFixed(3)),
-        suppressed: parseFloat((sup.length / n).toFixed(3)),
-        normal:     parseFloat(((n - sup.length - brc.length) / n).toFixed(3)),
+        breached:   breached_val,
+        suppressed: suppressed_val,
+        normal:     parseFloat((1.0 - breached_val - suppressed_val).toFixed(3)),
       };
     });
   }, [allSteps]);

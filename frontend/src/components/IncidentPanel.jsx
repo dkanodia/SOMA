@@ -116,7 +116,7 @@ export default function IncidentPanel({ state, step }) {
         {incidents.length === 0 ? (
           <p className="no-incidents">✓ No active incidents</p>
         ) : (
-          incidents.map((inc, i) => <IncidentCard key={i} inc={inc} />)
+          incidents.map((inc) => <IncidentCard key={`${inc.host}-${inc.score}`} inc={inc} />)
         )}
 
         <KillChainSummary killChain={killChain} />

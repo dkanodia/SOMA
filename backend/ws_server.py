@@ -195,7 +195,7 @@ def _compute_user0_anomaly(
         score = CLEAN_FLOOR + delta * AMPLIFICATION
         return round(min(max(score, 0.0), 1.0), 3)
     # Heuristic fallback (no model available)
-    return _score_heuristic(cpu, procs_norm, compromised, compromised, state)
+    return _score_heuristic(cpu, procs_norm, procs_norm, compromised, state)
 
 
 def _score_heuristic(cpu: float, sess: float, proc: float, comp: float, state: str) -> float:
@@ -378,7 +378,6 @@ async def _isolate():
         subprocess.Popen([
             "docker", "run", "-d", "--name", "soma_honeypot",
             "-p", "8766:8766",
-            "--add-host=host.docker.internal:host-gateway",
             "soma_honeypot_image",
         ])
     except Exception as e:
@@ -474,7 +473,7 @@ async def _process_request(connection, request):
 # ---------------------------------------------------------------------------
 
 async def _handle_client(websocket):
-    global _virus_ws, _virus_worker_pids
+    global _virus_ws, _virus_worker_pids, _infected_at
 
     path = websocket.request.path
 
