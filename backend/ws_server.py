@@ -89,18 +89,12 @@ _anomaly_streak: int      = 0    # consecutive ticks above threshold before INFE
 _agent_data: dict = {}   # node_name → latest dict
 
 # Rolling z-score baselines (frozen when state leaves CLEAN/EMAIL_RECEIVED)
-_cpu_windows      = collections.defaultdict(lambda: collections.deque(maxlen=_WINDOW_SIZE))
-_net_windows      = collections.defaultdict(lambda: collections.deque(maxlen=_WINDOW_SIZE))
-_tcp_windows      = collections.defaultdict(lambda: collections.deque(maxlen=_WINDOW_SIZE))
-_proc_windows     = collections.defaultdict(lambda: collections.deque(maxlen=_WINDOW_SIZE))
-_ext_tcp_windows  = collections.defaultdict(lambda: collections.deque(maxlen=_WINDOW_SIZE))
+_cpu_windows  = collections.defaultdict(lambda: collections.deque(maxlen=_WINDOW_SIZE))
+_net_windows  = collections.defaultdict(lambda: collections.deque(maxlen=_WINDOW_SIZE))
+_proc_windows = collections.defaultdict(lambda: collections.deque(maxlen=_WINDOW_SIZE))
 
-_host_net_prev_out: int  = 0
-_host_prev_procs:   int  = 0
-
-# Non-routable prefixes — connections to these are ignored as external C2
-_LOCAL_PREFIXES = ("127.", "192.168.", "10.", "172.16.", "172.17.",
-                   "172.18.", "172.19.", "172.2", "::1", "fe80")
+_host_net_prev_out: int = 0
+_host_prev_procs:   int = 0
 
 # ---------------------------------------------------------------------------
 # Anomaly scoring — rolling z-score
@@ -116,44 +110,24 @@ def _z_score(val: float, window: collections.deque, min_std: float) -> float:
     return (val - mean) / std
 
 
-def _compute_anomaly(
-    name: str,
-    cpu: float,
-    net_out: float,
-    tcp_count: int,
-    ext_tcp: int = 0,
-    proc_delta: int = 0,
-) -> float:
+def _compute_anomaly(name: str, cpu: float, net_out: float, proc_count: int) -> float:
     """
-    4-signal behavioral anomaly score. Baseline only grows in CLEAN /
-    EMAIL_RECEIVED states so post-infection readings reflect true deviation.
-
-    Signals and why they matter:
-      cpu       — malware burns CPU, but so does compiling/video
-      ext_tcp   — malware phones home; normal heavy use rarely opens many
-                  NEW connections to external IPs simultaneously
-      proc_delta — malware spawns child processes; IDEs/compilers also do
-                  this but not persistently alongside CPU + network spikes
-      net_out   — volume of outbound bytes (dampened to ignore normal web)
-
-    All four must deviate together for a high composite score — this
-    separates a virus from a MacBook running a build.
+    3-signal behavioral z-score using only signals readable without root on macOS.
+      cpu       — sustained burn (primary signal)
+      net_out   — outbound bytes delta per second
+      proc      — total process count elevation (30+ extra processes from payload)
     """
     if _demo_state in ("CLEAN", "EMAIL_RECEIVED"):
         _cpu_windows[name].append(cpu)
         _net_windows[name].append(float(net_out))
-        _ext_tcp_windows[name].append(float(ext_tcp))
-        _proc_windows[name].append(float(proc_delta))
+        _proc_windows[name].append(float(proc_count))
 
-    z_cpu      = _z_score(cpu,             _cpu_windows[name],     min_std=2.0)
-    z_net      = _z_score(float(net_out),  _net_windows[name],     min_std=500_000.0)
-    z_ext_tcp  = _z_score(float(ext_tcp),  _ext_tcp_windows[name], min_std=1.0)
-    z_proc     = _z_score(float(proc_delta),_proc_windows[name],   min_std=1.0)
+    z_cpu  = _z_score(cpu,              _cpu_windows[name], min_std=3.0)
+    z_net  = _z_score(float(net_out),   _net_windows[name], min_std=200_000.0)
+    z_proc = _z_score(float(proc_count),_proc_windows[name],min_std=5.0)
 
-    # Weights: sustained CPU + external TCP are the sharpest signals.
-    # proc is total process count (not delta) — steady elevation, not transient spawns.
-    composite = 0.35 * z_cpu + 0.10 * z_net + 0.40 * z_ext_tcp + 0.15 * z_proc
-    display   = 0.08 + max(composite, 0.0) * 0.30
+    composite = 0.60 * z_cpu + 0.20 * z_net + 0.20 * z_proc
+    display   = 0.08 + max(composite, 0.0) * 0.25
     return round(min(max(display, 0.0), 1.0), 3)
 
 
@@ -161,54 +135,23 @@ def _compute_anomaly(
 # Process identification — capture suspicious PIDs at detection time
 # ---------------------------------------------------------------------------
 
-_SAFE_PROC_NAMES = {
-    # macOS system processes — never suspend these
-    "kernel_task", "launchd", "WindowServer", "loginwindow", "Dock",
-    "SystemUIServer", "Finder", "coreaudiod", "bluetoothd", "configd",
-    "mds", "mds_stores", "mdworker", "distnoted", "UserEventAgent",
-    "cfprefsd", "opendirectoryd", "securityd", "trustd", "syspolicyd",
-    "watchdogd", "powerd", "thermalmonitord", "airportd", "rapportd",
-    # Common user apps — don't freeze the demo environment
-    "Safari", "Google Chrome", "firefox", "Slack", "zoom.us",
-    "Xcode", "Code Helper", "node", "npm", "serve",
-}
+_PAYLOAD_MARKER = "SOMA_PAYLOAD"
 
 def _snapshot_suspicious_pids() -> list:
     """
-    Return PIDs of payload processes to quarantine.
-    Safety rules: current-user processes only, skip system/app names,
-    two-pass CPU measurement (psutil needs two calls for a real rate).
+    Find and return PIDs of payload processes by their cmdline marker.
+    Only processes containing SOMA_PAYLOAD in their cmdline are targeted —
+    no CPU heuristics, no safe lists, no risk of touching system processes.
     """
-    own_pid  = os.getpid()
-    own_user = psutil.Process(own_pid).username()
-
-    # Pass 1 — prime CPU counters for candidate processes only
-    candidates = {}
-    for proc in psutil.process_iter(["pid", "name", "username"]):
-        try:
-            info = proc.info
-            if (info["pid"] == own_pid
-                    or info["username"] != own_user
-                    or info["name"] in _SAFE_PROC_NAMES):
-                continue
-            proc.cpu_percent()              # initialise counter (returns 0.0 first call)
-            candidates[info["pid"]] = proc
-        except (psutil.NoSuchProcess, psutil.AccessDenied):
-            pass
-
-    time.sleep(0.4)
-
-    # Pass 2 — real CPU rate since pass 1
     found = []
-    for pid, proc in candidates.items():
+    for proc in psutil.process_iter(["pid", "cmdline"]):
         try:
-            cpu = proc.cpu_percent()
-            if cpu > 15.0:
-                found.append(pid)
-                print(f"[soma] Suspicious PID {pid} ({proc.name()}) — {cpu:.1f}% CPU")
+            cmdline = " ".join(proc.info["cmdline"] or [])
+            if _PAYLOAD_MARKER in cmdline:
+                found.append(proc.info["pid"])
+                print(f"[soma] Payload PID {proc.info['pid']} identified via marker")
         except (psutil.NoSuchProcess, psutil.AccessDenied):
             pass
-
     return found
 
 
@@ -255,7 +198,7 @@ async def _broadcast(msg: dict):
 # ---------------------------------------------------------------------------
 
 async def _psutil_loop():
-    global _host_net_prev_out, _host_prev_procs, _suspicious_pids
+    global _host_net_prev_out, _host_prev_procs, _suspicious_pids, _anomaly_streak
     print("[psutil] Monitoring loop started")
     psutil.cpu_percent(interval=None)   # warm-up
     _host_net_prev_out = psutil.net_io_counters().bytes_sent
@@ -273,26 +216,9 @@ async def _psutil_loop():
         net_out  = max(0, net_now.bytes_sent - _host_net_prev_out)
         _host_net_prev_out = net_now.bytes_sent
 
-        # Use total process count (not delta) — sustained elevation vs transient spawn
         _host_prev_procs = procs
 
-        # External TCP connections — established connections to non-LAN IPs
-        # This is the sharpest signal: malware phones home, compilers don't
-        try:
-            conns     = psutil.net_connections()
-            ext_tcp   = sum(
-                1 for c in conns
-                if c.status == "ESTABLISHED"
-                and c.raddr
-                and not any(c.raddr.ip.startswith(p) for p in _LOCAL_PREFIXES)
-            )
-        except Exception:
-            ext_tcp = 0
-
-        victim_anom = _compute_anomaly(
-            VICTIM_NODE, cpu_raw, net_out,
-            tcp_count=0, ext_tcp=ext_tcp, proc_delta=procs,
-        )
+        victim_anom = _compute_anomaly(VICTIM_NODE, cpu_raw, net_out, procs)
 
         nodes = [{
             "id":            VICTIM_NODE,
@@ -337,8 +263,7 @@ async def _psutil_loop():
             # Require 4 consecutive seconds above threshold — rules out transient spikes
             if _anomaly_streak >= 4:
                 _anomaly_streak = 0
-                loop = asyncio.get_running_loop()
-                _suspicious_pids = await loop.run_in_executor(None, _snapshot_suspicious_pids)
+                _suspicious_pids = _snapshot_suspicious_pids()
                 print(f"[soma] Sustained anomaly — suspicious PIDs: {_suspicious_pids}")
                 await _set_state("INFECTED")
 
@@ -476,20 +401,26 @@ async def _purge():
 
 
 def _docker_cleanup():
-    subprocess.run(["docker", "stop", "soma_honeypot"], check=False, capture_output=True)
-    subprocess.run(["docker", "rm",   "soma_honeypot"], check=False, capture_output=True)
+    try:
+        subprocess.run(["docker", "stop", "--time", "0", "soma_honeypot"], check=False, capture_output=True, timeout=5)
+    except Exception:
+        pass
+    try:
+        subprocess.run(["docker", "rm", "--force", "soma_honeypot"], check=False, capture_output=True, timeout=5)
+    except Exception:
+        pass
     print("[soma] Docker container stopped and removed")
 
 
 def _clear_baselines():
     """Wipe all rolling baseline windows so next readings build a fresh baseline."""
-    for d in (_cpu_windows, _net_windows, _ext_tcp_windows, _proc_windows, _tcp_windows):
+    for d in (_cpu_windows, _net_windows, _proc_windows):
         d.clear()
 
 
 async def _reset_demo():
     global _infected_at, _detection_secs, _suspicious_pids, _honeypot_metrics_cache
-    global _host_prev_procs
+    global _host_prev_procs, _anomaly_streak
     print("[soma] Resetting → CLEAN")
     loop = asyncio.get_running_loop()
     await loop.run_in_executor(None, _docker_cleanup)
