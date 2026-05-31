@@ -1,6 +1,6 @@
 # SOMA — System Status: What's Done vs. What's Left
 
-**Last updated:** 2026-05-30  
+**Last updated:** 2026-05-30 (synced after commits `d9f1c7de`, `cd914b30`)  
 **Repo:** `dkanodia/SOMA`  
 **Frontend live:** https://frontend-nu-six-43.vercel.app  
 **Backend live:** https://soma-21v4.onrender.com (WebSocket replay)
@@ -87,17 +87,25 @@ CybORG CAGE 2 (Scenario1b)
 | `adaptive.py` — `build_agent()`, `train()`, `evaluate()`, `save()`, `load()` | ✅ Complete |
 | Stable Baselines3 PPO, MlpPolicy | ✅ |
 | `CybORGWrapper` gymnasium interface | ✅ |
-| Reward-hacking guard (-2 for repeat Analyze) | ✅ |
-| Trained model on disk (`models/adaptive/soma_ppo_final.zip`) | ✅ |
-| 200k training steps | ✅ |
+| Reward-hacking guard (-2 for repeat Analyze, 5-step cooldown) | ✅ **Implemented in wrapper** |
+| `_analyze_clean` cooldown tracker in wrapper | ✅ (commit `d9f1c7de`) |
+| CybORG RNG deepcopy + `.randint()` patch | ✅ (commit `d9f1c7de`) |
+| `FileReaderScenarioGenerator` + correct scenario path | ✅ (commit `d9f1c7de`) |
+| Observation dtype fixed: `float32 [0,1]` (was `int64 [0,255]`) | ✅ (commit `d9f1c7de`) |
+| `B_lineAgent()` instantiation fixed (was missing `()`) | ✅ (commit `d9f1c7de`) |
+| `scripts/evaluate.py` — standalone evaluation script | ✅ (commit `d9f1c7de`) |
+| 50k checkpoint (`models/adaptive/soma_ppo_50000_steps.zip`) | ✅ |
+| 100k checkpoint (`models/adaptive/soma_ppo_100000_steps.zip`) | ✅ |
+| Final model (`models/adaptive/soma_ppo_final.zip`) | ❌ **Training still in progress** |
+| 200k total training steps complete | ❌ In progress — at 100k |
 | `train_adaptive.py` script | ✅ |
-| Detection rate evaluation (`soma/eval/detection_metrics.py`) | ✅ |
-| Lateral movement detection rate ≥ 0.50 | ⚠️ Not measured end-to-end post-fix |
-| Impact detection rate ≥ 0.80 | ⚠️ Not measured end-to-end post-fix |
-| FPR ≤ 1% on clean episodes | ⚠️ Not measured post-CybORG wrapper fix |
+| `scripts/evaluate.py` ran and results written | ❌ `results/fpr_calibration/layer2_eval.txt` not yet generated |
+| Lateral movement detection rate ≥ 0.50 | ⚠️ Not measured — training incomplete |
+| Impact detection rate ≥ 0.80 | ⚠️ Not measured — training incomplete |
+| FPR ≤ 1% on clean episodes | ⚠️ Not measured |
 | Live action decoding in frontend (DefenseActionPanel) | ✅ |
 
-**Known gap:** The CybORG wrapper had a 52-dim/30-dim mismatch that was fixed (commit `21ab0daa`). The PPO model was trained on the fixed wrapper, but detection rate numbers from `detection_metrics.py` have not been re-run since the fix. The evaluation harness exists and is ready to run.
+**Current state:** Training is in progress. 50k and 100k step checkpoints are committed. The CybORG wrapper received significant fixes in `d9f1c7de` (RNG compatibility, observation dtype, scenario path, B_lineAgent instantiation, reward-hacking implementation). The `evaluate.py` script is ready and will run once the final model is saved. **Do not run `evaluate.py` against the checkpoints yet — wait for `soma_ppo_final.zip`.**
 
 ---
 
@@ -240,12 +248,14 @@ CybORG CAGE 2 (Scenario1b)
 |------|--------|
 | `soma/eval/detection_metrics.py` — per-phase TPR | ✅ |
 | `soma/eval/fpr_calibration.py` — all 3 layer thresholds | ✅ |
+| `scripts/evaluate.py` — standalone Layer 2 eval runner | ✅ (commit `d9f1c7de`) |
 | `tests/test_innate.py` | ✅ |
 | `tests/test_adaptive.py` | ✅ |
 | `tests/test_signal_game.py` | ✅ |
 | `tests/test_pbe_solver.py` | ✅ |
 | `tests/test_fpr_calibration.py` | ✅ |
-| End-to-end detection rate numbers (post-wrapper-fix) | ❌ Not re-run |
+| `results/fpr_calibration/layer2_eval.txt` | ❌ Not yet generated (training incomplete) |
+| End-to-end detection rate numbers (post-wrapper-fix) | ❌ Pending final model + eval run |
 | Formal evaluation report / results table | ❌ Not written |
 
 ---
@@ -258,7 +268,9 @@ CybORG CAGE 2 (Scenario1b)
 | `models/innate/drift_detector.joblib` | Trained LongDwellDetector | ✅ |
 | `models/innate/baseline.joblib` | LearnedAttackRecognizer baseline | ⚠️ Format may be stale |
 | `models/innate/layer1_benchmark.txt` | IF vs IQR baseline comparison | ✅ |
-| `models/adaptive/soma_ppo_final.zip` | Trained PPO policy | ✅ |
+| `models/adaptive/soma_ppo_50000_steps.zip` | PPO checkpoint at 50k steps | ✅ |
+| `models/adaptive/soma_ppo_100000_steps.zip` | PPO checkpoint at 100k steps | ✅ |
+| `models/adaptive/soma_ppo_final.zip` | Final PPO policy (200k steps) | ❌ Training in progress |
 | `models/deception/` | Signal game RL policies | ❌ Empty — not trained |
 | `results/cyber/demo_episode.json` | Full recorded CybORG episode | ✅ |
 | `results/evasion/evasion_matrix.json` | Evasion matrix (obvious vs sophisticated) | ✅ |
@@ -334,10 +346,11 @@ From `results/evasion/evasion_matrix.json` and `results/fusion/immune_response_t
 
 These affect whether the live demo tells a coherent story:
 
+- [ ] **Finish PPO training** — let `train_adaptive.py` complete to 200k steps, save `soma_ppo_final.zip`.
+- [ ] **Run `scripts/evaluate.py`** — generates `layer2_eval.txt` with lateral-movement DR, impact DR, analyze-fraction. Must pass before claiming detection rate numbers.
 - [ ] **Fix fused FPR (35%)** — raise `score < 0.15` threshold or require 2+ layers. Target: fused FPR ≤ 5%.
-- [ ] **Wire Tolerance layer into demo.py** — call `ImmuneToleranceLayer.suppressed_hosts()` and `breach_hosts()` each step and pass to correlator. Without this, the MEDIUM confidence escalation ("3+ layers → Remove") never triggers, since tolerance_breach never fires.
+- [ ] **Wire Tolerance layer into demo.py** — call `ImmuneToleranceLayer.suppressed_hosts()` and `breach_hosts()` each step and pass to correlator. Without this, the MEDIUM confidence escalation ("3+ layers → Remove") never triggers.
 - [ ] **Wire LearnedAttackRecognizer into demo.py** — maintain rolling observation window, call `recognize()` each step. Currently hardcoded to 0.0.
-- [ ] **Re-run detection rate evaluation** — run `soma/eval/detection_metrics.py` after the wrapper fix. The numbers currently in the results are from pre-fix runs.
 
 ### Priority 2 — Theory Completion
 
@@ -373,7 +386,7 @@ These fill in gaps that exist but don't break the core demo:
 | System Area | Done | Remaining |
 |-------------|------|-----------|
 | Layer 1 — Innate | ✅ Trained, wired, displayed | FPR slightly over target |
-| Layer 2 — PPO | ✅ Trained, wired, displayed | Detection metrics not re-validated |
+| Layer 2 — PPO | ✅ Wired, displayed; wrapper fully fixed | **Training in progress** (at 100k/200k); eval not yet run |
 | Layer 3a — Tolerance | ✅ Implemented, tested | Not wired into demo pipeline |
 | Layer 3b — Deception (theory) | ✅ PBE solver, signal game env | RL policies not trained, plot not generated |
 | Layer 3b — Deception (bridge) | ✅ Heuristic trigger, labeled | Applied as heuristic only |
