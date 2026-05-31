@@ -35,10 +35,12 @@ Environment variables (all optional — defaults shown):
 import asyncio
 import collections
 import http
+import imaplib
 import json
 import os
 import pathlib
 import signal
+import threading
 
 # Load backend/.env if present (never committed; keeps secrets out of env exports)
 _env_file = pathlib.Path(__file__).parent / ".env"
@@ -47,6 +49,7 @@ if _env_file.exists():
     load_dotenv(_env_file)
 import subprocess
 import time
+from email import message_from_bytes
 
 import psutil
 import websockets
@@ -58,6 +61,8 @@ from websockets.http11 import Headers, Response as WsResponse
 
 PORT             = int(os.environ.get("PORT", 8765))
 VIRUS_PATH       = pathlib.Path(__file__).parent / "virus.command"
+GMAIL_USER       = os.environ.get("GMAIL_USER", "")
+GMAIL_PASS       = os.environ.get("GMAIL_APP_PASSWORD", "")
 
 HONEYPOT_PORT      = int(os.environ.get("HONEYPOT_PORT", 8766))
 HONEYPOT_HTTP_PORT = int(os.environ.get("HONEYPOT_HTTP_PORT", 8082))
@@ -82,6 +87,7 @@ _INFECTED_DWELL    = int(os.environ.get("INFECTED_DWELL", 3))
 
 _demo_state: str          = "CLEAN"
 _dashboard_clients: set   = set()
+_event_loop               = None
 _virus_ws                 = None
 _virus_pid: int           = 0     # PID of the virus.command backdoor process
 _virus_worker_pids: list  = []
@@ -197,6 +203,53 @@ async def _broadcast(msg: dict):
         except Exception:
             dead.add(ws)
     _dashboard_clients -= dead
+
+
+# ---------------------------------------------------------------------------
+# Gmail IMAP polling (background thread)
+# ---------------------------------------------------------------------------
+
+def _post_to_loop(coro):
+    if _event_loop and not _event_loop.is_closed():
+        asyncio.run_coroutine_threadsafe(coro, _event_loop)
+
+
+def _imap_poll_loop():
+    if not GMAIL_USER or not GMAIL_PASS:
+        print("[imap] GMAIL_USER/GMAIL_APP_PASSWORD not set — email trigger disabled")
+        return
+    print(f"[imap] Polling {GMAIL_USER} every 2s")
+    while True:
+        try:
+            if _get_state() == "CLEAN":
+                with imaplib.IMAP4_SSL("imap.gmail.com") as mail:
+                    mail.login(GMAIL_USER, GMAIL_PASS)
+                    mail.select("INBOX")
+                    _, ids = mail.search(None, "UNSEEN")
+                    uid_list = (ids[0] or b"").split()
+                    if uid_list:
+                        uid = uid_list[0]
+                        _, raw_data = mail.fetch(uid, "(RFC822)")
+                        raw = raw_data[0][1]
+                        msg = message_from_bytes(raw)
+                        sender  = msg.get("From",    "unknown@sender.com")
+                        subject = msg.get("Subject", "(no subject)")
+                        mail.store(uid, "+FLAGS", "\\Seen")
+                        print(f"[imap] New email from {sender}: {subject}")
+                        _post_to_loop(_on_email_received(sender, subject))
+        except Exception as e:
+            print(f"[imap] Error: {e}")
+        time.sleep(2)
+
+
+async def _on_email_received(sender: str, subject: str):
+    await _set_state("EMAIL_RECEIVED")
+    await _broadcast({
+        "type":           "email_notification",
+        "from":           sender,
+        "subject":        subject,
+        "has_attachment": True,
+    })
 
 
 # ---------------------------------------------------------------------------
@@ -620,9 +673,15 @@ async def _handle_client(websocket):
 # ---------------------------------------------------------------------------
 
 async def main():
+    global _event_loop
+    _event_loop = asyncio.get_running_loop()
+
     print(f"[soma] Starting on :{PORT}")
     print(f"[soma] Victim node: {VICTIM_NODE}  |  Container nodes: {_CONTAINER_NODES}")
     print(f"[soma] Anomaly threshold: {_ANOMALY_THRESHOLD}  |  Infected dwell: {_INFECTED_DWELL}s")
+
+    # Start Gmail IMAP poller in background thread
+    threading.Thread(target=_imap_poll_loop, daemon=True).start()
 
     asyncio.create_task(_psutil_loop())
 

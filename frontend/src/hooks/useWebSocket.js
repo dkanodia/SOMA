@@ -23,7 +23,7 @@ const RECONNECT_DELAY_MS = 3000;
 // If an explicit backend URL is configured, never fall back to offline replay —
 // just keep retrying. Replay only activates on the default localhost URL.
 const EXPLICIT_WS_URL = !!process.env.REACT_APP_WS_URL;
-const MAX_RETRIES     = EXPLICIT_WS_URL ? Infinity : 3;
+const MAX_RETRIES     = EXPLICIT_WS_URL ? Infinity : 10;
 const REPLAY_FPS         = 7;
 const REPLAY_INTERVAL_MS = Math.round(1000 / REPLAY_FPS);
 
