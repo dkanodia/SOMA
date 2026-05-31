@@ -116,7 +116,8 @@ def evaluate_action_distribution(agent: PPO, env_fn, n_episodes: int = 20) -> di
         for _ in range(200):
             action, _ = agent.predict(obs, deterministic=True)
             obs, _, done, _, _ = env.step(int(action))
-            name = BLUE_ACTIONS[int(action)]
+            action_int = int(action)
+            name = BLUE_ACTIONS[action_int] if action_int < len(BLUE_ACTIONS) else "Other"
             for cat in category_counts:
                 if name.startswith(cat):
                     category_counts[cat] += 1

@@ -93,38 +93,18 @@ class CybORGWrapper(gym.Env):
         from CybORG import CybORG
         from CybORG.Agents import B_lineAgent
         from CybORG.Agents.Wrappers import ChallengeWrapper
-        from CybORG.Simulator.Scenarios import FileReaderScenarioGenerator
         import inspect
         from pathlib import Path as _Path
 
-        # gym.utils.seeding.RandomNumberGenerator (a np.random.Generator subclass)
-        # breaks copy.deepcopy with NumPy 1.26 and also lacks .randint() which
-        # CybORG's simulator uses (legacy API). Patch the class directly so both
-        # deepcopy and randint work, without replacing the seeding function.
-        import gym.utils.seeding as _gym_seeding
-        _RNG = _gym_seeding.RandomNumberGenerator
-        if not hasattr(_RNG, '__deepcopy__'):
-            def _rng_deepcopy(self, memo):
-                new_rng = _RNG(self.bit_generator.__class__())
-                new_rng.bit_generator.state = self.bit_generator.state.copy()
-                return new_rng
-            _RNG.__deepcopy__ = _rng_deepcopy
-        if not hasattr(_RNG, 'randint'):
-            def _rng_randint(self, low, high=None, size=None, dtype=int):
-                if high is None:
-                    low, high = 0, low
-                return self.integers(low, high, size=size, dtype=dtype)
-            _RNG.randint = _rng_randint
-
         if self._scenario_path is None:
             cyborg_file = _Path(inspect.getfile(CybORG))
+            # CAGE 2: scenario files live under Shared/Scenarios/
             self._scenario_path = str(
-                cyborg_file.parent / "Simulator" / "Scenarios" / "scenario_files" / "Scenario1b.yaml"
+                cyborg_file.parent / "Shared" / "Scenarios" / "Scenario1b.yaml"
             )
 
-        sg = FileReaderScenarioGenerator(self._scenario_path)
-        agents = {"Red": B_lineAgent()} if self._include_red else {}
-        cyborg = CybORG(sg, "sim", agents=agents)
+        agents = {"Red": B_lineAgent} if self._include_red else {}
+        cyborg = CybORG(self._scenario_path, "sim", agents=agents)
         self._env = ChallengeWrapper(agent_name="Blue", env=cyborg)
 
     # ------------------------------------------------------------------

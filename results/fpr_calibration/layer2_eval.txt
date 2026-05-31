@@ -1,0 +1,6 @@
+lateral_movement_dr=0.982
+impact_dr=1.000
+analyze_fraction=0.000
+lateral_movement_pass=yes
+impact_pass=yes
+no_reward_hack=yes

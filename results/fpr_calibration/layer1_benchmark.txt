@@ -1,0 +1,6 @@
+winner: isolation_forest
+threshold: 0.500000
+fpr_target: 0.01
+fpr_measured_val: 0.000000
+n_train: 1500
+n_val: 500

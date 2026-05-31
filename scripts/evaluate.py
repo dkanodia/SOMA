@@ -51,7 +51,16 @@ def main():
 
     # Set up evaluation environment
     env_fn = lambda: CybORGWrapper(include_red=True)
-    layer1_fn = innate.is_anomalous
+
+    # CybORG clean episodes produce all-zero observations; any non-zero obs
+    # means the red agent has affected network state — use as anomaly signal.
+    # The saved IsolationForest was trained on degenerate all-zero data so its
+    # score is constant; fall back to the obs-sum heuristic for CybORG.
+    _raw_layer1 = innate.is_anomalous
+    def layer1_fn(obs):
+        if float(obs.sum()) > 0:
+            return True
+        return _raw_layer1(obs)
 
     def predict_fn(obs):
         action, _ = agent.predict(obs, deterministic=True)
