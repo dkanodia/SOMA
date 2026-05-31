@@ -1998,6 +1998,32 @@ button {
   color: var(--fg);
 }
 
+/* Purge & Destroy — status bar variant (always visible, purple) */
+.purge-btn-bar {
+  padding: 4px 14px;
+  border: 1px solid #a855f7;
+  border-radius: var(--r);
+  background: rgba(168, 85, 247, 0.15);
+  color: #c084fc;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+  animation: purge-pulse 1.5s ease-in-out infinite;
+}
+.purge-btn-bar:hover {
+  background: #a855f7;
+  color: #fff;
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.6);
+}
+@keyframes purge-pulse {
+  0%, 100% { box-shadow: 0 0 4px rgba(168, 85, 247, 0.3); }
+  50%       { box-shadow: 0 0 10px rgba(168, 85, 247, 0.7); }
+}
+
 /* Presenter control buttons (in status bar) */
 .presenter-btn {
   padding: 2px 10px;

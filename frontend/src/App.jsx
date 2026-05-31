@@ -412,7 +412,7 @@ function AssetsPanel({ nodes, victimNode, somaState }) {
 // Status bar
 // ---------------------------------------------------------------------------
 
-function StatusBar({ connected, replayMode, somaState, detectionSecs, onSetInfected, onReset, onSendTestEmail }) {
+function StatusBar({ connected, replayMode, somaState, detectionSecs, onSetInfected, onReset, onSendTestEmail, onPurge }) {
   const clock = useClock();
   const color = STATE_COLOR[somaState] ?? "var(--fg-3)";
   const label = STATE_LABEL[somaState] ?? somaState;
@@ -444,6 +444,11 @@ function StatusBar({ connected, replayMode, somaState, detectionSecs, onSetInfec
       {connected && somaState === "EMAIL_RECEIVED" && (
         <button className="presenter-btn" onClick={onSetInfected} title="Skip email — mark as infected">
           ▶ Skip to Infected
+        </button>
+      )}
+      {connected && (somaState === "CONTAINED" || somaState === "ISOLATING") && (
+        <button className="purge-btn-bar" onClick={onPurge} title="Kill all malware processes and destroy honeypot">
+          ☠ Purge &amp; Destroy
         </button>
       )}
       {connected && somaState !== "CLEAN" && (
@@ -667,6 +672,7 @@ export default function App() {
           onSetInfected={handleSetInfected}
           onReset={handleReset}
           onSendTestEmail={handleSendTestEmail}
+          onPurge={handlePurge}
         />
       </main>
     </div>
