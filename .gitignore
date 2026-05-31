@@ -10,8 +10,6 @@ build/
 .venv/
 venv/
 env/
-*.joblib
-*.pkl
 
 # Jupyter
 .ipynb_checkpoints/

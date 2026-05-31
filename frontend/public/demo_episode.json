@@ -51,7 +51,12 @@
         "threshold": 0.7,
         "active_hosts": [],
         "threat_memory": [],
-        "step": 1
+        "step": 1,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -234,7 +239,12 @@
         "threat_memory": [
           "User1"
         ],
-        "step": 2
+        "step": 2,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -336,7 +346,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -344,7 +354,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -469,7 +479,12 @@
         "threat_memory": [
           "User1"
         ],
-        "step": 3
+        "step": 3,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -605,7 +620,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -613,7 +628,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -738,7 +753,12 @@
         "threat_memory": [
           "User1"
         ],
-        "step": 4
+        "step": 4,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -863,7 +883,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -871,7 +891,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -998,7 +1018,12 @@
           "Enterprise1",
           "User1"
         ],
-        "step": 5
+        "step": 5,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -1146,7 +1171,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -1154,7 +1179,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -1245,7 +1270,7 @@
       "step": 5,
       "red_agent_step": 6,
       "action": 32,
-      "reward": -0.1,
+      "reward": -1.1,
       "innate_fired": true,
       "anomaly_scores": {
         "User0": 0.05354119002176153,
@@ -1285,7 +1310,12 @@
           "Enterprise1",
           "User1"
         ],
-        "step": 6
+        "step": 6,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -1422,7 +1452,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -1430,7 +1460,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -1544,7 +1574,7 @@
       ],
       "honeypot_flags": {
         "User0": false,
-        "User1": false,
+        "User1": true,
         "User2": false,
         "Enterprise0": false,
         "Enterprise1": true,
@@ -1554,13 +1584,19 @@
       "deception_status": {
         "threshold": 0.45,
         "active_hosts": [
+          "User1",
           "Enterprise1"
         ],
         "threat_memory": [
           "Enterprise1",
           "User1"
         ],
-        "step": 7
+        "step": 7,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -1697,7 +1733,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -1705,7 +1741,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -1835,7 +1871,12 @@
           "Enterprise1",
           "User1"
         ],
-        "step": 8
+        "step": 8,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -1983,7 +2024,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -1991,7 +2032,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -2121,7 +2162,12 @@
           "Enterprise1",
           "User1"
         ],
-        "step": 9
+        "step": 9,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -2269,7 +2315,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -2277,7 +2323,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -2394,18 +2440,25 @@
         "User1": false,
         "User2": false,
         "Enterprise0": false,
-        "Enterprise1": false,
+        "Enterprise1": true,
         "Op_Server0": false
       },
       "honeypot_note": "adaptive heuristic \u2014 not the signaling game policy; B_lineAgent ignores signals",
       "deception_status": {
         "threshold": 0.45,
-        "active_hosts": [],
+        "active_hosts": [
+          "Enterprise1"
+        ],
         "threat_memory": [
           "Enterprise1",
           "User1"
         ],
-        "step": 10
+        "step": 10,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -2542,7 +2595,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -2550,7 +2603,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -2678,7 +2731,12 @@
           "Enterprise1",
           "User1"
         ],
-        "step": 11
+        "step": 11,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -2815,7 +2873,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -2823,7 +2881,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -2954,7 +3012,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 12
+        "step": 12,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -3081,7 +3144,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -3089,7 +3152,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -3224,7 +3287,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 13
+        "step": 13,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -3348,7 +3416,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -3356,7 +3424,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -3491,7 +3559,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 14
+        "step": 14,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -3615,7 +3688,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -3623,7 +3696,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -3758,7 +3831,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 15
+        "step": 15,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -3882,7 +3960,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -3890,7 +3968,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -4025,7 +4103,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 16
+        "step": 16,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -4149,7 +4232,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -4157,7 +4240,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -4279,18 +4362,25 @@
         "User2": false,
         "Enterprise0": false,
         "Enterprise1": false,
-        "Op_Server0": false
+        "Op_Server0": true
       },
       "honeypot_note": "adaptive heuristic \u2014 not the signaling game policy; B_lineAgent ignores signals",
       "deception_status": {
         "threshold": 0.45,
-        "active_hosts": [],
+        "active_hosts": [
+          "Op_Server0"
+        ],
         "threat_memory": [
           "Enterprise1",
           "Op_Server0",
           "User1"
         ],
-        "step": 17
+        "step": 17,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -4414,7 +4504,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -4422,7 +4512,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -4555,7 +4645,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 18
+        "step": 18,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -4679,7 +4774,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -4687,7 +4782,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -4820,7 +4915,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 19
+        "step": 19,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -4944,7 +5044,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -4952,7 +5052,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -5085,7 +5185,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 20
+        "step": 20,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -5212,7 +5317,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -5220,7 +5325,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -5353,7 +5458,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 21
+        "step": 21,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -5491,7 +5601,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -5499,7 +5609,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -5632,7 +5742,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 22
+        "step": 22,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -5770,7 +5885,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -5778,7 +5893,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -5911,7 +6026,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 23
+        "step": 23,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -6038,7 +6158,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -6046,7 +6166,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -6179,7 +6299,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 24
+        "step": 24,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -6317,7 +6442,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -6325,7 +6450,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -6458,7 +6583,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 25
+        "step": 25,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -6585,7 +6715,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -6593,7 +6723,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -6726,7 +6856,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 26
+        "step": 26,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -6853,7 +6988,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -6861,7 +6996,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -6994,7 +7129,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 27
+        "step": 27,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -7121,7 +7261,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -7129,7 +7269,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -7262,7 +7402,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 28
+        "step": 28,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -7400,7 +7545,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -7408,7 +7553,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -7541,7 +7686,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 29
+        "step": 29,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -7668,7 +7818,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -7676,7 +7826,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -7809,7 +7959,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 30
+        "step": 30,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -7947,7 +8102,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -7955,7 +8110,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -8088,7 +8243,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 31
+        "step": 31,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -8237,7 +8397,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -8245,7 +8405,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -8378,7 +8538,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 32
+        "step": 32,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -8516,7 +8681,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -8524,7 +8689,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -8657,7 +8822,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 33
+        "step": 33,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -8784,7 +8954,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -8792,7 +8962,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -8925,7 +9095,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 34
+        "step": 34,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -9063,7 +9238,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -9071,7 +9246,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -9204,7 +9379,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 35
+        "step": 35,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -9331,7 +9511,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -9339,7 +9519,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -9472,7 +9652,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 36
+        "step": 36,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -9610,7 +9795,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -9618,7 +9803,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -9751,7 +9936,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 37
+        "step": 37,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -9878,7 +10068,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -9886,7 +10076,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -10019,7 +10209,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 38
+        "step": 38,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -10146,7 +10341,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -10154,7 +10349,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -10287,7 +10482,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 39
+        "step": 39,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -10414,7 +10614,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -10422,7 +10622,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -10555,7 +10755,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 40
+        "step": 40,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -10682,7 +10887,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -10690,7 +10895,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -10823,7 +11028,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 41
+        "step": 41,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -10950,7 +11160,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -10958,7 +11168,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -11091,7 +11301,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 42
+        "step": 42,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -11229,7 +11444,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -11237,7 +11452,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -11370,7 +11585,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 43
+        "step": 43,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -11508,7 +11728,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -11516,7 +11736,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -11649,7 +11869,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 44
+        "step": 44,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -11776,7 +12001,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -11784,7 +12009,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -11917,7 +12142,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 45
+        "step": 45,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -12044,7 +12274,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -12052,7 +12282,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -12185,7 +12415,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 46
+        "step": 46,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -12323,7 +12558,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -12331,7 +12566,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -12464,7 +12699,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 47
+        "step": 47,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -12602,7 +12842,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -12610,7 +12850,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -12743,7 +12983,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 48
+        "step": 48,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -12881,7 +13126,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -12889,7 +13134,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -13022,7 +13267,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 49
+        "step": 49,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -13149,7 +13399,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -13157,7 +13407,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -13290,7 +13540,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 50
+        "step": 50,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -13438,7 +13693,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -13446,7 +13701,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -13592,7 +13847,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 51
+        "step": 51,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -13762,7 +14022,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -13770,7 +14030,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -13916,7 +14176,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 52
+        "step": 52,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -14075,7 +14340,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -14083,7 +14348,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -14229,7 +14494,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 53
+        "step": 53,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -14388,7 +14658,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -14396,7 +14666,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -14542,7 +14812,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 54
+        "step": 54,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -14701,7 +14976,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -14709,7 +14984,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -14855,7 +15130,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 55
+        "step": 55,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -15014,7 +15294,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -15022,7 +15302,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -15168,7 +15448,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 56
+        "step": 56,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -15327,7 +15612,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -15335,7 +15620,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -15481,7 +15766,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 57
+        "step": 57,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -15640,7 +15930,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -15648,7 +15938,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -15794,7 +16084,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 58
+        "step": 58,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -15953,7 +16248,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -15961,7 +16256,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -16107,7 +16402,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 59
+        "step": 59,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -16255,7 +16555,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -16263,7 +16563,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -16409,7 +16709,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 60
+        "step": 60,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -16568,7 +16873,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -16576,7 +16881,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -16722,7 +17027,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 61
+        "step": 61,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -16881,7 +17191,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -16889,7 +17199,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -17035,7 +17345,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 62
+        "step": 62,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -17194,7 +17509,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -17202,7 +17517,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -17348,7 +17663,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 63
+        "step": 63,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -17518,7 +17838,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -17526,7 +17846,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -17672,7 +17992,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 64
+        "step": 64,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -17842,7 +18167,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -17850,7 +18175,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -17996,7 +18321,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 65
+        "step": 65,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -18144,7 +18474,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -18152,7 +18482,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -18298,7 +18628,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 66
+        "step": 66,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -18446,7 +18781,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -18454,7 +18789,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -18600,7 +18935,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 67
+        "step": 67,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -18748,7 +19088,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -18756,7 +19096,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -18902,7 +19242,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 68
+        "step": 68,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -19050,7 +19395,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -19058,7 +19403,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -19204,7 +19549,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 69
+        "step": 69,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -19352,7 +19702,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -19360,7 +19710,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -19506,7 +19856,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 70
+        "step": 70,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -19676,7 +20031,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -19684,7 +20039,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -19830,7 +20185,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 71
+        "step": 71,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -19978,7 +20338,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -19986,7 +20346,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -20132,7 +20492,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 72
+        "step": 72,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -20280,7 +20645,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -20288,7 +20653,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -20434,7 +20799,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 73
+        "step": 73,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -20593,7 +20963,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -20601,7 +20971,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -20747,7 +21117,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 74
+        "step": 74,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -20895,7 +21270,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -20903,7 +21278,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -21049,7 +21424,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 75
+        "step": 75,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -21208,7 +21588,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -21216,7 +21596,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -21362,7 +21742,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 76
+        "step": 76,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -21532,7 +21917,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -21540,7 +21925,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -21686,7 +22071,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 77
+        "step": 77,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -21845,7 +22235,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -21853,7 +22243,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -21999,7 +22389,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 78
+        "step": 78,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -22147,7 +22542,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -22155,7 +22550,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -22301,7 +22696,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 79
+        "step": 79,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -22460,7 +22860,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -22468,7 +22868,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -22614,7 +23014,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 80
+        "step": 80,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -22773,7 +23178,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -22781,7 +23186,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -22927,7 +23332,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 81
+        "step": 81,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -23075,7 +23485,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -23083,7 +23493,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -23229,7 +23639,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 82
+        "step": 82,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -23377,7 +23792,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -23385,7 +23800,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -23531,7 +23946,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 83
+        "step": 83,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -23690,7 +24110,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -23698,7 +24118,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -23844,7 +24264,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 84
+        "step": 84,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -24014,7 +24439,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -24022,7 +24447,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -24168,7 +24593,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 85
+        "step": 85,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -24327,7 +24757,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -24335,7 +24765,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -24481,7 +24911,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 86
+        "step": 86,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -24629,7 +25064,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -24637,7 +25072,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -24783,7 +25218,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 87
+        "step": 87,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -24953,7 +25393,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -24961,7 +25401,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -25107,7 +25547,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 88
+        "step": 88,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -25277,7 +25722,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -25285,7 +25730,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -25431,7 +25876,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 89
+        "step": 89,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -25579,7 +26029,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -25587,7 +26037,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -25733,7 +26183,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 90
+        "step": 90,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -25892,7 +26347,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -25900,7 +26355,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -26046,7 +26501,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 91
+        "step": 91,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -26194,7 +26654,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -26202,7 +26662,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -26348,7 +26808,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 92
+        "step": 92,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -26496,7 +26961,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -26504,7 +26969,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -26650,7 +27115,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 93
+        "step": 93,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -26798,7 +27268,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -26806,7 +27276,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -26952,7 +27422,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 94
+        "step": 94,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -27100,7 +27575,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -27108,7 +27583,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -27254,7 +27729,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 95
+        "step": 95,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -27413,7 +27893,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -27421,7 +27901,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -27567,7 +28047,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 96
+        "step": 96,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -27715,7 +28200,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -27723,7 +28208,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -27869,7 +28354,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 97
+        "step": 97,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -28028,7 +28518,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -28036,7 +28526,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -28182,7 +28672,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 98
+        "step": 98,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -28341,7 +28836,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -28349,7 +28844,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -28495,7 +28990,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 99
+        "step": 99,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -28643,7 +29143,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -28651,7 +29151,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -28797,7 +29297,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 100
+        "step": 100,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -28956,7 +29461,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -28964,7 +29469,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -29110,7 +29615,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 101
+        "step": 101,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -29269,7 +29779,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -29277,7 +29787,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -29423,7 +29933,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 102
+        "step": 102,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -29571,7 +30086,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -29579,7 +30094,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -29725,7 +30240,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 103
+        "step": 103,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -29873,7 +30393,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -29881,7 +30401,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -30027,7 +30547,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 104
+        "step": 104,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -30175,7 +30700,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -30183,7 +30708,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -30329,7 +30854,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 105
+        "step": 105,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -30488,7 +31018,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -30496,7 +31026,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -30642,7 +31172,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 106
+        "step": 106,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -30801,7 +31336,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -30809,7 +31344,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -30955,7 +31490,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 107
+        "step": 107,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -31103,7 +31643,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -31111,7 +31651,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -31257,7 +31797,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 108
+        "step": 108,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -31416,7 +31961,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -31424,7 +31969,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -31570,7 +32115,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 109
+        "step": 109,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -31729,7 +32279,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -31737,7 +32287,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -31883,7 +32433,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 110
+        "step": 110,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -32031,7 +32586,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -32039,7 +32594,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -32185,7 +32740,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 111
+        "step": 111,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -32333,7 +32893,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -32341,7 +32901,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -32487,7 +33047,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 112
+        "step": 112,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -32635,7 +33200,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -32643,7 +33208,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -32789,7 +33354,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 113
+        "step": 113,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -32937,7 +33507,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -32945,7 +33515,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -33091,7 +33661,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 114
+        "step": 114,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -33239,7 +33814,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -33247,7 +33822,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -33393,7 +33968,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 115
+        "step": 115,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -33552,7 +34132,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -33560,7 +34140,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -33706,7 +34286,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 116
+        "step": 116,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -33865,7 +34450,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -33873,7 +34458,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -34019,7 +34604,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 117
+        "step": 117,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -34167,7 +34757,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -34175,7 +34765,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -34321,7 +34911,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 118
+        "step": 118,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -34480,7 +35075,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -34488,7 +35083,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -34634,7 +35229,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 119
+        "step": 119,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -34782,7 +35382,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -34790,7 +35390,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -34936,7 +35536,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 120
+        "step": 120,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -35084,7 +35689,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -35092,7 +35697,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -35238,7 +35843,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 121
+        "step": 121,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -35386,7 +35996,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -35394,7 +36004,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -35540,7 +36150,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 122
+        "step": 122,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -35688,7 +36303,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -35696,7 +36311,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -35842,7 +36457,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 123
+        "step": 123,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -35990,7 +36610,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -35998,7 +36618,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -36144,7 +36764,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 124
+        "step": 124,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -36314,7 +36939,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -36322,7 +36947,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -36468,7 +37093,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 125
+        "step": 125,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -36627,7 +37257,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -36635,7 +37265,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -36781,7 +37411,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 126
+        "step": 126,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -36940,7 +37575,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -36948,7 +37583,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -37094,7 +37729,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 127
+        "step": 127,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -37242,7 +37882,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -37250,7 +37890,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -37396,7 +38036,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 128
+        "step": 128,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -37544,7 +38189,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -37552,7 +38197,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -37698,7 +38343,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 129
+        "step": 129,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -37868,7 +38518,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -37876,7 +38526,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -38022,7 +38672,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 130
+        "step": 130,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -38170,7 +38825,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -38178,7 +38833,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -38324,7 +38979,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 131
+        "step": 131,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -38494,7 +39154,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -38502,7 +39162,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -38648,7 +39308,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 132
+        "step": 132,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -38796,7 +39461,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -38804,7 +39469,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -38950,7 +39615,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 133
+        "step": 133,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -39098,7 +39768,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -39106,7 +39776,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -39252,7 +39922,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 134
+        "step": 134,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -39411,7 +40086,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -39419,7 +40094,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -39565,7 +40240,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 135
+        "step": 135,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -39724,7 +40404,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -39732,7 +40412,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -39878,7 +40558,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 136
+        "step": 136,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -40026,7 +40711,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -40034,7 +40719,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -40180,7 +40865,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 137
+        "step": 137,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -40328,7 +41018,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -40336,7 +41026,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -40482,7 +41172,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 138
+        "step": 138,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -40630,7 +41325,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -40638,7 +41333,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -40784,7 +41479,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 139
+        "step": 139,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -40954,7 +41654,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -40962,7 +41662,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -41108,7 +41808,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 140
+        "step": 140,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -41267,7 +41972,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -41275,7 +41980,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -41421,7 +42126,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 141
+        "step": 141,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -41591,7 +42301,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -41599,7 +42309,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -41745,7 +42455,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 142
+        "step": 142,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -41915,7 +42630,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -41923,7 +42638,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -42069,7 +42784,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 143
+        "step": 143,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -42228,7 +42948,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -42236,7 +42956,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -42382,7 +43102,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 144
+        "step": 144,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -42530,7 +43255,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -42538,7 +43263,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -42684,7 +43409,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 145
+        "step": 145,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -42832,7 +43562,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -42840,7 +43570,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -42986,7 +43716,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 146
+        "step": 146,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -43145,7 +43880,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -43153,7 +43888,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -43299,7 +44034,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 147
+        "step": 147,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -43447,7 +44187,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -43455,7 +44195,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -43601,7 +44341,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 148
+        "step": 148,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -43749,7 +44494,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -43757,7 +44502,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -43903,7 +44648,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 149
+        "step": 149,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -44051,7 +44801,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -44059,7 +44809,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -44205,7 +44955,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 150
+        "step": 150,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -44353,7 +45108,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -44361,7 +45116,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -44507,7 +45262,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 151
+        "step": 151,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -44666,7 +45426,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -44674,7 +45434,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -44820,7 +45580,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 152
+        "step": 152,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -44968,7 +45733,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -44976,7 +45741,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -45122,7 +45887,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 153
+        "step": 153,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -45292,7 +46062,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -45300,7 +46070,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -45446,7 +46216,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 154
+        "step": 154,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -45605,7 +46380,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -45613,7 +46388,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -45759,7 +46534,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 155
+        "step": 155,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -45907,7 +46687,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -45915,7 +46695,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -46061,7 +46841,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 156
+        "step": 156,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -46231,7 +47016,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -46239,7 +47024,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -46385,7 +47170,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 157
+        "step": 157,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -46555,7 +47345,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -46563,7 +47353,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -46709,7 +47499,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 158
+        "step": 158,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -46857,7 +47652,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -46865,7 +47660,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -47011,7 +47806,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 159
+        "step": 159,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -47159,7 +47959,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -47167,7 +47967,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -47313,7 +48113,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 160
+        "step": 160,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -47472,7 +48277,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -47480,7 +48285,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -47626,7 +48431,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 161
+        "step": 161,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -47785,7 +48595,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -47793,7 +48603,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -47939,7 +48749,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 162
+        "step": 162,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -48098,7 +48913,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -48106,7 +48921,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -48252,7 +49067,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 163
+        "step": 163,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -48400,7 +49220,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -48408,7 +49228,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -48554,7 +49374,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 164
+        "step": 164,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -48702,7 +49527,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -48710,7 +49535,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -48856,7 +49681,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 165
+        "step": 165,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -49004,7 +49834,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -49012,7 +49842,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -49158,7 +49988,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 166
+        "step": 166,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -49328,7 +50163,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -49336,7 +50171,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -49482,7 +50317,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 167
+        "step": 167,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -49641,7 +50481,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -49649,7 +50489,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -49795,7 +50635,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 168
+        "step": 168,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -49943,7 +50788,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -49951,7 +50796,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -50097,7 +50942,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 169
+        "step": 169,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -50256,7 +51106,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -50264,7 +51114,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -50410,7 +51260,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 170
+        "step": 170,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -50558,7 +51413,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -50566,7 +51421,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -50712,7 +51567,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 171
+        "step": 171,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -50860,7 +51720,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -50868,7 +51728,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -51014,7 +51874,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 172
+        "step": 172,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -51173,7 +52038,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -51181,7 +52046,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -51327,7 +52192,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 173
+        "step": 173,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -51475,7 +52345,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -51483,7 +52353,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -51629,7 +52499,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 174
+        "step": 174,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -51788,7 +52663,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -51796,7 +52671,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -51942,7 +52817,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 175
+        "step": 175,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -52090,7 +52970,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -52098,7 +52978,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -52244,7 +53124,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 176
+        "step": 176,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -52403,7 +53288,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -52411,7 +53296,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -52557,7 +53442,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 177
+        "step": 177,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -52705,7 +53595,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -52713,7 +53603,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -52859,7 +53749,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 178
+        "step": 178,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -53007,7 +53902,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -53015,7 +53910,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -53161,7 +54056,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 179
+        "step": 179,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -53320,7 +54220,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -53328,7 +54228,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -53474,7 +54374,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 180
+        "step": 180,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -53644,7 +54549,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -53652,7 +54557,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -53798,7 +54703,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 181
+        "step": 181,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -53946,7 +54856,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -53954,7 +54864,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -54100,7 +55010,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 182
+        "step": 182,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -54248,7 +55163,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -54256,7 +55171,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -54402,7 +55317,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 183
+        "step": 183,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -54561,7 +55481,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -54569,7 +55489,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -54715,7 +55635,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 184
+        "step": 184,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -54885,7 +55810,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -54893,7 +55818,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -55039,7 +55964,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 185
+        "step": 185,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -55187,7 +56117,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -55195,7 +56125,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -55341,7 +56271,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 186
+        "step": 186,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -55500,7 +56435,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -55508,7 +56443,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -55654,7 +56589,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 187
+        "step": 187,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -55813,7 +56753,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -55821,7 +56761,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -55967,7 +56907,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 188
+        "step": 188,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -56115,7 +57060,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -56123,7 +57068,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -56269,7 +57214,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 189
+        "step": 189,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -56417,7 +57367,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -56425,7 +57375,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -56571,7 +57521,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 190
+        "step": 190,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -56719,7 +57674,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -56727,7 +57682,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -56873,7 +57828,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 191
+        "step": 191,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -57032,7 +57992,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -57040,7 +58000,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -57186,7 +58146,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 192
+        "step": 192,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -57356,7 +58321,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -57364,7 +58329,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -57510,7 +58475,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 193
+        "step": 193,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -57658,7 +58628,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -57666,7 +58636,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -57812,7 +58782,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 194
+        "step": 194,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -57960,7 +58935,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -57968,7 +58943,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -58114,7 +59089,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 195
+        "step": 195,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -58284,7 +59264,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -58292,7 +59272,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -58438,7 +59418,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 196
+        "step": 196,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -58586,7 +59571,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -58594,7 +59579,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -58740,7 +59725,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 197
+        "step": 197,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -58888,7 +59878,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -58896,7 +59886,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -59042,7 +60032,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 198
+        "step": 198,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -59190,7 +60185,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -59198,7 +60193,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -59344,7 +60339,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 199
+        "step": 199,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -59514,7 +60514,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -59522,7 +60522,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -59668,7 +60668,12 @@
           "Op_Server0",
           "User1"
         ],
-        "step": 200
+        "step": 200,
+        "kappa": 5.0,
+        "max_active": 4,
+        "cooldown_steps": 6,
+        "pbe_q_star": 0.769,
+        "pbe_r_star": 0.154
       },
       "drift_alarms": {
         "User0": false,
@@ -59827,7 +60832,7 @@
           "t_target": 1
         },
         {
-          "source": "User2",
+          "source": "User0",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
@@ -59835,7 +60840,7 @@
           "t_target": 1
         },
         {
-          "source": "User0",
+          "source": "User2",
           "target": "Enterprise1",
           "phase": "lateral_movement",
           "confidence": 0.92,
