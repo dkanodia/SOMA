@@ -248,12 +248,8 @@ function HoneypotPanel({ metrics, onPurge }) {
           <strong>{metrics.processes ?? 0}</strong>
         </div>
         <div className="hp-metric">
-          <span>Exfil attempts</span>
-          <strong>{metrics.exfil_attempts ?? 0}</strong>
-        </div>
-        <div className="hp-metric">
-          <span>LAN scans</span>
-          <strong>{metrics.lan_scans ?? 0}</strong>
+          <span>C2 connections</span>
+          <strong>{metrics.connections ?? 0}</strong>
         </div>
       </div>
       <button className="purge-btn" onClick={onPurge}>

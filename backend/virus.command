@@ -174,23 +174,40 @@ async def run():
                     async for msg in ws:
                         data = json.loads(msg)
                         if data.get("type") == "redirect":
-                            new_port = data["port"]
-                            print(f"")
-                            print(f">>> COMMAND: redirect → isolated environment (:{new_port})")
-                            print(f">>> Switching C2 channel...")
-                            print(f"[*] Now operating in honeypot environment — SOMA cannot see us")
-                            return new_port
+                            return data["port"]
                     return None
 
+                # Run telemetry in background; wait for redirect command
                 telemetry_task = asyncio.create_task(send_telemetry())
                 redirect_port = await recv_commands()
                 telemetry_task.cancel()
-                try:
-                    await telemetry_task
-                except asyncio.CancelledError:
-                    pass
+
                 if redirect_port:
-                    uri = f"ws://localhost:{redirect_port}/virus"
+                    print(f"")
+                    print(f">>> COMMAND: redirect → isolated environment (:{redirect_port})")
+                    print(f">>> Switching C2 channel...")
+
+                    # Reconnect to honeypot on the new port
+                    honeypot_uri = f"ws://localhost:{redirect_port}/virus"
+                    try:
+                        async with websockets.connect(honeypot_uri, ping_interval=10) as hp_ws:
+                            print(f"[*] Now operating in honeypot environment — SOMA cannot see us")
+                            await hp_ws.send(json.dumps({
+                                "type":        "virus_connect",
+                                "pid":         os.getpid(),
+                                "cpu_workers": PIDS,
+                            }))
+                            # Keep sending telemetry into the honeypot
+                            import psutil as _psutil
+                            while True:
+                                await hp_ws.send(json.dumps({
+                                    "type":      "virus_telemetry",
+                                    "cpu":       _psutil.cpu_percent(interval=None) / 100,
+                                    "processes": len(_psutil.pids()),
+                                }))
+                                await asyncio.sleep(2)
+                    except Exception:
+                        pass
 
         except Exception as e:
             await asyncio.sleep(2)
