@@ -7,6 +7,9 @@ import DriftPanel         from "./components/DriftPanel";
 import HoneypotPanel      from "./components/HoneypotPanel";
 import LayerRadarPanel    from "./components/LayerRadarPanel";
 import EvasionPanel       from "./components/EvasionPanel";
+import ConvergencePanel   from "./components/ConvergencePanel";
+import LearningPanel      from "./components/LearningPanel";
+import AnomalyPanel       from "./components/AnomalyPanel";
 import useWebSocket       from "./hooks/useWebSocket";
 import "./styles/index.css";
 
@@ -380,13 +383,16 @@ function EvidenceTabs({ state, meta, step, setStep }) {
     <section className="panel evidence-panel">
       <div className="tab-strip">
         {[
-          ["timeline",  "Timeline"],
-          ["incidents", "Incidents"],
-          ["actions",   "Actions"],
-          ["drift",     "Drift"],
-          ["decoys",    "Decoys"],
-          ["layers",    "Layers"],
-          ["evasion",   "Evasion"],
+          ["timeline",    "Timeline"],
+          ["incidents",   "Incidents"],
+          ["actions",     "Actions"],
+          ["drift",       "Drift"],
+          ["decoys",      "Decoys"],
+          ["layers",      "Layers"],
+          ["evasion",     "Evasion"],
+          ["convergence", "Signal Game"],
+          ["anomaly",     "Anomaly"],
+          ["learning",    "Learning"],
         ].map(([id, label]) => (
           <button key={id} className={tab === id ? "active" : ""} onClick={() => setTab(id)}>
             {label}
@@ -394,13 +400,16 @@ function EvidenceTabs({ state, meta, step, setStep }) {
         ))}
       </div>
       <div className="evidence-body">
-        {tab === "timeline"  && <TimelinePanel state={state} meta={meta} currentStep={step} onStepClick={setStep} />}
-        {tab === "incidents" && <IncidentPanel state={state} step={step} />}
-        {tab === "actions"   && <DefenseActionPanel state={state} meta={meta} step={step} />}
-        {tab === "drift"     && <DriftPanel state={state} meta={meta} />}
-        {tab === "decoys"    && <HoneypotPanel state={state} />}
-        {tab === "layers"    && <LayerRadarPanel state={state} meta={meta} />}
-        {tab === "evasion"   && <EvasionPanel meta={meta} />}
+        {tab === "timeline"    && <TimelinePanel state={state} meta={meta} currentStep={step} onStepClick={setStep} />}
+        {tab === "incidents"   && <IncidentPanel state={state} step={step} />}
+        {tab === "actions"     && <DefenseActionPanel state={state} meta={meta} step={step} />}
+        {tab === "drift"       && <DriftPanel state={state} meta={meta} />}
+        {tab === "decoys"      && <HoneypotPanel state={state} />}
+        {tab === "layers"      && <LayerRadarPanel state={state} meta={meta} />}
+        {tab === "evasion"     && <EvasionPanel meta={meta} />}
+        {tab === "convergence" && <ConvergencePanel />}
+        {tab === "anomaly"     && <AnomalyPanel meta={meta} step={step} />}
+        {tab === "learning"    && <LearningPanel meta={meta} />}
       </div>
     </section>
   );

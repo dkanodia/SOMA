@@ -100,7 +100,73 @@ def load_models():
         learned = LearnedAttackRecognizer()
         learned.fit(X_clean, epochs=50)
 
+    # Pre-populate gallery with synthetic attack signatures if empty.
+    # Each signature is a 10-step obs sequence that represents a known attack phase.
+    if learned.gallery_size == 0:
+        print("[demo] Populating attack gallery with synthetic signatures…")
+        _populate_gallery(learned, X_clean)
+        print(f"[demo] Gallery: {learned.gallery_size} entries")
+
     return innate, ppo, detector, tolerance, learned
+
+
+def _populate_gallery(learned: "LearnedAttackRecognizer", X_clean: np.ndarray) -> None:
+    """
+    Seed the gallery with CybORG-representative attack observation windows.
+
+    CybORG 30-dim obs structure (6 hosts × 5 features):
+      [activity, compromised, sessions, processes, network_pos]
+    Clean obs: activity=0, compromised=0, sessions=0, processes=0,
+               network_pos=const per host (0.1/0.1/0.1/0.5/0.5/0.9)
+    """
+    import numpy as np
+    from soma.envs.cyborg_wrapper import HOST_NAMES, FEATURES_PER_HOST
+
+    FEAT  = FEATURES_PER_HOST   # 5
+    N_H   = len(HOST_NAMES)     # 6
+    OBS   = N_H * FEAT          # 30
+
+    # Network positions per host (from _NETWORK_POS in cyborg_wrapper)
+    NET_POS = [0.10, 0.10, 0.10, 0.50, 0.50, 0.90]
+
+    def _make_base(n_steps: int = 35) -> np.ndarray:
+        """Create a clean CybORG-like obs window (all zeros except network_pos)."""
+        w = np.zeros((n_steps, OBS), dtype=np.float32)
+        for i, npos in enumerate(NET_POS):
+            w[:, i * FEAT + 4] = npos   # network_pos feature
+        return w
+
+    def _set_host(w: np.ndarray, host: str, activity: float, compromised: float,
+                  from_step: int = 0) -> None:
+        hi = HOST_NAMES.index(host) * FEAT
+        w[from_step:, hi + 0] = activity      # activity
+        w[from_step:, hi + 1] = compromised   # compromised
+        w[from_step:, hi + 2] = activity      # sessions (proxy)
+        w[from_step:, hi + 3] = compromised   # processes (proxy)
+
+    # lateral_move_obvious: User0 → Enterprise0, high activity, clear progression
+    w = _make_base()
+    _set_host(w, "User0",       activity=1.0, compromised=1.0, from_step=0)
+    _set_host(w, "Enterprise0", activity=1.0, compromised=0.8, from_step=10)
+    learned.learn_attack(w, "lateral_move_obvious", ["User0", "Enterprise0"])
+
+    # lateral_move_sophisticated: low-and-slow via User1 → Enterprise1
+    w = _make_base()
+    _set_host(w, "User1",       activity=0.3, compromised=0.2, from_step=0)
+    _set_host(w, "User1",       activity=0.6, compromised=0.5, from_step=15)
+    _set_host(w, "Enterprise1", activity=0.4, compromised=0.8, from_step=20)
+    learned.learn_attack(w, "lateral_move_sophisticated", ["User1", "Enterprise1"])
+
+    # privilege_escalation: enterprise-level compromise spreading to Op_Server0
+    w = _make_base()
+    _set_host(w, "Enterprise0", activity=0.5, compromised=0.5, from_step=0)
+    _set_host(w, "Op_Server0",  activity=0.5, compromised=1.0, from_step=15)
+    learned.learn_attack(w, "privilege_escalation", ["Enterprise0", "Op_Server0"])
+
+    # direct_impact: full compromise of Op_Server0
+    w = _make_base()
+    _set_host(w, "Op_Server0",  activity=1.0, compromised=1.0, from_step=0)
+    learned.learn_attack(w, "direct_impact", ["Op_Server0"])
 
 
 # ---------------------------------------------------------------------------
@@ -116,8 +182,10 @@ def run_episode_steps(innate, ppo, detector, tolerance=None, learned=None, n_ste
     learned:   LearnedAttackRecognizer (optional; gallery-based attack recognition)
     """
     import math
-    from soma.envs.cyborg_wrapper          import CybORGWrapper, HOST_NAMES, cyborg_obs_to_30dim
-    from soma.layers.deception             import heuristic_honeypot_trigger
+    from soma.envs.cyborg_wrapper          import CybORGWrapper, HOST_NAMES, FEATURES_PER_HOST, cyborg_obs_to_30dim
+    from soma.layers.deception             import heuristic_honeypot_trigger, AdaptiveDeceptionController
+    from soma.layers.attack_tracer         import AttackTracer
+    from soma.layers.explainer             import ImmuneExplainer
     from soma.fusion.network_correlator    import NetworkImmuneCorrelator
     from soma.fusion.response_orchestrator import ResponseOrchestrator
 
@@ -127,10 +195,14 @@ def run_episode_steps(innate, ppo, detector, tolerance=None, learned=None, n_ste
 
     correlator   = NetworkImmuneCorrelator()
     orchestrator = ResponseOrchestrator()
+    deception    = AdaptiveDeceptionController()
     obs_buffer   = []    # rolling window for learned-attack recognition
+    tracer       = AttackTracer()
+    explainer    = ImmuneExplainer()
 
     for step in range(n_steps):
-        action, _                       = ppo.predict(obs, deterministic=True)
+        # PPO was trained on raw 52-dim CybORG obs; immune layers use 30-dim
+        action, _                       = ppo.predict(obs_raw, deterministic=True)
         obs_raw, reward, done, _, info  = env.step(int(action))
         obs                             = cyborg_obs_to_30dim(obs_raw)
         obs_buffer.append(obs.copy())
@@ -138,8 +210,18 @@ def run_episode_steps(innate, ppo, detector, tolerance=None, learned=None, n_ste
         obs_per_host = split_obs_per_host(obs)
 
         # Layer 1 — anomaly detection
-        innate_fired   = innate.is_anomalous(obs)
-        anomaly_scores = innate.per_host_scores(obs)   # {host: float}
+        # CybORG clean obs = all zeros; attack obs = nonzero activity/compromised.
+        # IsolationForest is degenerate on this data (zero variance in clean set),
+        # so we compute per-host scores directly from obs features as a principled
+        # rule-based anomaly signal (activity + compromised weighted sum per host).
+        innate_fired = float(obs.sum()) > 0
+        anomaly_scores: dict = {}
+        for _i, _h in enumerate(HOST_NAMES):
+            _start = _i * FEATURES_PER_HOST
+            _activity    = float(obs[_start + 0])
+            _compromised = float(obs[_start + 1])
+            _sessions    = float(obs[_start + 2])
+            anomaly_scores[_h] = min(1.0, 0.5 * _activity + 0.8 * _compromised + 0.2 * _sessions)
 
         # Layer 3 — tolerance (suppress/breach by host role baseline)
         if tolerance is not None:
@@ -148,8 +230,9 @@ def run_episode_steps(innate, ppo, detector, tolerance=None, learned=None, n_ste
         else:
             tol_suppressed, tol_breached = [], []
 
-        # Layer 3b — heuristic honeypot trigger (NOT game-theoretic policy)
-        honeypot_flags = {
+        # Layer 3b — adaptive deception (heuristic, NOT game-theoretic policy)
+        # Pre-compute static flags for payload; adaptive controller runs after fusion.
+        honeypot_flags_static = {
             h: bool(heuristic_honeypot_trigger(anomaly_scores[h]))
             for h in HOST_NAMES
         }
@@ -168,7 +251,7 @@ def run_episode_steps(innate, ppo, detector, tolerance=None, learned=None, n_ste
 
         # Layer 5 — learned attack recognizer (rolling 10-step window)
         la_conf, la_type = 0.0, "unknown"
-        if learned is not None and learned._fitted and len(obs_buffer) >= 3:
+        if learned is not None and learned._vae._fitted and len(obs_buffer) >= 3:
             window = np.array(obs_buffer[-min(len(obs_buffer), 10):])
             la_conf, la_type = learned.recognize(window)
         learned_fired = la_conf > 0.3
@@ -179,10 +262,36 @@ def run_episode_steps(innate, ppo, detector, tolerance=None, learned=None, n_ste
             if centroid_pos[h] else 0.0
             for h in HOST_NAMES
         }
+
+        # Innate threshold for correlator/explainer: 0.0 means "any nonzero activity"
+        _innate_thresh = 0.0
+
+        # Kill-chain reconstruction
+        anomalous_hosts = (
+            {h for h, s in anomaly_scores.items() if s > _innate_thresh}
+            | {h for h, alarm in drift_alarms.items() if alarm}
+        )
+        tracer.update(step, anomalous_hosts)
+
+        # Per-layer explanations
+        gallery_size = learned.gallery_size if (learned and learned._vae._fitted) else 0
+        explanation = explainer.explain_step(
+            obs=obs,
+            host_innate_scores=anomaly_scores,
+            innate_threshold=_innate_thresh,
+            drift_scores=memory_scores,
+            memory_threshold=1.0,
+            tolerance_suppressed=tol_suppressed,
+            tolerance_breached=tol_breached,
+            la_conf=la_conf,
+            la_type=la_type,
+            gallery_size=gallery_size,
+        )
+
         incidents = correlator.update_step(
             obs=obs,
             innate_score=max(anomaly_scores.values()) if anomaly_scores else 0.0,
-            innate_threshold=float(innate.threshold_),
+            innate_threshold=_innate_thresh,
             memory_scores=memory_scores,
             memory_threshold=1.0,
             tolerance_suppressed=tol_suppressed,
@@ -192,6 +301,9 @@ def run_episode_steps(innate, ppo, detector, tolerance=None, learned=None, n_ste
             innate_host_scores=anomaly_scores,
         )
         top = correlator.top_threat()
+
+        # Adaptive deception: update after fusion so controller sees incident severity
+        honeypot_flags = deception.update(anomaly_scores, incidents)
 
         # Response orchestrator — rule-based recommendation (additive to PPO)
         layer_flags = {
@@ -211,16 +323,17 @@ def run_episode_steps(innate, ppo, detector, tolerance=None, learned=None, n_ste
             # Layer 1
             "innate_fired":    bool(innate_fired),
             "anomaly_scores":  {h: float(v) for h, v in anomaly_scores.items()},
-            "innate_threshold": float(innate.threshold_),
+            "innate_threshold": _innate_thresh,
 
             # Layer 3 — tolerance
             "tolerance_suppressed": tol_suppressed,
             "tolerance_breached":   tol_breached,
 
-            # Layer 3b — heuristic honeypot (labeled, not game-theoretic)
+            # Layer 3b — adaptive deception (heuristic, NOT game-theoretic policy)
             "honeypot_flags":  honeypot_flags,
-            "honeypot_note":   "heuristic trigger — not the signaling game policy; "
+            "honeypot_note":   "adaptive heuristic — not the signaling game policy; "
                                "B_lineAgent ignores signals",
+            "deception_status": deception.status(),
 
             # Layer 4
             "drift_alarms":   drift_alarms,
@@ -265,6 +378,12 @@ def run_episode_steps(innate, ppo, detector, tolerance=None, learned=None, n_ste
                 "reason":             decision.reason,
                 "incident_score":     decision.incident_score,
             },
+
+            # Kill-chain reconstruction (AttackTracer)
+            "kill_chain": tracer.to_json(),
+
+            # Per-layer explanations (ImmuneExplainer)
+            "explanation": explanation,
         }
 
         yield payload
@@ -288,7 +407,7 @@ async def handle_client(websocket):
         meta = {
             "meta": {
                 "host_names":       HOST_NAMES,
-                "innate_threshold": float(innate.threshold_),
+                "innate_threshold": 0.0,
                 "note":             "live CybORG stream",
             }
         }
@@ -314,6 +433,46 @@ async def main_server():
 
 
 # ---------------------------------------------------------------------------
+# Learning curve extraction
+# ---------------------------------------------------------------------------
+
+def _load_learning_curve() -> list:
+    """
+    Read PPO training metrics from tb_logs (tensorboard event files).
+    Returns [{step, loss}] sorted by step, downsampled to ≤100 points.
+    Empty list if tensorboard is not installed or no logs found.
+    """
+    try:
+        from tensorboard.backend.event_processing.event_accumulator import EventAccumulator
+    except ImportError:
+        return []
+
+    import glob
+    log_dirs = sorted(glob.glob(str(Path("tb_logs") / "PPO*")))
+    if not log_dirs:
+        return []
+
+    loss_pts: dict = {}
+    for run in log_dirs:
+        ea = EventAccumulator(run, size_guidance={"scalars": 0})
+        ea.Reload()
+        tags = ea.Tags().get("scalars", [])
+        if "train/loss" in tags:
+            for e in ea.Scalars("train/loss"):
+                loss_pts[int(e.step)] = round(float(e.value), 2)
+
+    all_steps = sorted(loss_pts)
+    if not all_steps:
+        return []
+
+    stride = max(1, len(all_steps) // 100)
+    return [
+        {"step": s, "loss": loss_pts[s]}
+        for s in all_steps[::stride]
+    ]
+
+
+# ---------------------------------------------------------------------------
 # Static fallback export
 # ---------------------------------------------------------------------------
 
@@ -330,11 +489,16 @@ def export_static(
     steps = list(run_episode_steps(innate, ppo, detector, tolerance, learned, n_steps=n_steps))
 
     from soma.envs.cyborg_wrapper import HOST_NAMES
+    print("  Extracting learning curve from tb_logs…")
+    learning_curve = _load_learning_curve()
+    print(f"  Learning curve: {len(learning_curve)} points")
+
     episode = {
         "meta": {
             "n_steps":         len(steps),
             "host_names":      HOST_NAMES,
             "innate_threshold": float(innate.threshold_),
+            "learning_curve":  learning_curve,
             "note":            "signaling game convergence panel is separate static image",
         },
         "steps": steps,

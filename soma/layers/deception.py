@@ -162,3 +162,123 @@ def heuristic_honeypot_trigger(suspicion_score: float) -> bool:
     bool: True = activate deceptive presentation on this host.
     """
     return suspicion_score > SUSPICION_THRESHOLD
+
+
+# ---------------------------------------------------------------------------
+# Adaptive deception controller (stateful, per-episode)
+# ---------------------------------------------------------------------------
+
+class AdaptiveDeceptionController:
+    """
+    Stateful honeypot activation controller that adapts its threshold and
+    rotation strategy based on observed attack activity.
+
+    Extends the static heuristic_honeypot_trigger with:
+      - Adaptive threshold: lowers when attacks are detected, recovers on quiet steps.
+      - Activation cooldown: prevents flapping (min 3 steps between state changes).
+      - Threat memory: tracks which hosts were previously flagged this episode.
+      - Rotation budget: limits simultaneous honeypots to avoid over-signaling.
+
+    This is still explicitly NOT the signaling game policy — that requires a
+    rational Bayesian attacker. This controller targets the scripted B_lineAgent.
+    """
+
+    MAX_ACTIVE       = 2     # max simultaneous honeypot-active hosts
+    COOLDOWN_STEPS   = 3     # steps between activation state changes per host
+    BASE_THRESHOLD   = 0.70  # static fallback
+    MIN_THRESHOLD    = 0.45  # floor when under active attack
+    DECAY_RATE       = 0.05  # threshold recovery per quiet step
+    ATTACK_PRESSURE  = 0.08  # threshold drop per detected incident
+
+    def __init__(self):
+        self._threshold:    float        = self.BASE_THRESHOLD
+        self._active:       dict[str, bool] = {}   # host → currently active
+        self._last_change:  dict[str, int]  = {}   # host → step of last change
+        self._threat_memory: set[str]       = set() # hosts flagged this episode
+        self._step: int = 0
+
+    def reset(self) -> None:
+        self._threshold    = self.BASE_THRESHOLD
+        self._active       = {}
+        self._last_change  = {}
+        self._threat_memory.clear()
+        self._step         = 0
+
+    def update(
+        self,
+        host_scores: dict[str, float],
+        incidents:   list,
+    ) -> dict[str, bool]:
+        """
+        Update honeypot flags for all hosts given current scores and incidents.
+
+        Parameters
+        ----------
+        host_scores : {host: suspicion_score in [0,1]}
+        incidents   : list of Incident objects from correlator
+
+        Returns
+        -------
+        {host: bool} — True = activate honeypot presentation on this host.
+        """
+        # Adapt threshold based on incident pressure
+        n_high = sum(1 for inc in incidents if inc.confidence == "HIGH")
+        if n_high > 0:
+            self._threshold = max(
+                self.MIN_THRESHOLD,
+                self._threshold - self.ATTACK_PRESSURE * n_high,
+            )
+        else:
+            self._threshold = min(
+                self.BASE_THRESHOLD,
+                self._threshold + self.DECAY_RATE,
+            )
+
+        # Determine desired activation for each host
+        candidates = {
+            h: score for h, score in host_scores.items()
+            if score > self._threshold
+        }
+
+        # Rotation: if too many candidates, prefer hosts already active or
+        # with the highest score; respect cooldown.
+        sorted_candidates = sorted(candidates, key=lambda h: (
+            self._active.get(h, False),     # keep active ones
+            candidates[h],
+        ), reverse=True)
+
+        desired_active = set(sorted_candidates[:self.MAX_ACTIVE])
+
+        flags: dict[str, bool] = {}
+        for host in host_scores:
+            want = host in desired_active
+            current = self._active.get(host, False)
+            last_change = self._last_change.get(host, -self.COOLDOWN_STEPS)
+
+            # Enforce cooldown
+            if want != current and (self._step - last_change) >= self.COOLDOWN_STEPS:
+                self._active[host]      = want
+                self._last_change[host] = self._step
+
+            flags[host] = self._active.get(host, False)
+            if flags[host]:
+                self._threat_memory.add(host)
+
+        self._step += 1
+        return flags
+
+    @property
+    def current_threshold(self) -> float:
+        return self._threshold
+
+    @property
+    def threat_memory(self) -> list[str]:
+        return sorted(self._threat_memory)
+
+    def status(self) -> dict:
+        return {
+            "threshold":      round(self._threshold, 3),
+            "active_hosts":   [h for h, v in self._active.items() if v],
+            "threat_memory":  self.threat_memory,
+            "step":           self._step,
+        }
