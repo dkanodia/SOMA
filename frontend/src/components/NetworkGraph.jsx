@@ -40,33 +40,33 @@ const NODE_RADIUS = 22;
 
 // Color logic
 function nodeColor(host, state, meta) {
-  if (!state) return "#1e293b";
+  if (!state) return "#242422";
   const compHosts = state.compromised_hosts ?? [];
   const innateScore = state.host_innate_scores?.[host] ?? 0;
   const innateThresh = meta?.innate_threshold ?? 0.5;
   const driftScore = state.drift_scores?.[host] ?? 0;
   const memThresh = meta?.memory_threshold ?? 1.0;
 
-  if (compHosts.includes(host))     return "#ef4444";  // red: confirmed compromised
-  if (driftScore > memThresh)        return "#a855f7";  // purple: memory alarm
-  if (innateScore > innateThresh)    return "#f59e0b";  // amber: innate alarm
-  if (state.tolerance_breached?.includes(host)) return "#f59e0b";
-  return "#22d3ee";                                      // cyan: healthy
+  if (compHosts.includes(host))     return "#A83D2E";  // confirmed compromised
+  if (driftScore > memThresh)        return "#6452A0";  // memory alarm
+  if (innateScore > innateThresh)    return "#C49A30";  // innate alarm
+  if (state.tolerance_breached?.includes(host)) return "#B87030";
+  return "#3A7A58";                                      // healthy
 }
 
 function nodeGlow(host, state, meta) {
   if (!state) return null;
   const compHosts = state.compromised_hosts ?? [];
-  if (compHosts.includes(host)) return "#ef4444";
+  if (compHosts.includes(host)) return "#A83D2E";
   const driftScore = state.drift_scores?.[host] ?? 0;
   const memThresh = meta?.memory_threshold ?? 1.0;
-  if (driftScore > memThresh) return "#a855f7";
+  if (driftScore > memThresh) return "#6452A0";
   return null;
 }
 
 // Arrow marker head
 function arrowId(color) {
-  return color === "#ef4444" ? "arrow-red" : "arrow-amber";
+  return color === "#A83D2E" ? "arrow-red" : "arrow-amber";
 }
 
 // Offset line endpoints so arrows don't overlap nodes
@@ -112,11 +112,11 @@ export default function NetworkGraph({ state, meta }) {
             {/* Arrow markers */}
             <marker id="arrow-red" markerWidth="8" markerHeight="8"
                     refX="6" refY="3" orient="auto">
-              <path d="M0,0 L0,6 L8,3 z" fill="#ef4444" />
+              <path d="M0,0 L0,6 L8,3 z" fill="#A83D2E" />
             </marker>
             <marker id="arrow-amber" markerWidth="8" markerHeight="8"
                     refX="6" refY="3" orient="auto">
-              <path d="M0,0 L0,6 L8,3 z" fill="#f59e0b" />
+              <path d="M0,0 L0,6 L8,3 z" fill="#C49A30" />
             </marker>
             {/* Glow filter */}
             <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
@@ -131,7 +131,7 @@ export default function NetworkGraph({ state, meta }) {
             return (
               <line key={i}
                 x1={pa.x} y1={pa.y} x2={pb.x} y2={pb.y}
-                stroke="#1e293b" strokeWidth={1.5}
+                stroke="#262624" strokeWidth={1.5}
               />
             );
           })}
@@ -141,7 +141,7 @@ export default function NetworkGraph({ state, meta }) {
             const ps = NODE_POS[e.source], pt = NODE_POS[e.target];
             if (!ps || !pt) return null;
             const { x1, y1, x2, y2 } = offsetEndpoint(ps, pt, NODE_RADIUS);
-            const color = "#ef4444";
+            const color = "#A83D2E";
             const opacity = Math.max(0.4, e.confidence);
             return (
               <line key={`kc-${i}`}
@@ -167,7 +167,7 @@ export default function NetworkGraph({ state, meta }) {
                 {/* Outer ring for top threat */}
                 {isTop && (
                   <circle cx={x} cy={y} r={NODE_RADIUS + 5}
-                    fill="none" stroke="#ef4444" strokeWidth={1.5}
+                    fill="none" stroke="#A83D2E" strokeWidth={1.5}
                     strokeOpacity={0.6} strokeDasharray="3 2" />
                 )}
                 {/* Glow halo */}
@@ -190,7 +190,7 @@ export default function NetworkGraph({ state, meta }) {
                 {state?.host_innate_scores?.[h] != null && (
                   <text x={x} y={y + NODE_RADIUS + 10}
                     textAnchor="middle"
-                    fill="#64748b" fontSize={7.5} fontFamily="monospace">
+                    fill="#807C76" fontSize={7.5} fontFamily="monospace">
                     {state.host_innate_scores[h].toFixed(2)}
                   </text>
                 )}
@@ -200,14 +200,14 @@ export default function NetworkGraph({ state, meta }) {
 
           {/* Legend */}
           {[
-            { color: "#22d3ee", label: "Healthy" },
-            { color: "#f59e0b", label: "Innate" },
-            { color: "#a855f7", label: "Memory" },
-            { color: "#ef4444", label: "Compromised" },
+            { color: "#3A7A58", label: "Healthy" },
+            { color: "#C49A30", label: "Innate" },
+            { color: "#6452A0", label: "Memory" },
+            { color: "#A83D2E", label: "Compromised" },
           ].map((l, i) => (
             <g key={l.label} transform={`translate(${8 + i * 76}, 210)`}>
               <circle cx={5} cy={0} r={4} fill={l.color} fillOpacity={0.7} />
-              <text x={12} y={3} fill="#64748b" fontSize={8} fontFamily="monospace">
+              <text x={12} y={3} fill="#807C76" fontSize={8} fontFamily="monospace">
                 {l.label}
               </text>
             </g>

@@ -1,38 +1,271 @@
-import React, { useState, useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import NetworkGraph       from "./components/NetworkGraph";
 import TimelinePanel      from "./components/TimelinePanel";
-import LayerRadarPanel    from "./components/LayerRadarPanel";
-import EvasionPanel       from "./components/EvasionPanel";
-import GalleryPanel       from "./components/GalleryPanel";
 import IncidentPanel      from "./components/IncidentPanel";
 import DefenseActionPanel from "./components/DefenseActionPanel";
 import DriftPanel         from "./components/DriftPanel";
 import HoneypotPanel      from "./components/HoneypotPanel";
+import LayerRadarPanel    from "./components/LayerRadarPanel";
+import EvasionPanel       from "./components/EvasionPanel";
 import useWebSocket       from "./hooks/useWebSocket";
 import "./styles/index.css";
 
-const TABS = ["incidents", "defense", "drift", "honeypot"];
-const TAB_LABELS = { incidents: "Incidents", defense: "Defense", drift: "Drift", honeypot: "Honeypot" };
+const HOSTS = ["User0", "User1", "User2", "Enterprise0", "Enterprise1", "Op_Server0"];
 
-const LAYERS = ["innate", "memory", "tolerance", "learned", "orchestrator"];
+function actionLabel(actionName) {
+  if (!actionName || actionName === "Monitor") return "Monitor";
+  return actionName.replace("_", " ");
+}
 
-const NAV_SECTIONS = [
-  { label: "Analysis", items: [
-    { id: "network",   name: "Network Graph" },
-    { id: "radar",     name: "Layer Radar" },
-    { id: "timeline",  name: "Timeline" },
-  ]},
-  { label: "Detection", items: [
-    { id: "incidents", name: "Incidents" },
-    { id: "drift",     name: "Drift Monitor" },
-    { id: "evasion",   name: "Evasion Matrix" },
-  ]},
-  { label: "Response", items: [
-    { id: "defense",   name: "Defense Actions" },
-    { id: "honeypot",  name: "Honeypot" },
-    { id: "gallery",   name: "VAE Scatter" },
-  ]},
-];
+function getSeverity(state) {
+  const score = state?.top_threat?.score ?? 0;
+  if (score >= 0.75) return { label: "Critical", className: "critical" };
+  if (score >= 0.45) return { label: "Elevated", className: "elevated" };
+  if (state?.is_attack) return { label: "Investigating", className: "elevated" };
+  return { label: "Nominal", className: "nominal" };
+}
+
+function formatPhase(phase) {
+  return (phase || "clean").replaceAll("_", " ");
+}
+
+function ConsoleSidebar({ connected }) {
+  return (
+    <aside className="console-sidebar">
+      <div className="console-brand">
+        <strong>SO<span>MA</span></strong>
+        <small>Defense Console</small>
+      </div>
+      <nav className="console-nav" aria-label="Primary">
+        <button className="active">Operations</button>
+        <button>Incidents</button>
+        <button>Assets</button>
+        <button>Policies</button>
+        <button>Audit Log</button>
+      </nav>
+      <div className="connection-card">
+        <span className={connected ? "status-dot live" : "status-dot"} />
+        <div>
+          <strong>{connected ? "Live stream" : "Replay mode"}</strong>
+          <span>{connected ? "WebSocket connected" : "Using demo episode"}</span>
+        </div>
+      </div>
+    </aside>
+  );
+}
+
+function TopBar({ state, step, totalSteps, playing, play, pause, stepBack, stepForward, setStep }) {
+  const severity = getSeverity(state);
+  const topHost = state?.top_threat?.host ?? "None";
+  const action = actionLabel(state?.orchestrator?.action_name);
+
+  return (
+    <header className="topbar">
+      <div>
+        <p>Operations</p>
+        <h1>Threat Response Center</h1>
+      </div>
+      <div className="topbar-metrics">
+        <div className={`metric ${severity.className}`}>
+          <span>Posture</span>
+          <strong>{severity.label}</strong>
+        </div>
+        <div className="metric">
+          <span>Top host</span>
+          <strong>{topHost}</strong>
+        </div>
+        <div className="metric action">
+          <span>Recommended</span>
+          <strong>{action}</strong>
+        </div>
+      </div>
+      <div className="replay-controls">
+        <button onClick={stepBack} title="Previous step">◀</button>
+        <button className="play" onClick={playing ? pause : play}>
+          {playing ? "Pause" : "Play"}
+        </button>
+        <button onClick={stepForward} title="Next step">▶</button>
+        <input
+          type="range"
+          min={0}
+          max={Math.max(totalSteps - 1, 0)}
+          value={step}
+          onChange={(e) => setStep(parseInt(e.target.value, 10))}
+        />
+        <span>{step}/{Math.max(totalSteps - 1, 0)}</span>
+      </div>
+    </header>
+  );
+}
+
+function IncidentQueue({ state, onSelectHost, selectedHost }) {
+  const incidents = state?.incidents ?? [];
+  const rows = incidents.length
+    ? incidents
+    : HOSTS.map((host) => ({
+        host,
+        confidence: "CLEAR",
+        score: 0,
+        attack_type: "normal",
+        explanation: "No active incident on this host",
+      }));
+
+  return (
+    <section className="panel queue-panel">
+      <div className="section-head">
+        <div>
+          <span>Incident queue</span>
+          <strong>{incidents.length ? `${incidents.length} active` : "All clear"}</strong>
+        </div>
+        <button className="small-button">Filter</button>
+      </div>
+      <div className="queue-list">
+        {rows.slice(0, 8).map((inc) => (
+          <button
+            key={`${inc.host}-${inc.attack_type}`}
+            className={`queue-row ${selectedHost === inc.host ? "selected" : ""} ${inc.confidence?.toLowerCase()}`}
+            onClick={() => onSelectHost(inc.host)}
+          >
+            <span className="host-name">{inc.host}</span>
+            <span className="queue-desc">{inc.attack_type?.replaceAll("_", " ")}</span>
+            <span className="queue-score">{inc.confidence} {inc.score ? inc.score.toFixed(2) : ""}</span>
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function ResponseApproval({ state, selectedHost }) {
+  const orch = state?.orchestrator ?? {};
+  const actionName = orch.action_name ?? "Monitor";
+  const isRemove = actionName.startsWith("Remove");
+  const suppressed = state?.tolerance_suppressed ?? [];
+  const breached = state?.tolerance_breached ?? [];
+
+  return (
+    <section className="panel approval-panel">
+      <div className="section-head">
+        <div>
+          <span>Response approval</span>
+          <strong>{actionLabel(actionName)}</strong>
+        </div>
+        <span className={`approval-badge ${isRemove ? "danger" : "safe"}`}>
+          {isRemove ? "Needs admin approval" : "Auto-safe"}
+        </span>
+      </div>
+
+      <div className="approval-body">
+        <div className="approval-summary">
+          <span>Target</span>
+          <strong>{orch.host || selectedHost || "Network"}</strong>
+          <p>{orch.reason || "No active incidents detected. Continue monitoring."}</p>
+        </div>
+        <div className="approval-actions">
+          <button className="primary-action">{isRemove ? "Approve removal" : "Keep monitoring"}</button>
+          <button>Open host details</button>
+          <button>Suppress for 1 hour</button>
+        </div>
+      </div>
+
+      <div className="guardrails">
+        <div>
+          <strong>{suppressed.length}</strong>
+          <span>suppressed as normal</span>
+        </div>
+        <div>
+          <strong>{breached.length}</strong>
+          <span>role breaches</span>
+        </div>
+        <div>
+          <strong>{orch.confidence ?? "NONE"}</strong>
+          <span>confidence gate</span>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function AssetTable({ state, selectedHost, onSelectHost }) {
+  const compromised = new Set(state?.compromised_hosts ?? []);
+  const driftScores = state?.drift_scores ?? {};
+  const hostScores = state?.host_innate_scores ?? {};
+  const breached = new Set(state?.tolerance_breached ?? []);
+  const suppressed = new Set(state?.tolerance_suppressed ?? []);
+
+  return (
+    <section className="panel asset-panel">
+      <div className="section-head">
+        <div>
+          <span>Protected assets</span>
+          <strong>{HOSTS.length} hosts</strong>
+        </div>
+        <button className="small-button">Export</button>
+      </div>
+      <div className="asset-table">
+        <div className="asset-row asset-header">
+          <span>Host</span>
+          <span>Status</span>
+          <span>Anomaly</span>
+          <span>Drift</span>
+        </div>
+        {HOSTS.map((host) => {
+          const status = compromised.has(host)
+            ? "Compromised"
+            : breached.has(host)
+              ? "Role breach"
+              : suppressed.has(host)
+                ? "Tolerated"
+                : "Healthy";
+          return (
+            <button
+              key={host}
+              className={`asset-row ${selectedHost === host ? "selected" : ""}`}
+              onClick={() => onSelectHost(host)}
+            >
+              <span>{host}</span>
+              <span className={`asset-status ${status.toLowerCase().replace(" ", "-")}`}>{status}</span>
+              <span>{(hostScores[host] ?? 0).toFixed(2)}</span>
+              <span>{(driftScores[host] ?? 0).toFixed(1)}</span>
+            </button>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+function EvidenceTabs({ state, meta, step, setStep }) {
+  const [tab, setTab] = useState("timeline");
+  return (
+    <section className="panel evidence-panel">
+      <div className="tab-strip">
+        {[
+          ["timeline", "Timeline"],
+          ["incidents", "Incidents"],
+          ["actions", "Actions"],
+          ["drift", "Drift"],
+          ["decoys", "Decoys"],
+          ["layers", "Layers"],
+          ["evasion", "Evasion"],
+        ].map(([id, label]) => (
+          <button key={id} className={tab === id ? "active" : ""} onClick={() => setTab(id)}>
+            {label}
+          </button>
+        ))}
+      </div>
+      <div className="evidence-body">
+        {tab === "timeline" && <TimelinePanel state={state} meta={meta} currentStep={step} onStepClick={setStep} />}
+        {tab === "incidents" && <IncidentPanel state={state} step={step} />}
+        {tab === "actions" && <DefenseActionPanel state={state} meta={meta} step={step} />}
+        {tab === "drift" && <DriftPanel state={state} />}
+        {tab === "decoys" && <HoneypotPanel state={state} />}
+        {tab === "layers" && <LayerRadarPanel state={state} meta={meta} layerVisible={{}} />}
+        {tab === "evasion" && <EvasionPanel meta={meta} />}
+      </div>
+    </section>
+  );
+}
 
 export default function App() {
   const {
@@ -40,204 +273,65 @@ export default function App() {
     playing, play, pause, stepForward, stepBack, setStep,
   } = useWebSocket(process.env.REACT_APP_WS_URL || "ws://localhost:8765");
 
-  const [activeTab, setActiveTab]     = useState("incidents");
-  const [layerVisible, setLayerVisible] = useState(
-    Object.fromEntries(LAYERS.map((l) => [l, true]))
-  );
+  const currentState = state ?? {};
+  const [selectedHost, setSelectedHost] = useState("Op_Server0");
 
-  const toggleLayer = (key) =>
-    setLayerVisible((prev) => ({ ...prev, [key]: !prev[key] }));
+  const currentPhase = formatPhase(currentState.phase);
+  const infectedCount = currentState.compromised_hosts?.length ?? 0;
+  const incidentCount = currentState.incidents?.length ?? 0;
+  const learnedType = currentState.learned_attack_type && currentState.learned_attack_type !== "unknown"
+    ? currentState.learned_attack_type.replaceAll("_", " ")
+    : "Unclassified";
 
-  const phase    = state?.phase ?? "—";
-  const isAttack = state?.is_attack ?? false;
-
-  const stats = useMemo(() => {
-    const slice = (meta?._steps ?? []).slice(0, step + 1);
-    return {
-      detected:    slice.filter((s) => s.innate_fired).length,
-      honeypot:    slice.filter((s) => Object.values(s.honeypot_flags ?? {}).some(Boolean)).length,
-      driftAlarms: slice.filter((s) => Object.values(s.drift_alarms ?? {}).some(Boolean)).length,
-    };
-  }, [meta, step]);
+  const summary = useMemo(() => [
+    { label: "Phase", value: currentPhase },
+    { label: "Infected", value: infectedCount },
+    { label: "Open incidents", value: incidentCount },
+    { label: "Signature", value: learnedType },
+  ], [currentPhase, infectedCount, incidentCount, learnedType]);
 
   return (
     <div className="app-root">
+      <ConsoleSidebar connected={connected} />
+      <main className="console-main">
+        <TopBar
+          state={currentState}
+          step={step}
+          totalSteps={totalSteps}
+          playing={playing}
+          play={play}
+          pause={pause}
+          stepBack={stepBack}
+          stepForward={stepForward}
+          setStep={setStep}
+        />
 
-      {/* ── Sidebar ────────────────────────────────────────────── */}
-      <aside className="sidebar">
-        <div className="sidebar-logo">
-          <span className="sidebar-wordmark">SO<span>MA</span></span>
-          <span className="sidebar-tagline">Cyber Immune Stack</span>
-        </div>
-
-        <nav className="sidebar-nav">
-          {NAV_SECTIONS.map((sec) => (
-            <div key={sec.label}>
-              <div className="nav-section-label">{sec.label}</div>
-              {sec.items.map((item) => (
-                <div
-                  key={item.id}
-                  className={`nav-item ${activeTab === item.id ? "active" : ""}`}
-                  onClick={() => {
-                    if (TABS.includes(item.id)) setActiveTab(item.id);
-                  }}
-                >
-                  <span className="nav-dot" />
-                  {item.name}
-                </div>
-              ))}
+        <div className="summary-strip">
+          {summary.map((item) => (
+            <div key={item.label}>
+              <span>{item.label}</span>
+              <strong>{item.value}</strong>
             </div>
           ))}
-        </nav>
-
-        <div className="sidebar-status">
-          <div className="status-row">
-            <span className="status-label">Status</span>
-            <span className={`status-badge ${connected ? "live" : "static"}`}>
-              {connected ? "LIVE" : "STATIC"}
-            </span>
-          </div>
-          <div className="status-row">
-            <span className="status-label">Step</span>
-            <span className="status-val">{step} / {Math.max(totalSteps - 1, 0)}</span>
-          </div>
-          <div className="status-row">
-            <span className="status-label">Phase</span>
-            <span className={`status-badge ${isAttack ? "live" : ""}`}
-              style={isAttack ? { background: "var(--alert-dim)", color: "var(--alert)" } : {}}>
-              {phase}
-            </span>
-          </div>
-          <div className="status-row" style={{ marginTop: 6 }}>
-            <span className="status-label">Innate</span>
-            <span className="status-val" style={{ color: stats.detected > 0 ? "var(--gold)" : "var(--fg-3)" }}>
-              {stats.detected}
-            </span>
-          </div>
-          <div className="status-row">
-            <span className="status-label">Decoy</span>
-            <span className="status-val" style={{ color: stats.honeypot > 0 ? "var(--warn)" : "var(--fg-3)" }}>
-              {stats.honeypot}
-            </span>
-          </div>
-          <div className="status-row">
-            <span className="status-label">Drift</span>
-            <span className="status-val" style={{ color: stats.driftAlarms > 0 ? "var(--mem)" : "var(--fg-3)" }}>
-              {stats.driftAlarms}
-            </span>
-          </div>
-          <div className="sidebar-version">v0.4 — CybORG CAGE 2</div>
         </div>
-      </aside>
 
-      {/* ── Main area ──────────────────────────────────────────── */}
-      <div className="app-main">
-
-        {/* Header */}
-        <header className="app-header">
-          <span className="header-breadcrumb">
-            <strong>Autonomous Defense</strong> / Live Episode
-          </span>
-          <div className="header-sep" />
-
-          {/* Playback controls */}
-          <div className="controls">
-            <button className="ctrl-btn" onClick={stepBack}   title="Step back">◀</button>
-            <button className="ctrl-btn" onClick={playing ? pause : play} title={playing ? "Pause" : "Play"}>
-              {playing ? "⏸" : "▶"}
-            </button>
-            <button className="ctrl-btn" onClick={stepForward} title="Step forward">▶▶</button>
-            <input
-              type="range"
-              className="scrubber"
-              min={0}
-              max={Math.max(totalSteps - 1, 0)}
-              value={step}
-              onChange={(e) => setStep(parseInt(e.target.value))}
-            />
-            <span className="step-counter">
-              {step} / {Math.max(totalSteps - 1, 0)}
-            </span>
-          </div>
-
-          <div className="header-sep" />
-
-          {/* Layer toggles */}
-          <div className="layer-toggles">
-            {LAYERS.map((l) => (
-              <button
-                key={l}
-                className={`ctrl-btn layer-toggle ${layerVisible[l] ? "active" : "dim"}`}
-                onClick={() => toggleLayer(l)}
-                title={`Toggle ${l} layer`}
-              >
-                {l}
-              </button>
-            ))}
-          </div>
-
-          <span className={`connection-status ${connected ? "connected" : "disconnected"}`}>
-            {connected ? "● LIVE" : "● OFFLINE"}
-          </span>
-        </header>
-
-        {/* Grid */}
-        <main className="app-grid">
-
-          {/* Row 1 */}
-          <div className="panel panel--radar">
-            <LayerRadarPanel state={state} meta={meta} layerVisible={layerVisible} />
-          </div>
-
-          <div className="panel panel--network">
-            <NetworkGraph state={state} meta={meta} />
-          </div>
-
-          <div className="panel panel--evasion">
-            <EvasionPanel meta={meta} />
-          </div>
-
-          {/* Row 2 — full-width timeline */}
-          <div className="panel panel--timeline">
-            <TimelinePanel
-              state={state}
-              meta={meta}
-              currentStep={step}
-              onStepClick={setStep}
-            />
-          </div>
-
-          {/* Row 3 */}
-          <div className="panel panel--gallery">
-            <GalleryPanel state={state} meta={meta} />
-          </div>
-
-          <div className="panel panel--incident">
-            <div className="panel-inner">
-              <div className="panel-tabs">
-                {TABS.map((t) => (
-                  <button
-                    key={t}
-                    className={`tab-btn ${activeTab === t ? "active" : ""}`}
-                    onClick={() => setActiveTab(t)}
-                  >
-                    {TAB_LABELS[t]}
-                  </button>
-                ))}
+        <div className="ops-grid">
+          <IncidentQueue state={currentState} selectedHost={selectedHost} onSelectHost={setSelectedHost} />
+          <section className="panel map-panel">
+            <div className="section-head">
+              <div>
+                <span>Network map</span>
+                <strong>{selectedHost}</strong>
               </div>
-              <div className="tab-content">
-                {activeTab === "incidents" && <IncidentPanel state={state} step={step} />}
-                {activeTab === "defense"   && (
-                  <DefenseActionPanel state={state} meta={meta} step={step} layerVisible={layerVisible} />
-                )}
-                {activeTab === "drift"     && <DriftPanel state={state} />}
-                {activeTab === "honeypot"  && <HoneypotPanel state={state} />}
-              </div>
+              <span className="map-phase">{currentPhase}</span>
             </div>
-          </div>
-
-        </main>
-      </div>
+            <NetworkGraph state={currentState} meta={meta} />
+          </section>
+          <ResponseApproval state={currentState} selectedHost={selectedHost} />
+          <AssetTable state={currentState} selectedHost={selectedHost} onSelectHost={setSelectedHost} />
+          <EvidenceTabs state={currentState} meta={meta} step={step} setStep={setStep} />
+        </div>
+      </main>
     </div>
   );
 }

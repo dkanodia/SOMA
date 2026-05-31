@@ -17,12 +17,12 @@ import {
 } from "recharts";
 
 const HOST_COLORS = {
-  User0:       "#22d3ee",
-  User1:       "#67e8f9",
-  User2:       "#a5f3fc",
-  Enterprise0: "#a855f7",
-  Enterprise1: "#c084fc",
-  Op_Server0:  "#ef4444",
+  User0:       "#3A7A58",
+  User1:       "#5F8D6F",
+  User2:       "#8BA778",
+  Enterprise0: "#6452A0",
+  Enterprise1: "#8071B8",
+  Op_Server0:  "#A83D2E",
 };
 
 const FEATURE_NAMES = ["activity","compromised","sessions","processes","network_pos"];
@@ -31,10 +31,10 @@ function CustomTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
   return (
     <div style={{
-      background: "#111827", border: "1px solid #1e293b",
+      background: "#171715", border: "1px solid #262624",
       padding: "6px 10px", fontSize: 10, lineHeight: 1.6,
     }}>
-      <div style={{ color: "#64748b" }}>Step {label}</div>
+      <div style={{ color: "#807C76" }}>Step {label}</div>
       {payload.map((p) => (
         <div key={p.dataKey} style={{ color: p.color }}>
           {p.name}: {typeof p.value === "number" ? p.value.toFixed(3) : p.value}
@@ -99,37 +99,37 @@ export default function TimelinePanel({ state, meta, currentStep, onStepClick })
           <ResponsiveContainer width="100%" height="100%">
             <ComposedChart data={chartData} margin={{ top: 4, right: 10, bottom: 4, left: 0 }}
               onClick={handleClick}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="step" stroke="#1e293b" tick={{ fill: "#64748b", fontSize: 9 }}
-                label={{ value: "Step", position: "insideBottomRight", offset: -5, fill: "#64748b", fontSize: 9 }} />
-              <YAxis stroke="#1e293b" tick={{ fill: "#64748b", fontSize: 9 }} width={32} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#1A1A18" />
+              <XAxis dataKey="step" stroke="#262624" tick={{ fill: "#807C76", fontSize: 9 }}
+                label={{ value: "Step", position: "insideBottomRight", offset: -5, fill: "#807C76", fontSize: 9 }} />
+              <YAxis stroke="#262624" tick={{ fill: "#807C76", fontSize: 9 }} width={32} />
               <Tooltip content={<CustomTooltip />} />
 
               {/* Attack window */}
               {attackStart != null && (
                 <ReferenceArea
                   x1={attackStart} x2={totalSteps - 1}
-                  fill="#ef4444" fillOpacity={0.06}
-                  label={{ value: "attack", position: "insideTopRight", fill: "#ef444466", fontSize: 8 }}
+                  fill="#A83D2E" fillOpacity={0.06}
+                  label={{ value: "attack", position: "insideTopRight", fill: "#A83D2E", fontSize: 8 }}
                 />
               )}
 
               {/* Current step marker */}
               {currentStep != null && (
-                <ReferenceLine x={currentStep} stroke="#f59e0b" strokeDasharray="4 2" strokeWidth={1.5} />
+                <ReferenceLine x={currentStep} stroke="#C49A30" strokeDasharray="4 2" strokeWidth={1.5} />
               )}
 
               {/* Innate threshold */}
-              <ReferenceLine y={innateThresh} stroke="#22d3ee" strokeDasharray="4 2"
-                label={{ value: "θ_inn", position: "right", fill: "#22d3ee", fontSize: 8 }} />
+              <ReferenceLine y={innateThresh} stroke="#C49A30" strokeDasharray="4 2"
+                label={{ value: "theta inn", position: "right", fill: "#C49A30", fontSize: 8 }} />
 
               {/* Memory threshold */}
-              <ReferenceLine y={memThresh} stroke="#a855f7" strokeDasharray="4 2"
-                label={{ value: "θ_mem", position: "right", fill: "#a855f7", fontSize: 8 }} />
+              <ReferenceLine y={memThresh} stroke="#6452A0" strokeDasharray="4 2"
+                label={{ value: "theta mem", position: "right", fill: "#6452A0", fontSize: 8 }} />
 
               {/* Global innate anomaly score */}
               <Line type="monotone" dataKey="anomaly" name="Innate"
-                stroke="#22d3ee" strokeWidth={1.8} dot={false} />
+                stroke="#C49A30" strokeWidth={1.8} dot={false} />
 
               {/* Per-host drift scores */}
               {hostNames.map((h) => (
@@ -137,7 +137,7 @@ export default function TimelinePanel({ state, meta, currentStep, onStepClick })
                   type="monotone"
                   dataKey={`drift_${h}`}
                   name={`Drift:${h}`}
-                  stroke={HOST_COLORS[h] ?? "#64748b"}
+                  stroke={HOST_COLORS[h] ?? "#807C76"}
                   strokeWidth={1}
                   strokeOpacity={0.55}
                   dot={false}
