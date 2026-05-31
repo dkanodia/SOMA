@@ -78,7 +78,7 @@ _SOMA_NET_CIDR   = os.environ.get("SOMA_NET_CIDR", "172.22.0.")
 
 _WINDOW_SIZE       = int(os.environ.get("WINDOW_SIZE", 60))
 _MIN_WINDOW        = 15   # build 15s baseline before detection starts
-_ANOMALY_THRESHOLD = float(os.environ.get("ANOMALY_THRESHOLD", 0.20))
+_ANOMALY_THRESHOLD = float(os.environ.get("ANOMALY_THRESHOLD", 0.40))
 _INFECTED_DWELL    = int(os.environ.get("INFECTED_DWELL", 3))
 
 # ---------------------------------------------------------------------------
@@ -320,7 +320,7 @@ async def _psutil_loop():
                 _anomaly_streak = 0  # brief spikes (opening app/tab) reset the counter
 
             # Require 4 consecutive seconds above threshold — rules out transient spikes
-            if _anomaly_streak >= 4:
+            if _anomaly_streak >= 6:
                 _anomaly_streak = 0
                 _suspicious_pids = _snapshot_suspicious_pids()
                 print(f"[soma] Sustained anomaly — suspicious PIDs: {_suspicious_pids}")
