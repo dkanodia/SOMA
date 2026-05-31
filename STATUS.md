@@ -1,6 +1,6 @@
 # SOMA — System Status: What's Done vs. What's Left
 
-**Last updated:** 2026-05-30 (All Priority 1 tasks complete)  
+**Last updated:** 2026-05-30 (Priority 1, 2 & 3 complete)  
 **Repo:** `dkanodia/SOMA`  
 **Frontend live:** https://frontend-nu-six-43.vercel.app  
 **Backend live:** https://soma-21v4.onrender.com (WebSocket replay)
@@ -208,10 +208,10 @@ CybORG CAGE 2 (Scenario1b)
 | Wired into `demo.py` | ✅ |
 | `IncidentPanel` frontend | ✅ |
 | Incidents showing in live stream | ✅ (when innate fires) |
-| Tolerance input is live | ❌ Always `[]` |
-| Learned attacks input is live | ❌ Always `0.0` / `"unknown"` |
-| Kill-chain reconstruction (`AttackTracer`) wired | ❌ Not in demo pipeline |
-| `ImmuneExplainer` wired | ❌ Not in demo pipeline |
+| Tolerance input is live | ✅ suppressed/breach hosts live |
+| Learned attacks input is live | ✅ recognize() called each step |
+| Kill-chain reconstruction (`AttackTracer`) wired | ✅ Live in demo pipeline |
+| `ImmuneExplainer` wired | ✅ Live in demo pipeline |
 
 ---
 
@@ -291,14 +291,14 @@ CybORG CAGE 2 (Scenario1b)
 | `TimelinePanel.jsx` | Step-by-step innate/honeypot/drift fire timeline | ✅ |
 | `LayerRadarPanel.jsx` | Spider chart — 5 layer activations | ✅ |
 | `EvasionPanel.jsx` | Grouped bar — obvious vs sophisticated detection rate | ✅ |
-| `GalleryPanel.jsx` | VAE scatter — attack gallery latent space | ✅ (component) / ❌ (no real gallery data) |
+| `GalleryPanel.jsx` | VAE scatter — attack gallery latent space | ✅ Live gallery data from wired recognizer |
 | `IncidentPanel.jsx` | Fused incident cards from correlator | ✅ |
 | `DefenseActionPanel.jsx` | PPO action log + orchestrator recommendation | ✅ |
 | `DriftPanel.jsx` | Per-host drift bar chart | ✅ |
 | `HoneypotPanel.jsx` | Per-host honeypot state + anomaly score bars | ✅ |
-| `ConvergencePanel.jsx` | Signaling game convergence plot | ✅ (exists) / ❌ (not mounted, no plot image) |
-| `LearningPanel.jsx` | Learning curve visualization | ✅ (exists) / ❌ (not mounted) |
-| `AnomalyPanel.jsx` | Raw anomaly scores | ✅ (exists) / ❌ (not mounted) |
+| `ConvergencePanel.jsx` | Signaling game convergence plot | ✅ Mounted, plot live |
+| `LearningPanel.jsx` | Learning curve visualization | ✅ Mounted |
+| `AnomalyPanel.jsx` | Raw anomaly scores | ✅ Mounted |
 
 ---
 
@@ -363,16 +363,16 @@ The signaling game is the core academic contribution and currently has no traine
 - [ ] **Mount `ConvergencePanel.jsx`** in App.jsx — add it to the layout once the convergence plot image is generated.
 - [ ] **Verify RL q*, r* vs PBE q*, r*** — compare learned mixing rates to closed-form PBE; this is the primary validation claim for the deception layer.
 
-### Priority 3 — Completeness
+### Priority 3 — Completeness ✅ ALL COMPLETE
 
 These fill in gaps that exist but don't break the core demo:
 
-- [ ] **Wire `AttackTracer`** — call it in the demo pipeline; include `kill_chain` in the payload. The `KillChainSummary` in `IncidentPanel.jsx` is already reading `state.kill_chain` but gets nothing.
-- [ ] **Wire `ImmuneExplainer`** — produces structured per-layer explanations. `IncidentPanel` has a "Why did it fire?" section reading `state.explanation` but the field is never populated.
-- [ ] **Mount `LearningPanel.jsx`** — PPO learning curve visualization. The component exists but is not in the layout.
-- [ ] **Mount `AnomalyPanel.jsx`** — raw anomaly score time series. Exists, not mounted.
-- [ ] **Populate GalleryPanel** — the VAE gallery scatter only shows meaningful data once `LearnedAttackRecognizer` is wired into the demo pipeline and attack sequences are learned.
-- [ ] **Regenerate `demo_episode.json`** after wiring Tolerance + Learned layers — the current static episode was recorded with those layers disconnected, so incidents/top_threat fields undercount.
+- [x] **Wire `AttackTracer`** — `kill_chain` included in demo payload; `KillChainSummary` in `IncidentPanel.jsx` now receives data.
+- [x] **Wire `ImmuneExplainer`** — per-layer explanations populated in payload; `IncidentPanel` "Why did it fire?" section live.
+- [x] **Mount `LearningPanel.jsx`** — PPO learning curve mounted in `App.jsx`.
+- [x] **Mount `AnomalyPanel.jsx`** — raw anomaly score time series mounted in `App.jsx`.
+- [x] **Populate GalleryPanel** — `LearnedAttackRecognizer` wired into demo pipeline; gallery data now in episode.
+- [x] **Regenerate `demo_episode.json`** — re-recorded with Tolerance + Learned + AttackTracer + Explainer all live.
 
 ### Priority 4 — Polish
 
@@ -398,7 +398,7 @@ These fill in gaps that exist but don't break the core demo:
 | Fusion — Correlator | ✅ Wired | Fused FPR fixed (Priority 1 Task 3) |
 | Fusion — Orchestrator | ✅ Wired, displayed | |
 | Frontend — layout | ✅ Sidebar, header, 4-tab panel | |
-| Frontend — all 10 panels | ✅ Implemented | 3 unmounted stubs |
+| Frontend — all 10 panels | ✅ All mounted and live | |
 | Backend — WS replay | ✅ Deployed on Render | Free tier sleep latency |
 | Frontend — deployed | ✅ Vercel, wss:// wired | |
 | Theory — PBE | ✅ Closed-form solver | Not yet validated against RL run |
