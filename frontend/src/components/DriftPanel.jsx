@@ -20,8 +20,8 @@ const HOST_SHORT = {
   Op_Server0:  "Op",
 };
 
-const COLOR_ALARM  = "#f59e0b";
-const COLOR_NORMAL = "#22d3ee";
+const COLOR_ALARM  = "#B87030";
+const COLOR_NORMAL = "#3A7A58";
 
 function driftDist(centroid) {
   if (!centroid || centroid.length < 2) return 0;
@@ -49,24 +49,22 @@ export default function DriftPanel({ state }) {
 
   return (
     <div className="panel-inner">
-      <h3 className="panel-title">
-        Long-Dwell Drift
+      <div className="panel-header">
+        <span className="panel-title">Long-Dwell Drift</span>
         {anyAlarm && (
-          <span style={{ color: "#f59e0b", marginLeft: 8, fontSize: "0.6rem" }}>
-            ⚠ DRIFT ALARM
-          </span>
+          <span className="panel-tag" style={{ color: "var(--warn)" }}>⚠ ALARM</span>
         )}
-      </h3>
-      <div className="panel-content">
+      </div>
+      <div className="panel-body panel-body--flush">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData} margin={{ top: 4, right: 8, left: -20, bottom: 0 }}>
-            <XAxis dataKey="host" tick={{ fontSize: 10, fill: "#64748b" }} />
-            <YAxis tick={{ fontSize: 10, fill: "#64748b" }} domain={[0, "auto"]} />
+            <XAxis dataKey="host" tick={{ fontSize: 9, fill: "#807C76", fontFamily: "'IBM Plex Mono', monospace" }} />
+            <YAxis tick={{ fontSize: 9, fill: "#807C76", fontFamily: "'IBM Plex Mono', monospace" }} domain={[0, "auto"]} />
             <Tooltip
-              contentStyle={{ background: "#111827", border: "1px solid #1e293b", fontSize: 11 }}
+              contentStyle={{ background: "#171715", border: "1px solid #262624", fontSize: 11, fontFamily: "'IBM Plex Mono', monospace" }}
               formatter={(v) => [v.toFixed(3), "drift dist"]}
             />
-            <ReferenceLine y={1.0} stroke="#f59e0b" strokeDasharray="3 3" />
+            <ReferenceLine y={1.0} stroke="#B87030" strokeDasharray="3 3" />
             <Bar dataKey="dist" radius={[2, 2, 0, 0]}>
               {chartData.map((entry, i) => (
                 <Cell

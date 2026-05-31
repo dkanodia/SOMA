@@ -37,10 +37,10 @@ function CustomTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
   return (
     <div style={{
-      background: "#111827", border: "1px solid #1e293b",
-      padding: "5px 8px", fontSize: 10,
+      background: "#171715", border: "1px solid #262624",
+      padding: "5px 8px", fontSize: 10, fontFamily: "'IBM Plex Mono', monospace",
     }}>
-      <div style={{ color: "#64748b", marginBottom: 3 }}>{label}</div>
+      <div style={{ color: "#807C76", marginBottom: 3 }}>{label}</div>
       {payload.map((p) => (
         <div key={p.dataKey} style={{ color: p.fill }}>
           {p.name}: {(p.value * 100).toFixed(1)}%
@@ -58,23 +58,26 @@ export default function EvasionPanel({ meta }) {
 
   return (
     <div className="panel-inner">
-      <div className="panel-title">Evasion Matrix — Detection Rate</div>
-      <div className="panel-content">
+      <div className="panel-header">
+        <span className="panel-title">Evasion Matrix</span>
+        <span className="panel-tag">detection rate</span>
+      </div>
+      <div className="panel-body panel-body--flush">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} margin={{ top: 8, right: 8, bottom: 4, left: 0 }} barSize={14}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-            <XAxis dataKey="layer" tick={{ fill: "#64748b", fontSize: 9 }} />
+            <CartesianGrid strokeDasharray="3 3" stroke="#1A1A18" />
+            <XAxis dataKey="layer" tick={{ fill: "#807C76", fontSize: 9, fontFamily: "'IBM Plex Mono', monospace" }} />
             <YAxis domain={[0, 1]} tickFormatter={(v) => `${(v * 100).toFixed(0)}%`}
-              tick={{ fill: "#64748b", fontSize: 9 }} width={32} />
+              tick={{ fill: "#807C76", fontSize: 9, fontFamily: "'IBM Plex Mono', monospace" }} width={32} />
             <Tooltip content={<CustomTooltip />} />
             <Legend
-              wrapperStyle={{ fontSize: 9, color: "#64748b" }}
+              wrapperStyle={{ fontSize: 9, color: "#807C76", fontFamily: "'IBM Plex Mono', monospace" }}
               iconSize={8}
             />
-            <ReferenceLine y={0.9} stroke="#22d3ee" strokeDasharray="4 2"
-              label={{ value: "92.7%", position: "right", fill: "#22d3ee", fontSize: 8 }} />
-            <Bar dataKey="obvious"       name="Obvious"       fill="#22d3ee" fillOpacity={0.7} />
-            <Bar dataKey="sophisticated" name="Sophisticated"  fill="#a855f7" fillOpacity={0.7} />
+            <ReferenceLine y={0.9} stroke="#C49A30" strokeDasharray="4 2"
+              label={{ value: "92.7%", position: "right", fill: "#C49A30", fontSize: 8 }} />
+            <Bar dataKey="obvious"       name="Obvious"       fill="#C49A30" fillOpacity={0.65} />
+            <Bar dataKey="sophisticated" name="Sophisticated"  fill="#6452A0" fillOpacity={0.65} />
           </BarChart>
         </ResponsiveContainer>
       </div>

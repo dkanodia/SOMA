@@ -1,13 +1,3 @@
-/**
- * HoneypotPanel.jsx
- *
- * Per-host honeypot activation state.
- * Shows anomaly score bar (0–1) with a threshold marker at 0.7,
- * and a "DECOY ACTIVE" badge when honeypot_flags[host] is true.
- *
- * Note: the heuristic trigger is NOT the signaling game policy.
- * B_lineAgent ignores signals; this is a threshold-based heuristic.
- */
 import React from "react";
 
 const SUSPICION_THRESHOLD = 0.7;
@@ -25,7 +15,9 @@ export default function HoneypotPanel({ state }) {
   if (!state) {
     return (
       <div className="panel-inner">
-        <h3 className="panel-title">Deception / Honeypot</h3>
+        <div className="panel-header">
+          <span className="panel-title">Deception / Honeypot</span>
+        </div>
         <p className="panel-placeholder">Waiting for data…</p>
       </div>
     );
@@ -39,72 +31,71 @@ export default function HoneypotPanel({ state }) {
 
   return (
     <div className="panel-inner">
-      <h3 className="panel-title">
-        Deception / Honeypot
-        {anyActive && (
-          <span style={{ color: "#f59e0b", marginLeft: 8, fontSize: "0.6rem" }}>
-            ⚠ DECOY ACTIVE
-          </span>
-        )}
-      </h3>
+      <div className="panel-header">
+        <span className="panel-title">Deception / Honeypot</span>
+        {anyActive && <span className="panel-tag" style={{ color: "var(--warn)" }}>⚠ DECOY ACTIVE</span>}
+      </div>
 
-      <div className="panel-content" style={{ overflowY: "auto" }}>
+      <div className="panel-body" style={{ overflowY: "auto" }}>
+        {hosts.length === 0 && (
+          <p className="panel-placeholder">No host data</p>
+        )}
         {hosts.map((h) => {
           const score  = scores[h] ?? 0;
           const active = flags[h] ?? false;
           const pct    = Math.min(score * 100, 100);
-          const barColor = active ? "#f59e0b" : score > SUSPICION_THRESHOLD ? "#f59e0b88" : "#22d3ee55";
+          const barColor = active
+            ? "var(--warn)"
+            : score > SUSPICION_THRESHOLD
+              ? "var(--warn-dim)"
+              : "var(--ok-dim)";
 
           return (
             <div
               key={h}
               style={{
-                marginBottom: "0.45rem",
-                padding: "0.3rem 0.4rem",
-                background: "#0f172a",
-                border: "1px solid #1e293b",
-                borderLeft: `3px solid ${active ? "#f59e0b" : "#1e293b"}`,
-                borderRadius: 4,
+                marginBottom: "0.4rem",
+                padding: "6px 10px",
+                background: "var(--panel-2)",
+                borderLeft: `3px solid ${active ? "var(--warn)" : "var(--line)"}`,
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.3rem" }}>
-                <span style={{ fontSize: "0.72rem", color: "#e2e8f0", flex: 1 }}>
+                <span style={{ fontFamily: "var(--font)", fontWeight: 600, fontSize: "0.72rem", color: "var(--fg)", flex: 1 }}>
                   {HOST_LABELS[h] ?? h}
                 </span>
                 {active ? (
                   <span style={{
-                    fontSize: "0.58rem", padding: "1px 5px", borderRadius: 2,
-                    background: "rgba(245,158,11,0.2)", color: "#f59e0b",
-                    fontWeight: "bold", letterSpacing: "0.06em",
+                    fontFamily: "var(--mono)", fontSize: "0.54rem", padding: "1px 5px", borderRadius: 2,
+                    background: "var(--warn-dim)", color: "var(--warn)",
+                    fontWeight: "500", letterSpacing: "0.06em",
                   }}>
-                    DECOY ACTIVE
+                    DECOY
                   </span>
                 ) : (
-                  <span style={{ fontSize: "0.6rem", color: "#475569" }}>inactive</span>
+                  <span style={{ fontFamily: "var(--mono)", fontSize: "0.58rem", color: "var(--fg-3)" }}>inactive</span>
                 )}
               </div>
 
-              {/* Score bar */}
-              <div style={{ position: "relative", height: 6, background: "#1e293b", borderRadius: 3 }}>
+              <div style={{ position: "relative", height: 4, background: "var(--line)", borderRadius: 2 }}>
                 <div style={{
                   position: "absolute", left: 0, top: 0, height: "100%",
-                  width: `${pct}%`, background: barColor, borderRadius: 3,
+                  width: `${pct}%`, background: barColor, borderRadius: 2,
                   transition: "width 0.3s ease",
                 }} />
-                {/* Threshold marker at 70% */}
                 <div style={{
                   position: "absolute", left: `${SUSPICION_THRESHOLD * 100}%`,
                   top: -2, bottom: -2, width: 1,
-                  background: "#f59e0b", opacity: 0.6,
+                  background: "var(--warn)", opacity: 0.5,
                 }} />
               </div>
 
-              <div style={{ display: "flex", justifyContent: "space-between", marginTop: 2 }}>
-                <span style={{ fontSize: "0.58rem", color: "#475569" }}>
-                  score={score.toFixed(3)}
+              <div style={{ display: "flex", justifyContent: "space-between", marginTop: 3 }}>
+                <span style={{ fontFamily: "var(--mono)", fontSize: "0.56rem", color: "var(--fg-3)" }}>
+                  {score.toFixed(3)}
                 </span>
-                <span style={{ fontSize: "0.58rem", color: "#475569" }}>
-                  thresh={SUSPICION_THRESHOLD}
+                <span style={{ fontFamily: "var(--mono)", fontSize: "0.56rem", color: "var(--fg-3)" }}>
+                  thresh {SUSPICION_THRESHOLD}
                 </span>
               </div>
             </div>
@@ -113,7 +104,7 @@ export default function HoneypotPanel({ state }) {
       </div>
 
       {note && (
-        <div style={{ fontSize: "0.58rem", color: "#475569", marginTop: "0.25rem", flexShrink: 0 }}>
+        <div style={{ fontFamily: "var(--mono)", fontSize: "0.56rem", color: "var(--fg-3)", padding: "4px 12px 6px", flexShrink: 0 }}>
           ⓘ {note}
         </div>
       )}

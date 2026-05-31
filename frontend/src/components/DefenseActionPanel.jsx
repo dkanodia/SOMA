@@ -19,10 +19,10 @@ const BLUE_ACTIONS = [
 ];
 
 const ACTION_COLORS = {
-  Remove:  "#ef4444",
-  Analyze: "#f59e0b",
-  Restore: "#a855f7",
-  Monitor: "#22d3ee",
+  Remove:  "#A83D2E",
+  Analyze: "#B87030",
+  Restore: "#6452A0",
+  Monitor: "#3E3D3A",
 };
 
 function actionColor(name) {
@@ -59,36 +59,37 @@ export default function DefenseActionPanel({ state, meta, step }) {
   }
 
   return (
-    <div className="panel-inner" style={{ gap: "0.4rem" }}>
-      <h3 className="panel-title">Defense Actions — PPO + Orchestrator</h3>
+    <div className="panel-inner">
+      <div className="panel-header">
+        <span className="panel-title">Defense Actions</span>
+        <span className="panel-tag">PPO + Orchestrator</span>
+      </div>
 
       {/* Orchestrator recommendation */}
       {orch && (
         <div style={{
-          background: "#0f172a",
-          border: "1px solid #1e293b",
+          background: "var(--panel-2)",
           borderLeft: `3px solid ${actionColor(orch.action_name)}`,
-          borderRadius: 4,
-          padding: "0.35rem 0.5rem",
+          padding: "6px 12px",
           flexShrink: 0,
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.2rem" }}>
-            <span style={{ fontSize: "0.6rem", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+            <span style={{ fontSize: "0.56rem", color: "var(--fg-3)", textTransform: "uppercase", letterSpacing: "0.1em", fontFamily: "var(--mono)" }}>
               Orchestrator
             </span>
-            <span style={{ fontWeight: "bold", color: actionColor(orch.action_name), fontSize: "0.78rem" }}>
+            <span style={{ fontFamily: "var(--font)", fontWeight: "700", color: actionColor(orch.action_name), fontSize: "0.78rem" }}>
               {orch.action_name}
             </span>
             <span className={`inc-conf ${orch.confidence}`}>{orch.confidence}</span>
           </div>
-          <div style={{ fontSize: "0.62rem", color: "#94a3b8" }}>{orch.reason}</div>
+          <div style={{ fontSize: "0.6rem", color: "var(--fg-2)", fontFamily: "var(--mono)", lineHeight: 1.4 }}>{orch.reason}</div>
         </div>
       )}
 
       {/* PPO action log */}
       <div
         ref={logRef}
-        style={{ flex: 1, overflowY: "auto", minHeight: 0 }}
+        style={{ flex: 1, overflowY: "auto", minHeight: 0, padding: "4px 12px" }}
       >
         {logSteps.length === 0 ? (
           <p className="panel-placeholder">No steps yet…</p>
@@ -104,25 +105,26 @@ export default function DefenseActionPanel({ state, meta, step }) {
                   display: "flex",
                   alignItems: "center",
                   gap: "0.4rem",
-                  padding: "2px 4px",
-                  borderBottom: "1px solid #1e293b",
-                  opacity: i === 0 ? 1 : 0.65 + (0.35 * (logSteps.length - i) / logSteps.length),
+                  padding: "3px 0",
+                  borderBottom: "1px solid var(--line-dim)",
+                  opacity: i === 0 ? 1 : Math.max(0.35, 1 - i * 0.04),
                 }}
               >
-                <span style={{ fontSize: "0.6rem", color: "#475569", width: 28, flexShrink: 0 }}>
+                <span style={{ fontSize: "0.58rem", color: "var(--fg-3)", fontFamily: "var(--mono)", width: 26, flexShrink: 0 }}>
                   {idx}
                 </span>
                 <span
                   style={{
                     fontSize: "0.68rem",
-                    color,
-                    fontWeight: i === 0 ? "bold" : "normal",
+                    fontFamily: "var(--mono)",
+                    color: i === 0 ? color : "var(--fg-2)",
+                    fontWeight: i === 0 ? "500" : "300",
                   }}
                 >
                   {name}
                 </span>
                 {s.reward !== undefined && (
-                  <span style={{ fontSize: "0.6rem", color: "#475569", marginLeft: "auto" }}>
+                  <span style={{ fontSize: "0.58rem", color: "var(--fg-3)", fontFamily: "var(--mono)", marginLeft: "auto" }}>
                     r={s.reward.toFixed(1)}
                   </span>
                 )}

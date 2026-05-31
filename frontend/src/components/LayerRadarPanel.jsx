@@ -51,11 +51,11 @@ function CustomTooltip({ active, payload }) {
   if (!d) return null;
   return (
     <div style={{
-      background: "#111827", border: "1px solid #1e293b",
-      padding: "4px 8px", fontSize: 10,
+      background: "#171715", border: "1px solid #262624",
+      padding: "4px 8px", fontSize: 10, fontFamily: "'IBM Plex Mono', monospace",
     }}>
-      <span style={{ color: "#22d3ee" }}>{d.axis}: </span>
-      <span style={{ color: "#e2e8f0" }}>{(d.value * 100).toFixed(0)}%</span>
+      <span style={{ color: "#C49A30" }}>{d.axis}: </span>
+      <span style={{ color: "#DEDAD3" }}>{(d.value * 100).toFixed(0)}%</span>
     </div>
   );
 }
@@ -65,29 +65,32 @@ export default function LayerRadarPanel({ state, meta }) {
 
   return (
     <div className="panel-inner">
-      <div className="panel-title">Layer Activation</div>
-      <div className="panel-content">
+      <div className="panel-header">
+        <span className="panel-title">Layer Activation</span>
+        <span className="panel-tag">radar</span>
+      </div>
+      <div className="panel-body panel-body--flush">
         {data.length === 0 ? (
           <p className="panel-placeholder">Waiting for data…</p>
         ) : (
           <ResponsiveContainer width="100%" height="100%">
             <RadarChart data={data} margin={{ top: 10, right: 20, bottom: 10, left: 20 }}>
-              <PolarGrid stroke="#1e293b" />
+              <PolarGrid stroke="#262624" />
               <PolarAngleAxis
                 dataKey="axis"
-                tick={{ fill: "#64748b", fontSize: 9 }}
+                tick={{ fill: "#807C76", fontSize: 9, fontFamily: "'IBM Plex Mono', monospace" }}
               />
               <PolarRadiusAxis
                 angle={90} domain={[0, 1]} tickCount={3}
-                tick={{ fill: "#1e293b", fontSize: 0 }}
+                tick={{ fill: "#1A1A18", fontSize: 0 }}
                 axisLine={false}
               />
               <Radar
                 name="Activation"
                 dataKey="value"
-                stroke="#22d3ee"
-                fill="#22d3ee"
-                fillOpacity={0.25}
+                stroke="#C49A30"
+                fill="#C49A30"
+                fillOpacity={0.18}
                 strokeWidth={1.5}
               />
               <Tooltip content={<CustomTooltip />} />
