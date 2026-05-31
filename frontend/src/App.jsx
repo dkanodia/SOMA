@@ -648,7 +648,7 @@ export default function App() {
             )}
 
             {/* Full-width: honeypot + reset */}
-            {(honeypotMetrics || somaState === "PURGED") && (
+            {(honeypotMetrics || somaState === "CONTAINED" || somaState === "PURGED") && (
               <div className="live-section--full">
                 <HoneypotPanel metrics={honeypotMetrics} port={honeypotPort} onPurge={handlePurge} />
                 {somaState === "PURGED" && (
