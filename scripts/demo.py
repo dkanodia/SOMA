@@ -118,6 +118,8 @@ def run_episode_steps(innate, ppo, detector, tolerance=None, learned=None, n_ste
     import math
     from soma.envs.cyborg_wrapper          import CybORGWrapper, HOST_NAMES, cyborg_obs_to_30dim
     from soma.layers.deception             import heuristic_honeypot_trigger
+    from soma.layers.attack_tracer         import AttackTracer
+    from soma.layers.explainer             import ImmuneExplainer
     from soma.fusion.network_correlator    import NetworkImmuneCorrelator
     from soma.fusion.response_orchestrator import ResponseOrchestrator
 
@@ -128,6 +130,8 @@ def run_episode_steps(innate, ppo, detector, tolerance=None, learned=None, n_ste
     correlator   = NetworkImmuneCorrelator()
     orchestrator = ResponseOrchestrator()
     obs_buffer   = []    # rolling window for learned-attack recognition
+    tracer       = AttackTracer()
+    explainer    = ImmuneExplainer()
 
     for step in range(n_steps):
         action, _                       = ppo.predict(obs, deterministic=True)
@@ -179,6 +183,28 @@ def run_episode_steps(innate, ppo, detector, tolerance=None, learned=None, n_ste
             if centroid_pos[h] else 0.0
             for h in HOST_NAMES
         }
+
+        # Kill-chain reconstruction
+        anomalous_hosts = (
+            {h for h, s in anomaly_scores.items() if s > innate.threshold_}
+            | {h for h, alarm in drift_alarms.items() if alarm}
+        )
+        tracer.update(step, anomalous_hosts)
+
+        # Per-layer explanations
+        explanation = explainer.explain_step(
+            obs=obs,
+            host_innate_scores=anomaly_scores,
+            innate_threshold=float(innate.threshold_),
+            drift_scores=memory_scores,
+            memory_threshold=1.0,
+            tolerance_suppressed=[],
+            tolerance_breached=[],
+            la_conf=0.0,
+            la_type="unknown",
+            gallery_size=0,
+        )
+
         incidents = correlator.update_step(
             obs=obs,
             innate_score=max(anomaly_scores.values()) if anomaly_scores else 0.0,
@@ -265,6 +291,12 @@ def run_episode_steps(innate, ppo, detector, tolerance=None, learned=None, n_ste
                 "reason":             decision.reason,
                 "incident_score":     decision.incident_score,
             },
+
+            # Kill-chain reconstruction (AttackTracer)
+            "kill_chain": tracer.to_json(),
+
+            # Per-layer explanations (ImmuneExplainer)
+            "explanation": explanation,
         }
 
         yield payload
@@ -314,6 +346,46 @@ async def main_server():
 
 
 # ---------------------------------------------------------------------------
+# Learning curve extraction
+# ---------------------------------------------------------------------------
+
+def _load_learning_curve() -> list:
+    """
+    Read PPO training metrics from tb_logs (tensorboard event files).
+    Returns [{step, loss}] sorted by step, downsampled to ≤100 points.
+    Empty list if tensorboard is not installed or no logs found.
+    """
+    try:
+        from tensorboard.backend.event_processing.event_accumulator import EventAccumulator
+    except ImportError:
+        return []
+
+    import glob
+    log_dirs = sorted(glob.glob(str(Path("tb_logs") / "PPO*")))
+    if not log_dirs:
+        return []
+
+    loss_pts: dict = {}
+    for run in log_dirs:
+        ea = EventAccumulator(run, size_guidance={"scalars": 0})
+        ea.Reload()
+        tags = ea.Tags().get("scalars", [])
+        if "train/loss" in tags:
+            for e in ea.Scalars("train/loss"):
+                loss_pts[int(e.step)] = round(float(e.value), 2)
+
+    all_steps = sorted(loss_pts)
+    if not all_steps:
+        return []
+
+    stride = max(1, len(all_steps) // 100)
+    return [
+        {"step": s, "loss": loss_pts[s]}
+        for s in all_steps[::stride]
+    ]
+
+
+# ---------------------------------------------------------------------------
 # Static fallback export
 # ---------------------------------------------------------------------------
 
@@ -330,11 +402,16 @@ def export_static(
     steps = list(run_episode_steps(innate, ppo, detector, tolerance, learned, n_steps=n_steps))
 
     from soma.envs.cyborg_wrapper import HOST_NAMES
+    print("  Extracting learning curve from tb_logs…")
+    learning_curve = _load_learning_curve()
+    print(f"  Learning curve: {len(learning_curve)} points")
+
     episode = {
         "meta": {
             "n_steps":         len(steps),
             "host_names":      HOST_NAMES,
             "innate_threshold": float(innate.threshold_),
+            "learning_curve":  learning_curve,
             "note":            "signaling game convergence panel is separate static image",
         },
         "steps": steps,
