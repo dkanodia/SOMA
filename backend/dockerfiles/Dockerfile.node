@@ -14,13 +14,18 @@ RUN apt-get update && apt-get install -y \
 
 RUN pip3 install --no-cache-dir websockets
 
-# Demo user with intentionally weak credentials
 RUN useradd -m -s /bin/bash soma && echo 'soma:soma123' | chpasswd
-RUN mkdir -p /run/sshd
+RUN mkdir -p /run/sshd /home/soma/.ssh
+
+# Bake SSH key pair for cross-container lateral movement
+COPY configs/soma_id_rsa     /home/soma/.ssh/id_rsa
+COPY configs/soma_id_rsa.pub /home/soma/.ssh/authorized_keys
+RUN chmod 700 /home/soma/.ssh && chmod 600 /home/soma/.ssh/id_rsa && \
+    chmod 644 /home/soma/.ssh/authorized_keys && \
+    chown -R soma:soma /home/soma/.ssh
 
 COPY configs/sshd_config /etc/ssh/sshd_config
 COPY soma_agent.py /soma_agent.py
-COPY fake_data/user0/ /home/soma/documents/
 COPY dockerfiles/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 

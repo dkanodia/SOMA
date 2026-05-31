@@ -9,19 +9,25 @@ RUN apt-get update && apt-get install -y \
     procps \
     net-tools \
     curl \
+    sshpass \
     vsftpd \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install --no-cache-dir websockets
 
 RUN useradd -m -s /bin/bash soma && echo 'soma:soma123' | chpasswd
-RUN mkdir -p /run/sshd /srv/ftp/public
+RUN mkdir -p /run/sshd /srv/ftp/public /home/soma/.ssh
 RUN chown -R nobody:nogroup /srv/ftp
+
+COPY configs/soma_id_rsa     /home/soma/.ssh/id_rsa
+COPY configs/soma_id_rsa.pub /home/soma/.ssh/authorized_keys
+RUN chmod 700 /home/soma/.ssh && chmod 600 /home/soma/.ssh/id_rsa && \
+    chmod 644 /home/soma/.ssh/authorized_keys && \
+    chown -R soma:soma /home/soma/.ssh
 
 COPY configs/sshd_config /etc/ssh/sshd_config
 COPY configs/vsftpd.conf /etc/vsftpd.conf
 COPY soma_agent.py /soma_agent.py
-COPY fake_data/op_server0/ /srv/ftp/public/
 COPY dockerfiles/entrypoint_op_server0.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 

