@@ -361,7 +361,6 @@ async def _isolate():
         subprocess.Popen([
             "docker", "run", "-d", "--name", "soma_honeypot",
             "-p", "8766:8766",
-            "--add-host=host.docker.internal:host-gateway",
             "soma_honeypot_image",
         ])
     except Exception as e:
@@ -457,7 +456,7 @@ async def _process_request(connection, request):
 # ---------------------------------------------------------------------------
 
 async def _handle_client(websocket):
-    global _virus_ws, _virus_worker_pids
+    global _virus_ws, _virus_worker_pids, _infected_at
 
     path = websocket.request.path
 

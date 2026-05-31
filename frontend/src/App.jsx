@@ -401,6 +401,12 @@ export default function App() {
           </section>
 
           <HoneypotPanel metrics={honeypotMetrics} onPurge={handlePurge} />
+
+          {somaState === "PURGED" && (
+            <button className="reset-btn" onClick={handleReset}>
+              Reset Demo
+            </button>
+          )}
         </div>
 
         <StatusBar
