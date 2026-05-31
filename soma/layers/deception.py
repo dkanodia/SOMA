@@ -97,18 +97,36 @@ def evaluate_mixing_rates(
 
 def run_convergence_study(
     V: float = 10.0, C: float = 3.0, L: float = 5.0, p_real: float = 0.4,
+    n_checkpoints: int = 10,
 ) -> dict:
     """
     Full κ sweep: train RL policy per κ, compare to PBE.
-    Returns dict of {kappa: {"learned_q", "learned_r", "pbe": PBEResult}}.
-    Expected total compute: ~90 minutes on laptop GPU.
+    Trains in n_checkpoints stages to collect learned_r_history for convergence plot.
+    Returns dict of {kappa: {"learned_q", "learned_r", "learned_r_history", "pbe", "model"}}.
+    Expected total compute: ~90 minutes on laptop CPU.
     """
     results = {}
     for k in KAPPA_VALUES:
-        model  = train_signal_policy(k)
+        env_fn = lambda kappa=k: SignalingGameEnv(kappa=kappa)
+        env    = DummyVecEnv([env_fn])
+        model  = PPO("MlpPolicy", env, verbose=0, **SIGNAL_HYPERPARAMS)
+
+        steps_per = SIGNAL_TOTAL_STEPS // n_checkpoints
+        r_history = []
+        for _ in range(n_checkpoints):
+            model.learn(total_timesteps=steps_per, reset_num_timesteps=False)
+            _, r_ckpt = evaluate_mixing_rates(model, k)
+            r_history.append(r_ckpt)
+
         lq, lr = evaluate_mixing_rates(model, k, p_real=p_real)
         pbe    = compute_pbe(p_real, V, C, L, k)
-        results[k] = {"learned_q": lq, "learned_r": lr, "pbe": pbe, "model": model}
+        results[k] = {
+            "learned_q": lq,
+            "learned_r": lr,
+            "learned_r_history": r_history,
+            "pbe": pbe,
+            "model": model,
+        }
         print(
             f"κ={k:.1f}:  learned q={lq:.3f} (PBE {pbe.q_star:.3f})"
             f"  learned r={lr:.3f} (PBE {pbe.r_star:.3f})"

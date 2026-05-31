@@ -150,7 +150,7 @@ function ResponseApproval({ state, selectedHost }) {
           <span>Response approval</span>
           <strong>{actionLabel(actionName)}</strong>
         </div>
-        <span className={`approval-badge ${isRemove ? "danger" : "safe"}`}>
+        <span className={`approval-badge ${isRemove ? "danger" : ""}`}>
           {isRemove ? "Needs admin approval" : "Auto-safe"}
         </span>
       </div>
@@ -241,13 +241,13 @@ function EvidenceTabs({ state, meta, step, setStep }) {
     <section className="panel evidence-panel">
       <div className="tab-strip">
         {[
-          ["timeline", "Timeline"],
+          ["timeline",  "Timeline"],
           ["incidents", "Incidents"],
-          ["actions", "Actions"],
-          ["drift", "Drift"],
-          ["decoys", "Decoys"],
-          ["layers", "Layers"],
-          ["evasion", "Evasion"],
+          ["actions",   "Actions"],
+          ["drift",     "Drift"],
+          ["decoys",    "Decoys"],
+          ["layers",    "Layers"],
+          ["evasion",   "Evasion"],
         ].map(([id, label]) => (
           <button key={id} className={tab === id ? "active" : ""} onClick={() => setTab(id)}>
             {label}
@@ -255,13 +255,13 @@ function EvidenceTabs({ state, meta, step, setStep }) {
         ))}
       </div>
       <div className="evidence-body">
-        {tab === "timeline" && <TimelinePanel state={state} meta={meta} currentStep={step} onStepClick={setStep} />}
+        {tab === "timeline"  && <TimelinePanel state={state} meta={meta} currentStep={step} onStepClick={setStep} />}
         {tab === "incidents" && <IncidentPanel state={state} step={step} />}
-        {tab === "actions" && <DefenseActionPanel state={state} meta={meta} step={step} />}
-        {tab === "drift" && <DriftPanel state={state} />}
-        {tab === "decoys" && <HoneypotPanel state={state} />}
-        {tab === "layers" && <LayerRadarPanel state={state} meta={meta} layerVisible={{}} />}
-        {tab === "evasion" && <EvasionPanel meta={meta} />}
+        {tab === "actions"   && <DefenseActionPanel state={state} meta={meta} step={step} />}
+        {tab === "drift"     && <DriftPanel state={state} />}
+        {tab === "decoys"    && <HoneypotPanel state={state} />}
+        {tab === "layers"    && <LayerRadarPanel state={state} meta={meta} />}
+        {tab === "evasion"   && <EvasionPanel meta={meta} />}
       </div>
     </section>
   );
@@ -284,10 +284,10 @@ export default function App() {
     : "Unclassified";
 
   const summary = useMemo(() => [
-    { label: "Phase", value: currentPhase },
-    { label: "Infected", value: infectedCount },
-    { label: "Open incidents", value: incidentCount },
-    { label: "Signature", value: learnedType },
+    { label: "Phase",         value: currentPhase },
+    { label: "Infected",      value: infectedCount },
+    { label: "Open incidents",value: incidentCount },
+    { label: "Signature",     value: learnedType },
   ], [currentPhase, infectedCount, incidentCount, learnedType]);
 
   return (
