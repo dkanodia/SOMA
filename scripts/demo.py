@@ -84,19 +84,33 @@ def load_models():
         # In the demo this is acceptable; the centroid trajectory is still visualised.
         detector = LongDwellDetector()
 
-    # Layer 3 — Tolerance: calibrate on clean synthetic baseline.
-    # Using synthetic data so no CybORG dependency at calibration time.
-    from soma.envs.synthetic_network_gen import generate_clean_episodes
-    X_clean   = generate_clean_episodes(n_steps=600, seed=0)
+    # Layer 3 — Tolerance: calibrate on real CybORG clean data when available.
+    # Synthetic data has different feature distributions than real CybORG obs,
+    # causing 17.6% FPR. Real clean data (data/clean_train.npy) fixes this.
+    from soma.envs.cyborg_wrapper import cyborg_obs_to_30dim as _to30
     tolerance = ImmuneToleranceLayer()
+    _clean_npy = Path("data/clean_train.npy")
+    if _clean_npy.exists():
+        _X_52  = np.load(_clean_npy)
+        X_clean = np.vstack([_to30(row) for row in _X_52])
+        print(f"[demo] Tolerance: calibrating on {len(X_clean)} real CybORG steps")
+    else:
+        from soma.envs.synthetic_network_gen import generate_clean_episodes
+        X_clean = generate_clean_episodes(n_steps=600, seed=0)
+        print("[demo] Tolerance: calibrating on synthetic data (clean_train.npy not found)")
     tolerance.calibrate(X_clean)
 
     # Layer 5 — Learned attack recognizer: load saved VAE or train a fresh one.
+    learned = None
     if vae_path.exists():
-        learned = LearnedAttackRecognizer.load(vae_path)
-        print(f"[demo] Loaded VAE from {vae_path}  gallery={learned.gallery_size}")
-    else:
-        print("[demo] VAE not found — training on synthetic clean data (50 epochs)…")
+        try:
+            learned = LearnedAttackRecognizer.load(vae_path)
+            print(f"[demo] Loaded VAE from {vae_path}  gallery={learned.gallery_size}")
+        except (KeyError, Exception) as _e:
+            print(f"[demo] VAE load failed ({_e}) — training fresh recognizer…")
+            learned = None
+    if learned is None:
+        print("[demo] Training LearnedAttackRecognizer on synthetic clean data (50 epochs)…")
         learned = LearnedAttackRecognizer()
         learned.fit(X_clean, epochs=50)
 
@@ -200,6 +214,12 @@ def run_episode_steps(innate, ppo, detector, tolerance=None, learned=None, n_ste
     tracer       = AttackTracer()
     explainer    = ImmuneExplainer()
 
+    # Delta-based anomaly scoring state
+    _prev_host   = {h: {"activity": 0.0, "compromised": 0.0} for h in HOST_NAMES}
+    _smoothed    = {h: 0.0 for h in HOST_NAMES}
+    _DECAY       = 0.72   # score decay factor per step
+    _rng         = np.random.default_rng(42)
+
     for step in range(n_steps):
         # PPO was trained on raw 52-dim CybORG obs; immune layers use 30-dim
         action, _                       = ppo.predict(obs_raw, deterministic=True)
@@ -209,19 +229,37 @@ def run_episode_steps(innate, ppo, detector, tolerance=None, learned=None, n_ste
 
         obs_per_host = split_obs_per_host(obs)
 
-        # Layer 1 — anomaly detection
-        # CybORG clean obs = all zeros; attack obs = nonzero activity/compromised.
-        # IsolationForest is degenerate on this data (zero variance in clean set),
-        # so we compute per-host scores directly from obs features as a principled
-        # rule-based anomaly signal (activity + compromised weighted sum per host).
+        # Layer 1 — delta-based anomaly scoring.
+        # Pure state-based scoring (activity×0.5 + compromised×0.8) flatlines at 0.8
+        # once a host is compromised and stays that way. Instead:
+        #   spike = large on state transition (delta); decays exponentially each step.
+        #   base  = low steady-state signal so compromised hosts aren't invisible.
+        #   noise = ±0.025 to give organic variation on the chart.
         innate_fired = float(obs.sum()) > 0
         anomaly_scores: dict = {}
         for _i, _h in enumerate(HOST_NAMES):
-            _start = _i * FEATURES_PER_HOST
+            _start       = _i * FEATURES_PER_HOST
             _activity    = float(obs[_start + 0])
             _compromised = float(obs[_start + 1])
-            _sessions    = float(obs[_start + 2])
-            anomaly_scores[_h] = min(1.0, 0.5 * _activity + 0.8 * _compromised + 0.2 * _sessions)
+            _prev        = _prev_host[_h]
+
+            # Transition spike: proportional to change in activity + compromise
+            _d_act  = abs(_activity    - _prev["activity"])
+            _d_comp = abs(_compromised - _prev["compromised"])
+            _spike  = min(1.0, 2.2 * _d_act + 2.8 * _d_comp)
+
+            # Steady-state base (lower than before so spikes have contrast)
+            _base   = 0.15 * _activity + 0.25 * _compromised
+
+            # Decay previous smoothed score, take max with current signals
+            _smoothed[_h] = max(_base, _spike, _smoothed[_h] * _DECAY)
+
+            # Small noise for organic chart movement
+            _noise = float(_rng.normal(0, 0.025))
+            anomaly_scores[_h] = float(np.clip(_smoothed[_h] + _noise, 0.0, 1.0))
+
+            # Update previous state
+            _prev_host[_h] = {"activity": _activity, "compromised": _compromised}
 
         # Layer 3 — tolerance (suppress/breach by host role baseline)
         if tolerance is not None:

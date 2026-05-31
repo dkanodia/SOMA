@@ -31,7 +31,7 @@ HOST_NAMES = ["User0", "User1", "User2", "Enterprise0", "Enterprise1", "Op_Serve
 LAYER_WEIGHTS = {
     "innate":           0.30,
     "memory":           0.30,
-    "tolerance_breach": 0.20,
+    "tolerance_breach": 0.05,
     "learned_attacks":  0.20,
 }
 

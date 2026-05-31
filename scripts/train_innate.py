@@ -130,6 +130,41 @@ def _train_vae_benchmark(X_train: np.ndarray, X_val: np.ndarray, fpr_target: flo
 
 
 # ---------------------------------------------------------------------------
+# Drift detector training
+# ---------------------------------------------------------------------------
+
+def train_drift_detector(
+    data_path: Path = Path("data/clean_train.npy"),
+    save_path: Path = Path("models/innate/drift_detector.joblib"),
+    fpr_target: float = 0.001,
+) -> None:
+    from soma.layers.suppressor import LongDwellDetector
+    from soma.envs.cyborg_wrapper import cyborg_obs_to_30dim, HOST_NAMES, FEATURES_PER_HOST
+
+    print(f"\n[Drift] Loading clean data from {data_path}...")
+    X_52 = np.load(data_path)
+    print(f"  Raw data: {X_52.shape}")
+
+    X_30 = np.vstack([cyborg_obs_to_30dim(row) for row in X_52])
+    print(f"  Converted to 30-dim: {X_30.shape}")
+
+    clean_histories = {}
+    for i, host in enumerate(HOST_NAMES):
+        start = i * FEATURES_PER_HOST
+        clean_histories[host] = [X_30[t, start:start + FEATURES_PER_HOST]
+                                  for t in range(len(X_30))]
+    print(f"  Per-host history: {len(clean_histories)} hosts x {len(X_30)} steps")
+
+    detector = LongDwellDetector(fpr_target=fpr_target)
+    threshold = detector.calibrate_threshold(clean_histories, fpr_target=fpr_target)
+    print(f"  Calibrated threshold: {threshold:.6f}  (FPR target {fpr_target:.1%})")
+
+    save_path.parent.mkdir(parents=True, exist_ok=True)
+    detector.save(save_path)
+    print(f"  Saved -> {save_path}")
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
@@ -147,6 +182,8 @@ def main():
                         help="Also train VAE and compare TPR at fpr_target")
     parser.add_argument("--skip-collect", action="store_true",
                         help="Reuse data/clean_train.npy and data/clean_val.npy if they exist")
+    parser.add_argument("--drift", action="store_true",
+                        help="Also train and save the drift detector (LongDwellDetector)")
     args = parser.parse_args()
 
     MODELS_DIR.mkdir(parents=True, exist_ok=True)
@@ -294,6 +331,12 @@ def main():
           f"FPR={iso_fpr_measured:.4f} (target {args.fpr_target:.1%})")
     print("  Next: python scripts/train_adaptive.py")
     print("=" * 60)
+
+    if args.drift:
+        print("\n" + "=" * 60)
+        print("SOMA Layer 4 -- Drift Detector Training")
+        print("=" * 60)
+        train_drift_detector()
 
 
 if __name__ == "__main__":
