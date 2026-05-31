@@ -71,11 +71,18 @@ class InnateImmunityLayer:
         self._fitted        = False
 
     # ------------------------------------------------------------------
-    def fit(self, X_clean: np.ndarray) -> "InnateImmunityLayer":
+    def fit(self, X_clean: np.ndarray, jitter: float = 0.0) -> "InnateImmunityLayer":
         """
         Train on clean network observations.
         X_clean: shape (n, 30) — concatenated host features.
+
+        jitter: std of Gaussian noise added before fitting. Use 1e-4 on
+        CybORG clean data, which is near-zero-variance — without jitter the
+        Isolation Forest cannot find meaningful splits and scores degenerate.
         """
+        if jitter > 0.0:
+            rng = np.random.default_rng(42)
+            X_clean = X_clean + rng.normal(0, jitter, X_clean.shape).astype(X_clean.dtype)
         self._scaler.fit(X_clean)
         X_s = self._scaler.transform(X_clean)
         self._model.fit(X_s)

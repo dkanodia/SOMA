@@ -10,6 +10,7 @@ import EvasionPanel       from "./components/EvasionPanel";
 import ConvergencePanel   from "./components/ConvergencePanel";
 import LearningPanel      from "./components/LearningPanel";
 import AnomalyPanel       from "./components/AnomalyPanel";
+import TolerancePanel     from "./components/TolerancePanel";
 import useWebSocket       from "./hooks/useWebSocket";
 import ErrorBoundary      from "./components/ErrorBoundary";
 import "./styles/index.css";
@@ -393,6 +394,7 @@ function EvidenceTabs({ state, meta, step, setStep }) {
           ["evasion",     "Evasion"],
           ["convergence", "Signal Game"],
           ["anomaly",     "Anomaly"],
+          ["tolerance",   "Tolerance"],
           ["learning",    "Learning"],
         ].map(([id, label]) => (
           <button key={id} className={tab === id ? "active" : ""} onClick={() => setTab(id)}>
@@ -411,6 +413,7 @@ function EvidenceTabs({ state, meta, step, setStep }) {
           {tab === "evasion"     && <EvasionPanel meta={meta} />}
           {tab === "convergence" && <ConvergencePanel />}
           {tab === "anomaly"     && <AnomalyPanel meta={meta} step={step} />}
+          {tab === "tolerance"   && <TolerancePanel state={state} meta={meta} />}
           {tab === "learning"    && <LearningPanel meta={meta} />}
         </ErrorBoundary>
       </div>

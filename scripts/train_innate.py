@@ -223,7 +223,7 @@ def main():
     from soma.layers.innate import InnateImmunityLayer
 
     iso = InnateImmunityLayer(n_estimators=200, fpr_target=args.fpr_target)
-    iso.fit(X_train)
+    iso.fit(X_train, jitter=1e-4)  # jitter breaks zero-variance ties in CybORG clean data
 
     # ------------------------------------------------------------------
     # Step 3 — Calibrate threshold on clean val data

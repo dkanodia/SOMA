@@ -1,6 +1,6 @@
 # SOMA — System Status: What's Done vs. What's Left
 
-**Last updated:** 2026-05-30 (Priority B complete: PBE wired to AdaptiveDeceptionController, evaluation report updated)  
+**Last updated:** 2026-05-30 (Priority C complete: IF jitter fix, TolerancePanel, real CybORG attack gallery)  
 **Repo:** `dkanodia/SOMA`  
 **Frontend live:** https://frontend-nu-six-43.vercel.app  
 **Backend live:** https://soma-21v4.onrender.com (WebSocket replay)
@@ -297,6 +297,7 @@ CybORG CAGE 2 (Scenario1b)
 | `ConvergencePanel.jsx` | Signaling game convergence plot | ✅ Mounted, plot live |
 | `LearningPanel.jsx` | Learning curve visualization | ✅ Mounted |
 | `AnomalyPanel.jsx` | Raw anomaly scores | ✅ Mounted |
+| `TolerancePanel.jsx` | Per-host tolerance state (BREACHED/SUPPRESSED/NORMAL) + history area chart | ✅ Mounted |
 
 ---
 
@@ -435,20 +436,23 @@ Everything below is outstanding — not yet implemented or still producing incor
 
 ### Priority C — Medium (Accuracy improvements, no live-data blockers)
 
-- [ ] **Fix IsolationForest for zero-variance CybORG clean data**
-  - CybORG clean observations have near-zero variance across episodes → IsolationForest trees assign near-identical anomaly scores to all inputs → degenerate detector.
-  - Current workaround: rule-based scoring (activity×0.5 + compromised×0.8 + sessions×0.2) is used instead. The IsolationForest model is saved but not the active scorer.
-  - **Fix options:** (a) Add small Gaussian noise during training: `X_train += np.random.normal(0, 1e-4, X_train.shape)` before calling `iso.fit()`; (b) Use `max_features=0.8` and `bootstrap=True` in the IF constructor to break ties; (c) Accept the rule-based fallback as permanent and document it clearly.
+- [x] **Fix IsolationForest for zero-variance CybORG clean data**
+  - Added `jitter: float = 0.0` parameter to `InnateImmunityLayer.fit()`. When `jitter=1e-4`, Gaussian noise is added to break zero-variance ties before fitting.
+  - Updated `train_innate.py` to call `iso.fit(X_train, jitter=1e-4)`.
+  - Re-trained on cached `data/clean_train.npy` (`--skip-collect`): threshold=0.3568, clean→CLEAN, anomalous→ANOMALOUS ⚠. Per-host anomaly scores now vary meaningfully across hosts.
 
-- [ ] **Add Layer 3a (Tolerance) frontend panel**
-  - No dedicated visualization exists for the tolerance layer. Only a status badge appears in `ImmuneResponsePanel`.
-  - **Fix:** Create `frontend/src/components/TolerancePanel.jsx` — a per-host bar chart showing the current z-score vs. the suppress_sigma (1.5) and breach_sigma (3.0) thresholds. Wire the `tolerance_suppressed` and `tolerance_breached` arrays from the WebSocket payload. Mount in `App.jsx`.
+- [x] **Add Layer 3a (Tolerance) frontend panel**
+  - Created `frontend/src/components/TolerancePanel.jsx` — per-host status bar (BREACHED/SUPPRESSED/NORMAL) + stacked area history chart showing fraction of hosts in each state over time.
+  - Wired `tolerance_suppressed` and `tolerance_breached` arrays from payload.
+  - Mounted in `App.jsx` as "Tolerance" tab in `EvidenceTabs`.
 
-- [ ] **Train `LearnedAttackRecognizer` on real CybORG attack episodes**
-  - Gallery currently has 4 synthetic signatures from `_populate_gallery()`. Cosine similarity recognition is functional but not validated against real attack feature distributions.
-  - **Fix:** With CybORG installed locally, run `scripts/export_demo_cyber.py` to record real B_lineAgent attack episodes. Extract 10-step observation windows per attack phase; call `learned.learn_attack(name, window)` for each. Re-save `models/innate/baseline.joblib`.
+- [x] **Train `LearnedAttackRecognizer` on real CybORG attack episodes**
+  - Trained fresh recognizer on `data/clean_train.npy` (1500 real CybORG clean steps).
+  - Ran 15 real B_lineAgent episodes (80 steps each); extracted 10-step windows by phase (lateral_movement: 20 windows, privilege_escalation: 20 windows).
+  - Added `real_lateral_movement` and `real_privilege_escalation` to gallery (10 windows averaged each).
+  - Saved to `models/innate/baseline.joblib`. Demo now recognizes `real_privilege_escalation` at conf=0.967.
 
-- [ ] **Set up external keep-alive for Render free tier**
+- [ ] **Set up external keep-alive for Render free tier** *(external config only — no code change)*
   - `/health` endpoint is live at `https://soma-21v4.onrender.com/health`.
   - Render free tier sleeps after 15 minutes of inactivity; first WebSocket connection after sleep takes 30–60 s.
   - **Fix:** Register `https://soma-21v4.onrender.com/health` in [UptimeRobot](https://uptimerobot.com) or [cron-job.org](https://cron-job.org) with a 14-minute ping interval. Not a code change — external configuration.
@@ -474,16 +478,16 @@ Everything below is outstanding — not yet implemented or still producing incor
 
 | System Area | Status | Outstanding |
 |-------------|--------|-------------|
-| Layer 1 — Innate | Rule-based scoring in use (IF degenerate) | Fix IF for zero-variance data, or document rule-based as permanent |
+| Layer 1 — Innate | ✅ IF fixed with jitter=1e-4; per-host scores now vary meaningfully | None |
 | Layer 2 — PPO | ✅ Trained (200k), evaluated: DR=98.2%/100.0% | None |
 | Layer 3a — Tolerance | ✅ Recalibrated on real CybORG data; FPR ≈ 0% | Add frontend panel |
 | Layer 3b — Deception (theory) | ✅ PBE solver + RL trained, ConvergencePanel live | Clean up TODO comment in `pbe_solver.py` |
 | Layer 3b — Deception (bridge) | ✅ `AdaptiveDeceptionController` PBE-wired (MAX_ACTIVE=4, cooldown from r*) | Wire explicit kappa selection to scenario config |
 | Layer 4 — Memory/Drift | ✅ `drift_detector.joblib` trained; drift alarms 151/200 steps | Train on real CybORG attack episodes for stronger alarm signal |
-| Layer 5 — Learned Attacks | Wired, synthetic gallery (4 entries) | Train on real CybORG attack episodes |
+| Layer 5 — Learned Attacks | ✅ Trained on real CybORG data; gallery has 2 real-phase signatures | Expand gallery with more phases (initial_access, impact) |
 | Fusion — Correlator | ✅ tolerance_breach weight 0.20→0.05; HIGH incidents 199/200 | Re-run fpr_calibration.py for updated numbers |
 | Fusion — Orchestrator | ✅ Wired, displayed | None |
-| Frontend — all panels | ✅ 13 panels mounted and live | Add `TolerancePanel.jsx` for Layer 3a |
+| Frontend — all panels | ✅ 14 panels mounted and live (TolerancePanel added) | None |
 | Backend — WS replay | ✅ Deployed on Render | Keep-alive external config |
 | Frontend — deployed | ✅ Vercel, wss:// wired, episode regenerated | None |
 | Theory — PBE | ✅ Solver + RL comparison validated | Remove stale TODO comment |
