@@ -12,9 +12,19 @@ Steps
 5. Fail loudly if lateral movement detection < 0.50
 
 Expected runtime: ~45 minutes on laptop GPU
+
+Usage
+-----
+  python scripts/train_adaptive.py              # fresh 200k-step run
+  python scripts/train_adaptive.py --resume     # resume from 100k checkpoint
 """
 
+import argparse
 from pathlib import Path
+
+from stable_baselines3 import PPO
+from stable_baselines3.common.vec_env import DummyVecEnv
+from stable_baselines3.common.callbacks import CheckpointCallback
 
 from soma.envs.cyborg_wrapper import CybORGWrapper
 from soma.layers.adaptive import build_agent, train, evaluate_action_distribution
@@ -29,15 +39,44 @@ TB_LOG         = "./tb_logs"
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--resume", action="store_true",
+        help="Resume training from models/adaptive/soma_ppo_100000_steps.zip",
+    )
+    args = parser.parse_args()
+
     CHECKPOINT_DIR.mkdir(parents=True, exist_ok=True)
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
-    print("Building environment...")
     env_fn = lambda: CybORGWrapper(include_red=True)
 
-    print(f"Training PPO for {TOTAL_STEPS:,} steps...")
-    agent = build_agent(env_fn, tb_log=TB_LOG)
-    agent = train(agent, TOTAL_STEPS, str(CHECKPOINT_DIR))
+    if args.resume:
+        checkpoint_path = CHECKPOINT_DIR / "soma_ppo_100000_steps.zip"
+        if not checkpoint_path.exists():
+            raise FileNotFoundError(
+                f"Checkpoint not found: {checkpoint_path}\n"
+                "Run without --resume to start from scratch."
+            )
+        print(f"[train] Resuming from {checkpoint_path} (steps 100k → 200k)")
+        env = DummyVecEnv([env_fn])
+        agent = PPO.load(str(checkpoint_path), env=env)
+        checkpoint_cb = CheckpointCallback(
+            save_freq=50_000,
+            save_path=str(CHECKPOINT_DIR),
+            name_prefix="soma_ppo",
+        )
+        # reset_num_timesteps=False preserves LR scheduler and step counter
+        agent.learn(
+            total_timesteps=100_000,
+            callback=checkpoint_cb,
+            reset_num_timesteps=False,
+        )
+    else:
+        print(f"[train] Starting fresh training ({TOTAL_STEPS:,} steps)")
+        agent = build_agent(env_fn, tb_log=TB_LOG)
+        agent = train(agent, TOTAL_STEPS, str(CHECKPOINT_DIR))
+
     agent.save(str(CHECKPOINT_DIR / "soma_ppo_final"))
     print("Model saved to models/adaptive/soma_ppo_final.zip")
 
@@ -45,8 +84,7 @@ def main():
     evaluate_action_distribution(agent, env_fn)
 
     print("\nRunning behavioral evaluation (100 episodes)...")
-    # Try isolation_forest.joblib first, fall back to baseline.joblib
-    innate_path = INNATE_DIR / "isolation_forest.joblib"
+    innate_path   = INNATE_DIR / "isolation_forest.joblib"
     baseline_path = INNATE_DIR / "baseline.joblib"
 
     if innate_path.exists():
@@ -93,7 +131,7 @@ def main():
         )
         raise AssertionError(f"lateral_movement DR={lm_rate:.3f} < 0.30 — retune reward")
 
-    assert lm_rate  >= 0.50, f"[FAIL] lateral_movement DR={lm_rate:.3f} < 0.50"
+    assert lm_rate    >= 0.50, f"[FAIL] lateral_movement DR={lm_rate:.3f} < 0.50"
     assert impact_rate >= 0.80, f"[FAIL] impact DR={impact_rate:.3f} < 0.80"
     print("\nAll Layer 2 checks passed.")
 
