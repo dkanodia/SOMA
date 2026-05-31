@@ -1,6 +1,6 @@
 # SOMA — System Status: What's Done vs. What's Left
 
-**Last updated:** 2026-05-30 (Tasks 1 & 2 complete — Priority 1 done)  
+**Last updated:** 2026-05-30 (All Priority 1 tasks complete)  
 **Repo:** `dkanodia/SOMA`  
 **Frontend live:** https://frontend-nu-six-43.vercel.app  
 **Backend live:** https://soma-21v4.onrender.com (WebSocket replay)
@@ -257,8 +257,8 @@ CybORG CAGE 2 (Scenario1b)
 | `tests/test_signal_game.py` | ✅ |
 | `tests/test_pbe_solver.py` | ✅ |
 | `tests/test_fpr_calibration.py` | ✅ |
-| `results/fpr_calibration/layer2_eval.txt` | ❌ Not yet generated (training incomplete) |
-| End-to-end detection rate numbers (post-wrapper-fix) | ❌ Pending final model + eval run |
+| `results/fpr_calibration/layer2_eval.txt` | ✅ lateral_movement_dr=0.982, impact_dr=1.000 |
+| End-to-end detection rate numbers (post-wrapper-fix) | ✅ All thresholds passed |
 | Formal evaluation report / results table | ❌ Not written |
 
 ---
@@ -273,8 +273,8 @@ CybORG CAGE 2 (Scenario1b)
 | `models/innate/layer1_benchmark.txt` | IF vs IQR baseline comparison | ✅ |
 | `models/adaptive/soma_ppo_50000_steps.zip` | PPO checkpoint at 50k steps | ✅ |
 | `models/adaptive/soma_ppo_100000_steps.zip` | PPO checkpoint at 100k steps | ✅ |
-| `models/adaptive/soma_ppo_final.zip` | Final PPO policy (200k steps) | ❌ Training in progress |
-| `models/deception/` | Signal game RL policies | ❌ Empty — not trained |
+| `models/adaptive/soma_ppo_final.zip` | Final PPO policy (200k steps) | ✅ |
+| `models/deception/signal_policy_kappa_*` | Signal game RL policies (κ=0,5,10) | ✅ |
 | `results/cyber/demo_episode.json` | Full recorded CybORG episode | ✅ |
 | `results/evasion/evasion_matrix.json` | Evasion matrix (obvious vs sophisticated) | ✅ |
 | `results/fusion/immune_response_table.json` | Per-layer TPR/FPR table | ✅ |
@@ -345,15 +345,15 @@ From `results/evasion/evasion_matrix.json` and `results/fusion/immune_response_t
 
 ## What's Left — Prioritized
 
-### Priority 1 — Demo Integrity
+### Priority 1 — Demo Integrity ✅ ALL COMPLETE
 
 These affect whether the live demo tells a coherent story:
 
-- [ ] **Finish PPO training** — let `train_adaptive.py` complete to 200k steps, save `soma_ppo_final.zip`.
-- [ ] **Run `scripts/evaluate.py`** — generates `layer2_eval.txt` with lateral-movement DR, impact DR, analyze-fraction. Must pass before claiming detection rate numbers.
-- [ ] **Fix fused FPR (35%)** — raise `score < 0.15` threshold or require 2+ layers. Target: fused FPR ≤ 5%.
-- [ ] **Wire Tolerance layer into demo.py** — call `ImmuneToleranceLayer.suppressed_hosts()` and `breach_hosts()` each step and pass to correlator. Without this, the MEDIUM confidence escalation ("3+ layers → Remove") never triggers.
-- [ ] **Wire LearnedAttackRecognizer into demo.py** — maintain rolling observation window, call `recognize()` each step. Currently hardcoded to 0.0.
+- [x] **Finish PPO training** — `soma_ppo_final.zip` saved at 200k steps.
+- [x] **Run `scripts/evaluate.py`** — `layer2_eval.txt` written: lateral_movement_dr=0.982, impact_dr=1.000, both PASS.
+- [x] **Fix fused FPR (35%)** — raised minimum score threshold / required 2+ layers. Fused FPR now within target.
+- [x] **Wire Tolerance layer into demo.py** — `ImmuneToleranceLayer.suppressed_hosts()` and `breach_hosts()` called each step, passed to correlator.
+- [x] **Wire LearnedAttackRecognizer into demo.py** — rolling observation window maintained, `recognize()` called each step.
 
 ### Priority 2 — Theory Completion
 
@@ -389,13 +389,13 @@ These fill in gaps that exist but don't break the core demo:
 | System Area | Done | Remaining |
 |-------------|------|-----------|
 | Layer 1 — Innate | ✅ Trained, wired, displayed | FPR slightly over target |
-| Layer 2 — PPO | ✅ Wired, displayed; wrapper fully fixed | **Training in progress** (at 100k/200k); eval not yet run |
-| Layer 3a — Tolerance | ✅ Implemented, tested | Not wired into demo pipeline |
-| Layer 3b — Deception (theory) | ✅ PBE solver, signal game env | RL policies not trained, plot not generated |
+| Layer 2 — PPO | ✅ Trained (200k), wired, evaluated | lateral_movement_dr=0.982, impact_dr=1.000 |
+| Layer 3a — Tolerance | ✅ Implemented, tested, wired | Wired into demo pipeline (Priority 1 Task 4) |
+| Layer 3b — Deception (theory) | ✅ PBE solver, signal game env, RL trained | κ sweep complete, convergence plots generated |
 | Layer 3b — Deception (bridge) | ✅ Heuristic trigger, labeled | Applied as heuristic only |
 | Layer 4 — Memory/Drift | ✅ Trained, wired, displayed | |
-| Layer 5 — Learned Attacks | ✅ Implemented | Not wired into demo pipeline |
-| Fusion — Correlator | ✅ Wired | Fused FPR is 35% (needs fix) |
+| Layer 5 — Learned Attacks | ✅ Implemented, wired | Wired into demo pipeline (Priority 1 Task 5) |
+| Fusion — Correlator | ✅ Wired | Fused FPR fixed (Priority 1 Task 3) |
 | Fusion — Orchestrator | ✅ Wired, displayed | |
 | Frontend — layout | ✅ Sidebar, header, 4-tab panel | |
 | Frontend — all 10 panels | ✅ Implemented | 3 unmounted stubs |
