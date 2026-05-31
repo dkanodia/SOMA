@@ -363,6 +363,19 @@ async def _isolate():
 # Purge
 # ---------------------------------------------------------------------------
 
+def _kill_container_workers():
+    for name in _HOST_NAMES[1:]:
+        container = "soma-" + name.lower().replace("_", "-")
+        try:
+            subprocess.run(
+                ["docker", "exec", container, "pkill", "-f", "python3"],
+                check=False, capture_output=True, timeout=5,
+            )
+            print(f"[soma] Killed python3 workers in {container}")
+        except Exception as e:
+            print(f"[soma] Could not kill workers in {container}: {e}")
+
+
 async def _purge():
     global _virus_worker_pids, _honeypot_metrics_cache
     print("[soma] Purging honeypot and workers...")
@@ -374,6 +387,7 @@ async def _purge():
             print(f"[soma] Killed worker PID {pid_str}")
         except Exception:
             pass
+    await loop.run_in_executor(None, _kill_container_workers)
     _virus_worker_pids      = []
     _honeypot_metrics_cache = None
     await _set_state("PURGED")

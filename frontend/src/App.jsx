@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import useWebSocket from "./hooks/useWebSocket";
 import ErrorBoundary from "./components/ErrorBoundary";
+import LiveNetworkGraph from "./components/LiveNetworkGraph";
 import "./styles/index.css";
 
 // ---------------------------------------------------------------------------
@@ -394,6 +395,10 @@ export default function App() {
 
         <ErrorBoundary>
           <div className="live-demo-body">
+            <section className="panel live-section">
+              <LiveNetworkGraph nodes={nodes} somaState={somaState} honeypotMetrics={honeypotMetrics} />
+            </section>
+
             <section className="panel live-section">
               <div className="section-head">
                 <div>

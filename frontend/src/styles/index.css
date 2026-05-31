@@ -1829,3 +1829,53 @@ button {
 .lat-arrow { color: var(--fg-3); }
 .lat-ip    { color: var(--fg); flex: 1; }
 .lat-time  { color: var(--fg-3); font-size: 0.7rem; }
+
+/* Live Network Graph */
+.lng-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.lng-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--line-dim);
+  min-height: 42px;
+}
+
+.lng-title {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--fg-2);
+  letter-spacing: 0.04em;
+}
+
+.lng-state-tag {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 2px 8px;
+  border-radius: 3px;
+  border: 1px solid var(--line);
+  color: var(--fg-3);
+  background: var(--panel-3);
+  text-transform: uppercase;
+}
+
+.lng-state-INFECTED    { color: var(--alert); border-color: var(--alert); background: color-mix(in srgb, var(--alert) 8%, transparent); }
+.lng-state-ISOLATING   { color: var(--warn);  border-color: var(--warn);  background: color-mix(in srgb, var(--warn)  8%, transparent); }
+.lng-state-CONTAINED   { color: var(--warn);  border-color: var(--warn);  background: color-mix(in srgb, var(--warn)  8%, transparent); }
+.lng-state-PURGED      { color: var(--ok);    border-color: var(--ok);    background: color-mix(in srgb, var(--ok)    8%, transparent); }
+.lng-state-EMAIL_RECEIVED { color: var(--warn); border-color: var(--warn); background: color-mix(in srgb, var(--warn) 8%, transparent); }
+
+.lng-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  padding: 8px 0;
+}

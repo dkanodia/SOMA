@@ -182,7 +182,15 @@ async def run():
                             return new_port
                     return None
 
-                _, redirect_port = await asyncio.gather(send_telemetry(), recv_commands())
+                telemetry_task = asyncio.create_task(send_telemetry())
+                redirect_port = await recv_commands()
+                telemetry_task.cancel()
+                try:
+                    await telemetry_task
+                except asyncio.CancelledError:
+                    pass
+                if redirect_port:
+                    uri = f"ws://localhost:{redirect_port}/virus"
 
         except Exception as e:
             await asyncio.sleep(2)
