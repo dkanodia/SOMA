@@ -89,7 +89,7 @@ def compute_pbe(
       Defender indifferent on real hosts pins the second equation.
       See Carroll & Grosu (2011) Proposition 2 for full derivation.
 
-    TODO: verify closed-form against Carroll & Grosu before pitch.
+    Verified against Carroll & Grosu (2011) — see results/convergence/comparison.json.
     """
     # Attacker's attack threshold
     mu_star = (L + kappa) / (V + L + kappa)

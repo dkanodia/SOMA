@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import useWebSocket from "./hooks/useWebSocket";
+import ErrorBoundary from "./components/ErrorBoundary";
 import "./styles/index.css";
 
 // ---------------------------------------------------------------------------
@@ -265,17 +266,18 @@ function HoneypotPanel({ metrics, onPurge }) {
 // Status bar
 // ---------------------------------------------------------------------------
 
-function StatusBar({ connected, somaState, detectionSecs, onSetInfected, onReset }) {
+function StatusBar({ connected, replayMode, somaState, detectionSecs, onSetInfected, onReset }) {
   const clock = useClock();
   const color = STATE_COLOR[somaState] ?? "var(--fg-3)";
   const label = STATE_LABEL[somaState] ?? somaState;
   const showDetected = somaState === "ISOLATING" || somaState === "CONTAINED" || somaState === "PURGED";
+  const pillLabel = connected ? "Live" : replayMode ? "Replay" : "Connecting…";
 
   return (
     <div className="status-bar">
       <span className={`live-pill ${connected ? "live" : "replay"}`}>
         <span className="live-dot" />
-        {connected ? "Live" : "Disconnected"}
+        {pillLabel}
       </span>
       <span className="sb-sep" />
       <span className="sb-item" style={{ color, fontWeight: 600 }}>{label}</span>
@@ -344,6 +346,7 @@ function TopBar({ somaState, nodes }) {
 export default function App() {
   const {
     connected,
+    replayMode,
     somaState,
     emailNotification,
     nodes,
@@ -388,28 +391,31 @@ export default function App() {
           />
         )}
 
-        <div className="live-demo-body">
-          <section className="panel live-section">
-            <div className="section-head">
-              <div>
-                <span>Network nodes</span>
-                <strong>Real-time telemetry</strong>
+        <ErrorBoundary>
+          <div className="live-demo-body">
+            <section className="panel live-section">
+              <div className="section-head">
+                <div>
+                  <span>Network nodes</span>
+                  <strong>Real-time telemetry</strong>
+                </div>
               </div>
-            </div>
-            <NodeGrid nodes={nodes} somaState={somaState} />
-          </section>
+              <NodeGrid nodes={nodes} somaState={somaState} />
+            </section>
 
-          <HoneypotPanel metrics={honeypotMetrics} onPurge={handlePurge} />
+            <HoneypotPanel metrics={honeypotMetrics} onPurge={handlePurge} />
 
-          {somaState === "PURGED" && (
-            <button className="reset-btn" onClick={handleReset}>
-              Reset Demo
-            </button>
-          )}
-        </div>
+            {somaState === "PURGED" && (
+              <button className="reset-btn" onClick={handleReset}>
+                Reset Demo
+              </button>
+            )}
+          </div>
+        </ErrorBoundary>
 
         <StatusBar
           connected={connected}
+          replayMode={replayMode}
           somaState={somaState}
           detectionSecs={detectionSecs}
           onSetInfected={handleSetInfected}
