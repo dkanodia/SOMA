@@ -411,7 +411,7 @@ function AssetsPanel({ nodes, victimNode, somaState }) {
 // Status bar
 // ---------------------------------------------------------------------------
 
-function StatusBar({ connected, replayMode, somaState, detectionSecs, onSetInfected, onReset }) {
+function StatusBar({ connected, replayMode, somaState, detectionSecs, onSetInfected, onReset, onSendTestEmail }) {
   const clock = useClock();
   const color = STATE_COLOR[somaState] ?? "var(--fg-3)";
   const label = STATE_LABEL[somaState] ?? somaState;
@@ -435,6 +435,11 @@ function StatusBar({ connected, replayMode, somaState, detectionSecs, onSetInfec
         </>
       )}
       <span style={{ flex: 1 }} />
+      {connected && somaState === "CLEAN" && (
+        <button className="presenter-btn" onClick={onSendTestEmail} title="Send a test phishing email to trigger the demo">
+          ✉ Send Test Email
+        </button>
+      )}
       {connected && somaState === "EMAIL_RECEIVED" && (
         <button className="presenter-btn" onClick={onSetInfected} title="Skip email — mark as infected">
           ▶ Skip to Infected
@@ -562,6 +567,14 @@ export default function App() {
     prevLateralLenRef.current = 0;
   }, [sendMessage]);
 
+  const handleSendTestEmail = useCallback(() => {
+    const httpBase = WS_URL.replace("ws://", "http://").replace("wss://", "https://");
+    fetch(`${httpBase}/send-test-email`)
+      .then(r => r.json())
+      .then(d => { if (d.error) console.warn("[send-test-email]", d.error); })
+      .catch(e => console.warn("[send-test-email]", e));
+  }, []);
+
   return (
     <div className="app-root">
       <ConsoleSidebar
@@ -649,6 +662,7 @@ export default function App() {
           detectionSecs={detectionSecs}
           onSetInfected={handleSetInfected}
           onReset={handleReset}
+          onSendTestEmail={handleSendTestEmail}
         />
       </main>
     </div>

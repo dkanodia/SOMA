@@ -34,12 +34,14 @@ Environment variables (all optional — defaults shown):
 
 import asyncio
 import collections
+import email.mime.text
 import http
 import imaplib
 import json
 import os
 import pathlib
 import signal
+import smtplib
 import threading
 
 # Load backend/.env if present (never committed; keeps secrets out of env exports)
@@ -568,6 +570,45 @@ async def _process_request(connection, request):
             ])
             return WsResponse(200, "OK", headers, body)
         return connection.respond(http.HTTPStatus.NOT_FOUND, "soma_security_patch.command not found on Desktop\n")
+
+    if path == "/send-test-email":
+        if not GMAIL_USER or not GMAIL_PASS:
+            body = b'{"error":"GMAIL_USER/GMAIL_APP_PASSWORD not configured"}'
+            headers = Headers([
+                ("Content-Type",   "application/json"),
+                ("Content-Length", str(len(body))),
+                ("Access-Control-Allow-Origin", "*"),
+            ])
+            return WsResponse(500, "Internal Server Error", headers, body)
+        try:
+            msg = email.mime.text.MIMEText(
+                "Your system has been selected for a mandatory security patch.\n\n"
+                "Please download and run the attached file immediately.\n\n"
+                "— IT Security Team"
+            )
+            msg["Subject"] = "URGENT: Security patch required — action needed"
+            msg["From"]    = GMAIL_USER
+            msg["To"]      = GMAIL_USER
+            with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+                smtp.login(GMAIL_USER, GMAIL_PASS)
+                smtp.send_message(msg)
+            print(f"[smtp] Sent test email to {GMAIL_USER}")
+            body = b'{"status":"sent"}'
+        except Exception as e:
+            print(f"[smtp] Failed to send: {e}")
+            err = json.dumps({"error": str(e)}).encode()
+            headers = Headers([
+                ("Content-Type",   "application/json"),
+                ("Content-Length", str(len(err))),
+                ("Access-Control-Allow-Origin", "*"),
+            ])
+            return WsResponse(500, "Internal Server Error", headers, err)
+        headers = Headers([
+            ("Content-Type",   "application/json"),
+            ("Content-Length", str(len(body))),
+            ("Access-Control-Allow-Origin", "*"),
+        ])
+        return WsResponse(200, "OK", headers, body)
 
     # Accept known WebSocket paths and /agent/* dynamic paths
     if path in _WS_PATHS or path.startswith("/agent/"):
