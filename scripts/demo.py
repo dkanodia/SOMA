@@ -63,7 +63,7 @@ def load_models():
     innate_path = MODELS_DIR / "innate" / "isolation_forest.joblib"
     ppo_path    = MODELS_DIR / "adaptive" / "soma_ppo_final"
     drift_path  = MODELS_DIR / "innate"  / "drift_detector.joblib"
-    vae_path    = MODELS_DIR / "innate"  / "vae.joblib"
+    vae_path    = MODELS_DIR / "innate"  / "baseline.joblib"
 
     if not innate_path.exists():
         raise FileNotFoundError(

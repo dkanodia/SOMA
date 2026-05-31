@@ -31,14 +31,27 @@ STEP_DELAY = float(os.environ.get("STEP_DELAY", 0.3))
 _episode_cache: dict | None = None
 
 
+def resolve_episode_path() -> pathlib.Path:
+    """Find the episode file — works in Docker (/app/data/), local dev, and fallback paths."""
+    candidates = [
+        pathlib.Path(EPISODE),
+        pathlib.Path(__file__).parent.parent / "frontend" / "public" / "demo_episode.json",
+        pathlib.Path(__file__).parent / "data" / "demo_episode.json",
+    ]
+    for p in candidates:
+        if p.exists():
+            return p
+    raise FileNotFoundError(
+        f"Episode file not found. Searched: {[str(p.resolve()) for p in candidates]}"
+    )
+
+
 def load_episode() -> dict:
     global _episode_cache
     if _episode_cache is None:
-        ep_path = pathlib.Path(EPISODE)
-        if not ep_path.exists():
-            raise FileNotFoundError(f"Episode file not found: {ep_path.resolve()}")
+        ep_path = resolve_episode_path()
         _episode_cache = json.loads(ep_path.read_text())
-        print(f"[ws_server] Loaded episode: {len(_episode_cache['steps'])} steps")
+        print(f"[ws_server] Loaded episode ({ep_path}): {len(_episode_cache['steps'])} steps")
     return _episode_cache
 
 

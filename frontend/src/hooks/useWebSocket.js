@@ -12,15 +12,17 @@ import { useState, useEffect, useRef, useCallback } from "react";
 const STEP_INTERVAL_MS = 800;
 
 export default function useWebSocket(url) {
-  const [steps,     setSteps]     = useState([]);
-  const [meta,      setMeta]      = useState(null);
-  const [step,      setStepIdx]   = useState(0);
-  const [connected, setConnected] = useState(false);
+  const [steps,        setSteps]       = useState([]);
+  const [meta,         setMeta]        = useState(null);
+  const [step,         setStepIdx]     = useState(0);
+  const [connected,    setConnected]   = useState(false);
+  const [reconnectKey, setReconnectKey] = useState(0);
 
   const wsRef      = useRef(null);
   const timerRef   = useRef(null);
   const stepsRef   = useRef([]);
-  const pausedRef  = useRef(false);   // paused only when user clicks timeline
+  const pausedRef  = useRef(false);
+  const retryRef   = useRef(0);       // reconnect attempt counter
 
   useEffect(() => { stepsRef.current = steps; }, [steps]);
 
@@ -50,7 +52,12 @@ export default function useWebSocket(url) {
       const ws = new WebSocket(url);
       wsRef.current = ws;
 
-      ws.onopen = () => { wsConnected = true; setConnected(true); clearTimeout(fallbackTimer); };
+      ws.onopen = () => {
+        wsConnected = true;
+        retryRef.current = 0;
+        setConnected(true);
+        clearTimeout(fallbackTimer);
+      };
 
       ws.onmessage = (e) => {
         try {
@@ -58,15 +65,26 @@ export default function useWebSocket(url) {
           if (msg.steps) {
             setMeta(msg.meta); setSteps(msg.steps);
           } else if (msg.step !== undefined && !msg.error) {
+            if (msg.meta) setMeta(msg.meta);
             setSteps((prev) => { const n = [...prev]; n[msg.step] = msg; return n; });
             setStepIdx(msg.step);
           } else if (msg.meta) {
             setMeta(msg.meta);
           }
-        } catch { /* ignore */ }
+        } catch (err) {
+          console.warn("[SOMA] WebSocket message parse error:", err);
+        }
       };
 
-      ws.onclose = () => { setConnected(false); if (!wsConnected) loadStatic(); };
+      ws.onclose = () => {
+        setConnected(false);
+        if (!wsConnected) {
+          loadStatic();
+        } else if (retryRef.current < 3) {
+          retryRef.current++;
+          setTimeout(() => setReconnectKey((k) => k + 1), 2000);
+        }
+      };
       ws.onerror = () => { setConnected(false); };
 
       fallbackTimer = setTimeout(() => {
@@ -77,7 +95,7 @@ export default function useWebSocket(url) {
     }
 
     return () => { clearTimeout(fallbackTimer); wsRef.current?.close(); };
-  }, [url, loadStatic]);
+  }, [url, loadStatic, reconnectKey]);
 
   // ------------------------------------------------------------------
   // Auto-advance (static mode only — live WS drives step via onmessage)

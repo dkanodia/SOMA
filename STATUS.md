@@ -72,7 +72,7 @@ CybORG CAGE 2 (Scenario1b)
 | `per_host_scores()` — leave-one-out ablation | ✅ |
 | `save()` / `load()` via joblib | ✅ |
 | Trained model on disk (`models/innate/isolation_forest.joblib`) | ✅ |
-| FPR calibration at 1% target | ✅ (measured: 2.56%) |
+| FPR calibration at 1% target | ✅ Rule-based scorer: 0.95% (within budget). IsolationForest calibration run measured 2.56% before rule-based fallback was adopted. |
 | `train_innate.py` script | ✅ |
 | Benchmark vs IQR baseline (`layer1_benchmark.txt`) | ✅ |
 
@@ -122,10 +122,10 @@ CybORG CAGE 2 (Scenario1b)
 | `breach_hosts()` — breach_sigma=3.0 | ✅ |
 | `save()` / `load()` | ✅ |
 | Wired into `NetworkImmuneCorrelator` | ✅ (tolerance_suppressed / tolerance_breached) |
-| Wired into `demo.py` live pipeline | ❌ **Not wired** — correlator receives `[]` for both lists |
-| Frontend visualization | ❌ No dedicated tolerance panel |
+| Wired into `demo.py` live pipeline | ✅ Calibrated on synthetic clean data (lines 88–92); `suppressed_hosts` / `breach_hosts` called each step (lines 227–231); outputs in payload (lines 329–330) |
+| Frontend visualization | ❌ No dedicated tolerance panel — layer status shown in ImmuneResponsePanel only |
 
-**Gap:** `demo.py` passes empty lists for `tolerance_suppressed` and `tolerance_breached` to the correlator. The layer exists and is tested, but its outputs are not computed during episode playback. Wiring it would require instantiating `ImmuneToleranceLayer`, calling `calibrate()` on clean data, and calling `suppressed_hosts(obs)` / `breach_hosts(obs)` each step.
+**Note:** Wiring is complete. Only a dedicated frontend panel (equivalent to DriftPanel) is still absent; the tolerance signal does reach the correlator and the Operations view.
 
 ---
 
@@ -184,13 +184,11 @@ CybORG CAGE 2 (Scenario1b)
 | `recognize()` — cosine similarity to gallery | ✅ |
 | `gallery_summary()` — 2D PCA coords for viz | ✅ |
 | `save()` / `load()` | ✅ |
-| Model trained and saved (`models/innate/baseline.joblib`) | ⚠️ Present but may be from old format |
-| Gallery populated with attack sequences | ⚠️ Unknown — depends on `export_demo_cyber.py` run |
-| Wired into `demo.py` | ❌ `learned_attack_conf=0.0, learned_attack_type="unknown"` hardcoded |
+| Model trained and saved (`models/innate/baseline.joblib`) | ✅ 2.4 MB confirmed on disk |
+| Gallery populated with attack sequences | ✅ `_populate_gallery()` seeds 4 CybORG-representative signatures on load |
+| Wired into `demo.py` | ✅ Loaded at startup (lines 61, 94–108); rolling window maintained; `recognize()` called each step (lines 253–257); `la_conf` / `la_type` in payload (lines 342–343) |
 | `GalleryPanel` frontend — VAE scatter | ✅ Component exists |
-| GalleryPanel showing real gallery data | ❌ Depends on Layer 5 being wired |
-
-**Gap:** The recognizer exists and is importable, but `demo.py` passes `learned_attack_conf=0.0` to the correlator every step — the layer is not connected to the live pipeline. Wiring requires: loading the saved `LearnedAttackRecognizer`, maintaining a rolling observation window per episode, calling `recognize(obs_window)` each step, and including the output in the payload.
+| GalleryPanel showing real gallery data | ✅ Gallery data flows through correlator into demo payload |
 
 ---
 
@@ -259,7 +257,7 @@ CybORG CAGE 2 (Scenario1b)
 | `tests/test_fpr_calibration.py` | ✅ |
 | `results/fpr_calibration/layer2_eval.txt` | ✅ lateral_movement_dr=0.982, impact_dr=1.000 |
 | End-to-end detection rate numbers (post-wrapper-fix) | ✅ All thresholds passed |
-| Formal evaluation report / results table | ❌ Not written |
+| Formal evaluation report / results table | ✅ `results/evaluation_report.md` — per-layer TPR/FPR, evasion matrix, PPO eval, RL vs PBE comparison |
 
 ---
 
@@ -268,8 +266,8 @@ CybORG CAGE 2 (Scenario1b)
 | Path | Contents | Status |
 |------|----------|--------|
 | `models/innate/isolation_forest.joblib` | Trained InnateImmunityLayer | ✅ |
-| `models/innate/drift_detector.joblib` | Trained LongDwellDetector | ✅ |
-| `models/innate/baseline.joblib` | LearnedAttackRecognizer baseline | ⚠️ Format may be stale |
+| `models/innate/drift_detector.joblib` | Trained LongDwellDetector | ❌ Missing — `demo.py` falls back to uncalibrated detector (drift trajectory still visualized; alarm threshold not calibrated) |
+| `models/innate/baseline.joblib` | Trained LearnedAttackRecognizer (2.4 MB) | ✅ |
 | `models/innate/layer1_benchmark.txt` | IF vs IQR baseline comparison | ✅ |
 | `models/adaptive/soma_ppo_50000_steps.zip` | PPO checkpoint at 50k steps | ✅ |
 | `models/adaptive/soma_ppo_100000_steps.zip` | PPO checkpoint at 100k steps | ✅ |
@@ -313,6 +311,7 @@ CybORG CAGE 2 (Scenario1b)
 | Frontend deployed on Vercel | ✅ `frontend-nu-six-43.vercel.app` |
 | `REACT_APP_WS_URL` env var set on Vercel | ✅ `wss://soma-21v4.onrender.com` |
 | Live streaming (WebSocket → frontend) | ✅ |
+| `useWebSocket.js` extracts meta from live stream | ✅ Fixed — `ws_server.py` embeds `meta` in each step msg; hook now calls `setMeta` in the step branch |
 | Static JSON fallback | ✅ (16,912-line `demo_episode.json`) |
 | `.gitignore` (Python, node_modules, .claude) | ✅ |
 
@@ -411,5 +410,5 @@ These fill in gaps that exist but don't break the core demo:
 | Frontend — all 10 panels | ✅ All mounted and live | |
 | Backend — WS replay | ✅ Deployed on Render | Free tier sleep latency |
 | Frontend — deployed | ✅ Vercel, wss:// wired | |
-| Theory — PBE | ✅ Closed-form solver | Not yet validated against RL run |
+| Theory — PBE | ✅ Solver + RL comparison | Validated in `results/evaluation_report.md` §4; RL q* ≈0.51 vs PBE 0.77 at κ=0 |
 | Evaluation harness | ✅ Scripts + test suite | Numbers not re-run post-fix |

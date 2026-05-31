@@ -11,6 +11,7 @@ import ConvergencePanel   from "./components/ConvergencePanel";
 import LearningPanel      from "./components/LearningPanel";
 import AnomalyPanel       from "./components/AnomalyPanel";
 import useWebSocket       from "./hooks/useWebSocket";
+import ErrorBoundary      from "./components/ErrorBoundary";
 import "./styles/index.css";
 
 const HOSTS = ["User0", "User1", "User2", "Enterprise0", "Enterprise1", "Op_Server0"];
@@ -400,16 +401,18 @@ function EvidenceTabs({ state, meta, step, setStep }) {
         ))}
       </div>
       <div className="evidence-body">
-        {tab === "timeline"    && <TimelinePanel state={state} meta={meta} currentStep={step} onStepClick={setStep} />}
-        {tab === "incidents"   && <IncidentPanel state={state} step={step} />}
-        {tab === "actions"     && <DefenseActionPanel state={state} meta={meta} step={step} />}
-        {tab === "drift"       && <DriftPanel state={state} meta={meta} />}
-        {tab === "decoys"      && <HoneypotPanel state={state} />}
-        {tab === "layers"      && <LayerRadarPanel state={state} meta={meta} />}
-        {tab === "evasion"     && <EvasionPanel meta={meta} />}
-        {tab === "convergence" && <ConvergencePanel />}
-        {tab === "anomaly"     && <AnomalyPanel meta={meta} step={step} />}
-        {tab === "learning"    && <LearningPanel meta={meta} />}
+        <ErrorBoundary key={tab}>
+          {tab === "timeline"    && <TimelinePanel state={state} meta={meta} currentStep={step} onStepClick={setStep} />}
+          {tab === "incidents"   && <IncidentPanel state={state} step={step} />}
+          {tab === "actions"     && <DefenseActionPanel state={state} meta={meta} step={step} />}
+          {tab === "drift"       && <DriftPanel state={state} meta={meta} />}
+          {tab === "decoys"      && <HoneypotPanel state={state} />}
+          {tab === "layers"      && <LayerRadarPanel state={state} meta={meta} />}
+          {tab === "evasion"     && <EvasionPanel meta={meta} />}
+          {tab === "convergence" && <ConvergencePanel />}
+          {tab === "anomaly"     && <AnomalyPanel meta={meta} step={step} />}
+          {tab === "learning"    && <LearningPanel meta={meta} />}
+        </ErrorBoundary>
       </div>
     </section>
   );
@@ -789,16 +792,16 @@ export default function App() {
 
         {/* ── Non-Operations views fill the remaining space ── */}
         {activeNav === "incidents" && (
-          <div className="view-scroll"><IncidentsView meta={meta} step={step} /></div>
+          <div className="view-scroll"><ErrorBoundary><IncidentsView meta={meta} step={step} /></ErrorBoundary></div>
         )}
         {activeNav === "assets" && (
-          <div className="view-scroll"><AssetsView state={currentState} /></div>
+          <div className="view-scroll"><ErrorBoundary><AssetsView state={currentState} /></ErrorBoundary></div>
         )}
         {activeNav === "policies" && (
-          <div className="view-scroll"><PoliciesView meta={meta} /></div>
+          <div className="view-scroll"><ErrorBoundary><PoliciesView meta={meta} /></ErrorBoundary></div>
         )}
         {activeNav === "auditlog" && (
-          <div className="view-scroll"><AuditLogView meta={meta} step={step} /></div>
+          <div className="view-scroll"><ErrorBoundary><AuditLogView meta={meta} step={step} /></ErrorBoundary></div>
         )}
 
         {/* ── Operations view ── */}
@@ -813,7 +816,9 @@ export default function App() {
           </div>
 
           <div className="ops-grid">
-            <IncidentQueue state={currentState} selectedHost={selectedHost} onSelectHost={setSelectedHost} step={step} />
+            <ErrorBoundary>
+              <IncidentQueue state={currentState} selectedHost={selectedHost} onSelectHost={setSelectedHost} step={step} />
+            </ErrorBoundary>
 
             <section className="panel map-panel">
               <div className="section-head">
@@ -823,14 +828,22 @@ export default function App() {
                 </div>
                 <span className="map-phase">{stepToTimestamp(step)}</span>
               </div>
-              <NetworkGraph state={currentState} meta={meta} />
+              <ErrorBoundary>
+                <NetworkGraph state={currentState} meta={meta} />
+              </ErrorBoundary>
             </section>
 
-            <ImmuneResponsePanel state={currentState} />
+            <ErrorBoundary>
+              <ImmuneResponsePanel state={currentState} />
+            </ErrorBoundary>
 
-            <AssetTable state={currentState} selectedHost={selectedHost} onSelectHost={setSelectedHost} />
+            <ErrorBoundary>
+              <AssetTable state={currentState} selectedHost={selectedHost} onSelectHost={setSelectedHost} />
+            </ErrorBoundary>
 
-            <EvidenceTabs state={currentState} meta={meta} step={step} setStep={setStep} />
+            <ErrorBoundary>
+              <EvidenceTabs state={currentState} meta={meta} step={step} setStep={setStep} />
+            </ErrorBoundary>
           </div>
         </>}
 

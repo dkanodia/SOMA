@@ -25,7 +25,7 @@ function buildRadarData(state, meta) {
 
   const innateThresh = meta?.innate_threshold ?? 0.5;
   const memThresh    = meta?.memory_threshold  ?? 1.0;
-  const nHosts       = meta?.n_hosts ?? 6;
+  const nHosts       = meta?.host_names?.length ?? meta?.n_hosts ?? 6;
 
   // Support both enriched state (anomaly_score float) and raw (anomaly_scores dict)
   const innateScore = state.anomaly_score != null

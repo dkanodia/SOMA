@@ -58,7 +58,6 @@ export default function TimelinePanel({ state, meta, currentStep, onStepClick })
   // Compute max anomaly score and drift distances from raw payload fields.
   // Raw payload: anomaly_scores={host:float}, centroid_pos={host:[x,y]|null}
   function stepToChart(s) {
-    const anomalyScores = s.anomaly_scores ?? s.anomaly_score != null ? {} : {};
     // Support both enriched (anomaly_score float) and raw (anomaly_scores dict)
     const maxAnomaly = s.anomaly_score != null
       ? s.anomaly_score
