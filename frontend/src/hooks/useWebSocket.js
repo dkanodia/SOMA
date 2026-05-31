@@ -22,6 +22,7 @@ export default function useWebSocket(url) {
   const [emailNotification,  setEmailNotification]  = useState(null);
   const [nodes,              setNodes]              = useState([]);
   const [honeypotMetrics,    setHoneypotMetrics]    = useState(null);
+  const [detectionSecs,      setDetectionSecs]      = useState(0);
 
   const wsRef        = useRef(null);
   const reconnectRef = useRef(null);
@@ -59,6 +60,9 @@ export default function useWebSocket(url) {
           break;
         case "state_change":
           setSomaState(msg.state);
+          if (msg.state === "ISOLATING" && msg.detection_secs) {
+            setDetectionSecs(msg.detection_secs);
+          }
           break;
         case "honeypot_active":
           setHoneypotMetrics(msg.metrics ?? null);
@@ -66,6 +70,12 @@ export default function useWebSocket(url) {
         case "purge_complete":
           setHoneypotMetrics(null);
           setSomaState("PURGED");
+          break;
+        case "demo_reset":
+          setEmailNotification(null);
+          setNodes([]);
+          setHoneypotMetrics(null);
+          setDetectionSecs(0);
           break;
         default:
           break;
@@ -106,6 +116,7 @@ export default function useWebSocket(url) {
     emailNotification,
     nodes,
     honeypotMetrics,
+    detectionSecs,
     sendMessage,
   };
 }

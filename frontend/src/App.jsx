@@ -264,10 +264,11 @@ function HoneypotPanel({ metrics, onPurge }) {
 // Status bar
 // ---------------------------------------------------------------------------
 
-function StatusBar({ connected, somaState }) {
+function StatusBar({ connected, somaState, detectionSecs, onSetInfected, onReset }) {
   const clock = useClock();
   const color = STATE_COLOR[somaState] ?? "var(--fg-3)";
   const label = STATE_LABEL[somaState] ?? somaState;
+  const showDetected = somaState === "ISOLATING" || somaState === "CONTAINED" || somaState === "PURGED";
 
   return (
     <div className="status-bar">
@@ -277,6 +278,25 @@ function StatusBar({ connected, somaState }) {
       </span>
       <span className="sb-sep" />
       <span className="sb-item" style={{ color, fontWeight: 600 }}>{label}</span>
+      {showDetected && detectionSecs > 0 && (
+        <>
+          <span className="sb-sep" />
+          <span className="sb-item" style={{ color: "var(--ok)" }}>
+            Detected in {detectionSecs}s
+          </span>
+        </>
+      )}
+      <span style={{ flex: 1 }} />
+      {connected && somaState === "EMAIL_RECEIVED" && (
+        <button className="presenter-btn" onClick={onSetInfected} title="Skip email — mark as infected">
+          ▶ Skip to Infected
+        </button>
+      )}
+      {connected && (somaState === "PURGED" || somaState === "CLEAN") && (
+        <button className="presenter-btn" onClick={onReset} title="Reset demo to CLEAN">
+          ↺ Reset Demo
+        </button>
+      )}
       <span className="sb-sep" />
       <span className="sb-item">{clock}</span>
     </div>
@@ -327,6 +347,7 @@ export default function App() {
     emailNotification,
     nodes,
     honeypotMetrics,
+    detectionSecs,
     sendMessage,
   } = useWebSocket(WS_URL);
 
@@ -341,6 +362,15 @@ export default function App() {
 
   const handlePurge = useCallback(() => {
     sendMessage({ type: "purge" });
+  }, [sendMessage]);
+
+  const handleSetInfected = useCallback(() => {
+    sendMessage({ type: "set_infected" });
+  }, [sendMessage]);
+
+  const handleReset = useCallback(() => {
+    sendMessage({ type: "reset" });
+    setDownloaded(false);
   }, [sendMessage]);
 
   // Clear email banner after download
@@ -373,7 +403,13 @@ export default function App() {
           <HoneypotPanel metrics={honeypotMetrics} onPurge={handlePurge} />
         </div>
 
-        <StatusBar connected={connected} somaState={somaState} />
+        <StatusBar
+          connected={connected}
+          somaState={somaState}
+          detectionSecs={detectionSecs}
+          onSetInfected={handleSetInfected}
+          onReset={handleReset}
+        />
       </main>
     </div>
   );

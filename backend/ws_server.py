@@ -48,6 +48,7 @@ from email import message_from_bytes
 
 import psutil
 import websockets
+from websockets.http11 import Headers, Response as WsResponse
 
 # ---------------------------------------------------------------------------
 # Config
@@ -58,17 +59,20 @@ GMAIL_USER = os.environ.get("GMAIL_USER", "")
 GMAIL_PASS = os.environ.get("GMAIL_APP_PASSWORD", "")
 VIRUS_PATH = pathlib.Path(__file__).parent / "virus.command"
 
-ANOMALY_THRESHOLD = 0.65
+ANOMALY_THRESHOLD    = 0.65
+INFECTED_DWELL_SECS  = 5      # stay INFECTED for at least this long before isolating
 
 # ---------------------------------------------------------------------------
 # Global state (protected by asyncio — only mutated on the event loop)
 # ---------------------------------------------------------------------------
 
-_demo_state: str        = "CLEAN"
-_dashboard_clients: set = set()
-_virus_ws               = None
+_demo_state: str         = "CLEAN"
+_dashboard_clients: set  = set()
+_virus_ws                = None
 _virus_worker_pids: list = []
-_event_loop             = None   # set in main() so threads can post to it
+_event_loop              = None   # set in main() so threads can post to it
+_infected_at: float      = 0.0   # monotonic timestamp when INFECTED state was entered
+_detection_secs: float   = 0.0   # how long it took to detect (CLEAN→ISOLATING)
 
 
 # ---------------------------------------------------------------------------
@@ -80,10 +84,16 @@ def _get_state() -> str:
 
 
 async def _set_state(new_state: str):
-    global _demo_state
+    global _demo_state, _infected_at, _detection_secs
+    import time as _time
+    if new_state == "INFECTED":
+        _infected_at = _time.monotonic()
+    elif new_state == "ISOLATING" and _infected_at:
+        _detection_secs = round(_time.monotonic() - _infected_at, 1)
     _demo_state = new_state
     print(f"[soma] State → {new_state}")
-    await _broadcast({"type": "state_change", "state": new_state})
+    await _broadcast({"type": "state_change", "state": new_state,
+                      "detection_secs": _detection_secs if new_state == "ISOLATING" else 0})
 
 
 async def _broadcast(msg: dict):
@@ -197,8 +207,12 @@ async def _psutil_loop():
 
         await _broadcast({"type": "node_metrics", "nodes": nodes})
 
-        # Anomaly-triggered isolation
-        if state == "INFECTED" and nodes[0]["anomaly_score"] > ANOMALY_THRESHOLD:
+        # Anomaly-triggered isolation — only after minimum dwell in INFECTED
+        import time as _time
+        if (state == "INFECTED"
+                and nodes[0]["anomaly_score"] > ANOMALY_THRESHOLD
+                and _infected_at > 0
+                and _time.monotonic() - _infected_at >= INFECTED_DWELL_SECS):
             await _set_state("ISOLATING")
             asyncio.ensure_future(_isolate())
 
@@ -275,6 +289,25 @@ def _docker_cleanup():
     print("[soma] Docker container stopped and removed")
 
 
+async def _reset_demo():
+    global _demo_state, _infected_at, _detection_secs, _virus_ws, _virus_worker_pids
+    print("[soma] Resetting demo → CLEAN")
+    loop = asyncio.get_event_loop()
+    await loop.run_in_executor(None, _docker_cleanup)
+    for pid_str in _virus_worker_pids:
+        try:
+            os.kill(int(pid_str), signal.SIGTERM)
+        except Exception:
+            pass
+    _virus_worker_pids = []
+    _infected_at       = 0.0
+    _detection_secs    = 0.0
+    _demo_state        = "CLEAN"
+    await _broadcast({"type": "state_change",    "state": "CLEAN"})
+    await _broadcast({"type": "demo_reset"})
+    print("[soma] Demo reset complete")
+
+
 # ---------------------------------------------------------------------------
 # HTTP handler (intercepts requests before WebSocket upgrade)
 # ---------------------------------------------------------------------------
@@ -288,13 +321,13 @@ async def _process_request(connection, request):
     if path == "/download/virus.command":
         if VIRUS_PATH.exists():
             body = VIRUS_PATH.read_bytes()
-            headers = {
-                "Content-Type":        "application/octet-stream",
-                "Content-Disposition": 'attachment; filename="virus.command"',
-                "Content-Length":      str(len(body)),
-                "Access-Control-Allow-Origin": "*",
-            }
-            return connection.respond(http.HTTPStatus.OK, body, headers=headers)
+            hdrs = Headers([
+                ("Content-Type",        "application/octet-stream"),
+                ("Content-Disposition", 'attachment; filename="virus.command"'),
+                ("Content-Length",      str(len(body))),
+                ("Access-Control-Allow-Origin", "*"),
+            ])
+            return WsResponse(200, "OK", hdrs, body)
         return connection.respond(http.HTTPStatus.NOT_FOUND, "Not found\n")
 
     # /dashboard, /virus, /honeypot → proceed to WebSocket upgrade
@@ -329,6 +362,9 @@ async def _handle_client(websocket):
                     # Manual shortcut: presenter marks as infected without email flow
                     if _get_state() in ("CLEAN", "EMAIL_RECEIVED"):
                         await _set_state("INFECTED")
+                elif msg.get("type") == "reset":
+                    # Reset demo back to CLEAN (presenter control)
+                    await _reset_demo()
         except websockets.exceptions.ConnectionClosed:
             pass
         finally:
