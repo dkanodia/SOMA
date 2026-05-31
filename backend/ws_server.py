@@ -67,8 +67,8 @@ _SOMA_NET_CIDR = "172.22.0."
 # Anomaly detection
 _WINDOW_SIZE       = 60    # rolling window ticks
 _MIN_WINDOW        = 10    # min samples before scoring
-_ANOMALY_THRESHOLD = 0.65  # display score that triggers isolation
-_INFECTED_DWELL    = 5     # seconds in INFECTED before isolation can fire
+_ANOMALY_THRESHOLD = 0.20  # display score that triggers isolation
+_INFECTED_DWELL    = 3     # seconds in INFECTED before isolation can fire
 
 # ---------------------------------------------------------------------------
 # Global state
@@ -114,7 +114,7 @@ def _compute_anomaly(name: str, cpu: float, net_out: float, tcp_count: int) -> f
     Baseline windows grow only during CLEAN / EMAIL_RECEIVED states.
     At infection, baseline is frozen → z-score reflects true deviation.
 
-    Isolation threshold 0.65 ≡ composite_z ≈ 2.85σ.
+    Isolation threshold 0.28 ≡ composite_z ≈ 1.0σ above clean baseline.
     """
     state = _demo_state
     if state in ("CLEAN", "EMAIL_RECEIVED"):
@@ -122,7 +122,7 @@ def _compute_anomaly(name: str, cpu: float, net_out: float, tcp_count: int) -> f
         _net_windows[name].append(float(net_out))
         _tcp_windows[name].append(float(tcp_count))
 
-    z_cpu = _z_score(cpu,             _cpu_windows[name], min_std=1.0)
+    z_cpu = _z_score(cpu,             _cpu_windows[name], min_std=0.02)
     z_net = _z_score(float(net_out),  _net_windows[name], min_std=1000.0)
     z_tcp = _z_score(float(tcp_count), _tcp_windows[name], min_std=1.0)
 
@@ -364,7 +364,7 @@ async def _isolate():
 # ---------------------------------------------------------------------------
 
 def _kill_container_workers():
-    for name in _HOST_NAMES[1:]:
+    for name in _HOST_NAMES:  # include User0 container for SSH-pivoted workers
         container = "soma-" + name.lower().replace("_", "-")
         try:
             subprocess.run(
@@ -389,8 +389,12 @@ async def _purge():
         except Exception:
             pass
     _virus_worker_pids = []
-    # Kill SSH-spawned python3 workers inside each container
+    # Kill all SOMA_WORKER-tagged processes (catches stale workers from prev sessions)
+    subprocess.run(["pkill", "-f", "SOMA_WORKER"], check=False)
+    # Kill SSH-spawned python3 workers inside each container and docker exec processes
     await loop.run_in_executor(None, _kill_container_workers)
+    # Kill any lingering docker exec ssh processes on the host
+    subprocess.run(["pkill", "-f", "docker exec.*soma.*ssh"], check=False)
     _honeypot_metrics_cache = None
     await _set_state("PURGED")
     await _broadcast({"type": "purge_complete"})

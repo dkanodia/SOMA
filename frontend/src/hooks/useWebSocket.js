@@ -242,6 +242,7 @@ export default function useWebSocket(url) {
         case "purge_complete":
           setHoneypotMetrics(null);
           setSomaState("PURGED");
+          setLateralMovements([]);
           break;
         case "demo_reset":
           setSomaState("CLEAN");
