@@ -283,7 +283,7 @@ async def _psutil_loop():
                 and _infected_at > 0
                 and time.monotonic() - _infected_at >= _INFECTED_DWELL):
             await _set_state("ISOLATING")
-            asyncio.ensure_future(_isolate())
+            asyncio.create_task(_isolate())
 
 
 # ---------------------------------------------------------------------------
@@ -379,7 +379,7 @@ def _kill_container_workers():
 async def _purge():
     global _virus_worker_pids, _honeypot_metrics_cache
     print("[soma] Purging honeypot and workers...")
-    loop = asyncio.get_event_loop()
+    loop = asyncio.get_running_loop()
     await loop.run_in_executor(None, _docker_cleanup)
     # Kill local CPU worker PIDs from virus.command
     for pid_str in _virus_worker_pids:
@@ -409,7 +409,7 @@ def _docker_cleanup():
 async def _reset_demo():
     global _infected_at, _detection_secs, _virus_ws, _virus_worker_pids, _honeypot_metrics_cache
     print("[soma] Resetting → CLEAN")
-    loop = asyncio.get_event_loop()
+    loop = asyncio.get_running_loop()
     await loop.run_in_executor(None, _docker_cleanup)
     for pid_str in _virus_worker_pids:
         try:
@@ -417,6 +417,7 @@ async def _reset_demo():
         except Exception:
             pass
     _virus_worker_pids      = []
+    _virus_ws               = None
     _infected_at            = 0.0
     _detection_secs         = 0.0
     _honeypot_metrics_cache = None
@@ -564,7 +565,7 @@ async def main():
         print("[soma]          Send {type:set_infected} from dashboard to trigger manually")
 
     threading.Thread(target=_imap_poll_loop, daemon=True).start()
-    asyncio.ensure_future(_psutil_loop())
+    asyncio.create_task(_psutil_loop())
 
     async with websockets.serve(
         _handle_client,
