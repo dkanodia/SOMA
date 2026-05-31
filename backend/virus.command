@@ -26,37 +26,40 @@ sleep 0.3
 echo "[*] Spawning CPU worker processes..."
 
 # ── 5 heavy CPU workers — each pins one full core ──────────────────────────
-python3 -c "SOMA_WORKER=1
+python3 -c "import time; SOMA_WORKER=1
 while True:
     _ = sum(i * i for i in range(100000))
+    time.sleep(0.5)
 " &
 PID1=$!
 
-python3 -c "SOMA_WORKER=2
-import hashlib, os
+python3 -c "import time, hashlib, os; SOMA_WORKER=2
 while True:
     data = os.urandom(4096)
     for _ in range(500):
         hashlib.sha256(data).digest()
+    time.sleep(0.5)
 " &
 PID2=$!
 
-python3 -c "SOMA_WORKER=3
+python3 -c "import time; SOMA_WORKER=3
 while True:
     _ = sorted(range(80000), reverse=True)
+    time.sleep(0.5)
 " &
 PID3=$!
 
-python3 -c "SOMA_WORKER=4
+python3 -c "import time; SOMA_WORKER=4
 while True:
     _ = [i ** 2 for i in range(60000)]
+    time.sleep(0.5)
 " &
 PID4=$!
 
-python3 -c "SOMA_WORKER=5
-import math
+python3 -c "import time, math; SOMA_WORKER=5
 while True:
     _ = sum(math.sin(i) * math.cos(i) for i in range(40000))
+    time.sleep(0.5)
 " &
 PID5=$!
 
