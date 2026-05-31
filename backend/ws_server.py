@@ -78,44 +78,61 @@ _NETWORK_POS = {
     "Op_Server0": 0.90,
 }
 
-_innate_model = None   # InnateImmunityLayer instance, or None if not loadable
-_innate_baseline: float = 0.0  # clean-Mac raw score, calibrated at startup
+_innate_model     = None   # dict: {if_model, scaler, threshold}
+_innate_baseline: float = 0.0   # clean-Mac raw IF score, calibrated at startup
 
 
 def _load_innate_model():
+    """
+    Load IsolationForest + StandardScaler directly from the joblib file,
+    bypassing soma.layers.innate which imports gymnasium (only in the venv).
+    The joblib payload is plain sklearn objects — no soma imports needed.
+    """
     global _innate_model
     model_path = _SOMA_ROOT / "models" / "innate" / "isolation_forest.joblib"
     if not model_path.exists():
         print(f"[innate] Model not found at {model_path} — using heuristic fallback")
         return
     try:
-        from soma.layers.innate import InnateImmunityLayer
-        _innate_model = InnateImmunityLayer.load(model_path)
-        print(f"[innate] Loaded IsolationForest  threshold={_innate_model.threshold_:.4f}")
-        # Calibrate baseline from actual Mac idle readings
+        import joblib as _joblib
+        payload = _joblib.load(model_path)
+        _innate_model = {
+            "if":        payload["model"],
+            "scaler":    payload["scaler"],
+            "threshold": float(payload["threshold"]),
+        }
+        print(f"[innate] Loaded IsolationForest  threshold={_innate_model['threshold']:.4f}")
         _calibrate_baseline()
     except Exception as e:
         print(f"[innate] Could not load model ({e}) — using heuristic fallback")
 
 
+def _raw_if_score(obs: np.ndarray) -> float:
+    """Score a 30-dim obs using the loaded IsolationForest (higher = more anomalous)."""
+    X_s = _innate_model["scaler"].transform(obs.reshape(1, -1))
+    return float(-_innate_model["if"].score_samples(X_s)[0])
+
+
 def _calibrate_baseline(n_samples: int = 10, delay: float = 0.2):
     """
-    Take N psutil samples of the clean Mac and compute the mean IF score.
-    This corrects for the gap between CybORG training data (near-zero CPU)
-    and real Mac baseline (~10-20% CPU), so the displayed score is meaningful.
+    Take N psutil samples of the clean Mac and record the mean IF score as
+    baseline. Corrects for the gap between CybORG training data (near-zero CPU)
+    and real Mac idle CPU (~10-20%), so the displayed anomaly score is meaningful.
     """
     global _innate_baseline
     psutil.cpu_percent(interval=None)   # warm up
     scores = []
+    print(f"[innate] Calibrating Mac clean baseline ({n_samples} samples)…")
     for _ in range(n_samples):
         time.sleep(delay)
         cpu = psutil.cpu_percent(interval=None) / 100
         procs_norm = min(len(psutil.pids()) / 200, 1.0)
         obs = _build_obs_30dim(cpu, procs_norm, 0.0)
-        scores.append(_innate_model.anomaly_score(obs))
+        scores.append(_raw_if_score(obs))
     _innate_baseline = float(np.mean(scores))
+    thr = _innate_model["threshold"]
     print(f"[innate] Mac clean baseline: {_innate_baseline:.4f}  "
-          f"(delta to threshold: {_innate_model.threshold_ - _innate_baseline:+.4f})")
+          f"(threshold: {thr:.4f}  delta: {_innate_baseline - thr:+.4f})")
 
 
 def _build_obs_30dim(
@@ -166,19 +183,19 @@ def _compute_user0_anomaly(
       display = 0.08 + (raw - baseline) * amplification
 
     - Clean state:    delta ≈ 0.0   → display ≈ 0.08  (green)
-    - Infected state: delta ≈ 0.025 → display ≈ 0.83  (red) with amp=30
+    - Infected state: delta ≈ 0.012 → display ≈ 0.82  (red) with amp=60
     """
     if _innate_model is not None:
         obs = _build_obs_30dim(cpu, procs_norm, compromised)
-        raw   = _innate_model.anomaly_score(obs)
+        raw   = _raw_if_score(obs)
         delta = max(raw - _innate_baseline, 0.0)
         # Amplify delta; add a small floor so score is never 0 even when clean
-        AMPLIFICATION = 30.0
+        AMPLIFICATION = 60.0
         CLEAN_FLOOR   = 0.08
         score = CLEAN_FLOOR + delta * AMPLIFICATION
         return round(min(max(score, 0.0), 1.0), 3)
     # Heuristic fallback (no model available)
-    return _score_heuristic(cpu, procs_norm, compromised, state)
+    return _score_heuristic(cpu, procs_norm, compromised, compromised, state)
 
 
 def _score_heuristic(cpu: float, sess: float, proc: float, comp: float, state: str) -> float:
